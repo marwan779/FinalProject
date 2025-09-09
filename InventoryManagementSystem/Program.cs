@@ -1,3 +1,7 @@
+using InventoryManagementSystem.Data;
+using InventoryManagementSystem.Models;
+using Microsoft.AspNetCore.Identity;
+
 namespace InventoryManagementSystem
 {
     public class Program
@@ -5,6 +9,12 @@ namespace InventoryManagementSystem
         public static void Main(string[] args)
         {
             var builder = WebApplication.CreateBuilder(args);
+
+
+            builder.Services.AddIdentity<ApplicationUser, IdentityRole>()
+                .AddEntityFrameworkStores<ApplicationDbContext>()
+                .AddDefaultTokenProviders();
+
 
             // Add services to the container.
             builder.Services.AddControllersWithViews();
