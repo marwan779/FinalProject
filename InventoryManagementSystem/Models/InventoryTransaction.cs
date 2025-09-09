@@ -14,7 +14,7 @@ namespace InventoryManagementSystem.Models
         public int QuantityChanged { get; set; }
 
         [MaxLength(50)]
-        public string TransactionType { get; set; } // Purchase, Sale, Adjustment
+        public string TransactionType { get; set; } = string.Empty; // Purchase, Sale, Adjustment
 
         public int? ReferenceId { get; set; } // Optional link to Purchase/Sale order
 
