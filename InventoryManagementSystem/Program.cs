@@ -1,6 +1,8 @@
 using InventoryManagementSystem.Data;
 using InventoryManagementSystem.Models;
+using InventoryManagementSystem.Services;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Identity.UI.Services;
 using Microsoft.EntityFrameworkCore;
 
 namespace InventoryManagementSystem
@@ -14,13 +16,17 @@ namespace InventoryManagementSystem
             builder.Services.AddDbContext<ApplicationDbContext>(options =>
             options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
 
-            builder.Services.AddDefaultIdentity<ApplicationUser>(options => options.SignIn.RequireConfirmedAccount = true).AddEntityFrameworkStores<ApplicationDbContext>();
-
 
 
             builder.Services.AddIdentity<ApplicationUser, IdentityRole>()
                 .AddEntityFrameworkStores<ApplicationDbContext>()
                 .AddDefaultTokenProviders();
+
+
+            builder.Services.AddRazorPages();
+
+
+            builder.Services.AddSingleton<IEmailSender, DummyEmailSender>();
 
 
             // Add services to the container.
