@@ -20,7 +20,8 @@ using System.Text;
 using System.Text.Encodings.Web;
 using System.Threading;
 using System.Threading.Tasks;
-using Utility;
+using InventoryManagementSystem.Utility;
+using InventoryManagementSystem.Models.Entities;
 
 namespace InventoryManagementSystem.Areas.Identity.Pages.Account
 {

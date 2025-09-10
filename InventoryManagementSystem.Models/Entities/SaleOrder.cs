@@ -1,25 +1,25 @@
 ﻿using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
-namespace InventoryManagementSystem.Models
+namespace InventoryManagementSystem.Models.Entities
 {
-    public class PurchaseOrder
+    public class SaleOrder
     {
         [Key]
-        public int PurchaseOrderId { get; set; }
+        public int SaleOrderId { get; set; }
 
         [Required]
-        public string SupplierId { get; set; } = string.Empty;
-        public ApplicationUser Supplier { get; set; }
+        public string CustomerId { get; set; } = string.Empty;
+        public ApplicationUser Customer { get; set; }
 
         public DateTime OrderDate { get; set; } = DateTime.UtcNow;
 
-        [MaxLength(50)]
+        [MaxLength(20)]
         public string Status { get; set; } = "Pending";
 
         [Column(TypeName = "decimal(18,2)")]
         public decimal TotalAmount { get; set; }
 
-        public ICollection<PurchaseOrderItem> Items { get; set; } = new List<PurchaseOrderItem>();
+        public ICollection<SaleOrderItem> Items { get; set; } = new List<SaleOrderItem>();
     }
 }

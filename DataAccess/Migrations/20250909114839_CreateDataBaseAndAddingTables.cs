@@ -3,7 +3,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 #nullable disable
 
-namespace InventoryManagementSystem.Migrations
+namespace InventoryManagementSystem.DataAccess.Migrations
 {
     /// <inheritdoc />
     public partial class CreateDataBaseAndAddingTables : Migration

@@ -1,6 +1,6 @@
 ﻿using Microsoft.AspNetCore.Identity;
 
-namespace InventoryManagementSystem.Models
+namespace InventoryManagementSystem.Models.Entities
 {
     public class ApplicationUser: IdentityUser
     {

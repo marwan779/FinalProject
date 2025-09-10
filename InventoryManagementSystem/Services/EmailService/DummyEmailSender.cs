@@ -1,7 +1,7 @@
 ﻿using Microsoft.AspNetCore.Identity.UI.Services;
 using System.Threading.Tasks;
 
-namespace InventoryManagementSystem.Services
+namespace InventoryManagementSystem.Services.EmailService
 {
     public class DummyEmailSender: IEmailSender
     {

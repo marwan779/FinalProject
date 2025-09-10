@@ -1,6 +1,6 @@
-using InventoryManagementSystem.Data;
-using InventoryManagementSystem.Models;
-using InventoryManagementSystem.Services;
+using InventoryManagementSystem.DataAccess.Data;
+using InventoryManagementSystem.Models.Entities;
+using InventoryManagementSystem.Services.EmailService;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.UI.Services;
 using Microsoft.EntityFrameworkCore;

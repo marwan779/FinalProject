@@ -1,6 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations;
 
-namespace InventoryManagementSystem.Models
+namespace InventoryManagementSystem.Models.Entities
 {
     public class InventoryTransaction
     {

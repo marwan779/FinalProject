@@ -1,4 +1,4 @@
-﻿namespace Utility
+﻿namespace InventoryManagementSystem.Utility
 {
     public static class StaticDetails
     {

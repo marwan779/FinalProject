@@ -12,6 +12,7 @@ using Microsoft.Extensions.Logging;
 using InventoryManagementSystem.Models;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.Logging;
+using InventoryManagementSystem.Models.Entities;
 
 namespace InventoryManagementSystem.Areas.Identity.Pages.Account
 {

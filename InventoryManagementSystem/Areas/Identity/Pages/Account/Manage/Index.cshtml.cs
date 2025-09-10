@@ -10,6 +10,7 @@ using InventoryManagementSystem.Models;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
+using InventoryManagementSystem.Models.Entities;
 
 namespace InventoryManagementSystem.Areas.Identity.Pages.Account.Manage
 {
