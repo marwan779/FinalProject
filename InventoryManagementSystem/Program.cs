@@ -1,4 +1,6 @@
 using InventoryManagementSystem.DataAccess.Data;
+using InventoryManagementSystem.DataAccess.Repository;
+using InventoryManagementSystem.DataAccess.Repository.IRepository;
 using InventoryManagementSystem.Models.Entities;
 using InventoryManagementSystem.Services.EmailService;
 using Microsoft.AspNetCore.Identity;
@@ -27,7 +29,7 @@ namespace InventoryManagementSystem
 
 
             builder.Services.AddSingleton<IEmailSender, DummyEmailSender>();
-
+            builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
 
             // Add services to the container.
             builder.Services.AddControllersWithViews();
