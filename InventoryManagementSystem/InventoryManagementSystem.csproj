@@ -28,7 +28,6 @@
     <Folder Include="Areas\Owner\Data\" />
     <Folder Include="Areas\Owner\Models\" />
     <Folder Include="Areas\Owner\Views\" />
-    <Folder Include="Models\" />
   </ItemGroup>
 
 </Project>
