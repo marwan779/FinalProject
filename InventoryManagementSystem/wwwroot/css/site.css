@@ -1,3 +1,41 @@
+:root {
+    /* Primary Colors */
+    --primary-color: #4CAF50;
+    --primary-hover: #45a049;
+    --primary-dark: #388E3C;
+    /* Secondary Colors */
+    --secondary-color: #2196F3;
+    --secondary-hover: #1976D2;
+    /* Status Colors */
+    --success-color: #4CAF50;
+    --warning-color: #ff9800;
+    --danger-color: #f44336;
+    --danger-hover: #d32f2f;
+    /* Neutral Colors */
+    --white: #ffffff;
+    --black: #000000;
+    --dark-gray: #222222;
+    --medium-gray: #333333;
+    --light-gray: #555555;
+    --border-gray: #cccccc;
+    --table-hover: #f1f1f1;
+    --table-border: #dddddd;
+    /* Background Colors */
+    --bg-overlay: rgba(255, 255, 255, 0.9);
+    --bg-overlay-dark: rgba(255, 255, 255, 0.95);
+    --bg-navbar: rgba(0, 0, 0, 0.8);
+    --bg-dark: rgba(0, 0, 0, 0.8);
+    --bg-light: #f9f9f9;
+    /* Text Colors */
+    --text-primary: #333333;
+    --text-secondary: #555555;
+    --text-light: #ffffff;
+    --text-dark: #222222;
+    /* Shadow Colors */
+    --shadow-light: rgba(0, 0, 0, 0.3);
+    --shadow-medium: rgba(0, 0, 0, 0.2);
+}
+
 html {
   font-size: 14px;
 }

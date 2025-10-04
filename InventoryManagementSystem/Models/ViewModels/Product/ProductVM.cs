@@ -10,11 +10,14 @@ namespace InventoryManagementSystem.Models.ViewModels.Product
         public string Name { get; set; } = string.Empty;
         public string? Description { get; set; } = string.Empty;
         public int CategoryId { get; set; }
+        public string CategoryName { get; set; } = string.Empty;
         public decimal UnitPrice { get; set; }
         public decimal CostPrice { get; set; }
         public int QuantityInStock { get; set; }
         public bool IsDamaged { get; set; } = true;
         public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
         public DateTime UpdatedAt { get; set; } = DateTime.UtcNow;
+        public string ProductImagePath { get; set; } = string.Empty;
+
     }
 }
