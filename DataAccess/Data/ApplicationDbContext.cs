@@ -5,11 +5,11 @@ using Microsoft.EntityFrameworkCore;
 
 namespace InventoryManagementSystem.DataAccess.Data
 {
-    public class ApplicationDbContext: IdentityDbContext<ApplicationUser>
+    public class ApplicationDbContext : IdentityDbContext<ApplicationUser>
     {
         public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options) : base(options)
         {
-            
+
         }
 
         public DbSet<ApplicationUser> ApplicationUsers { get; set; }
@@ -20,5 +20,19 @@ namespace InventoryManagementSystem.DataAccess.Data
         public DbSet<SaleOrder> SaleOrders { get; set; }
         public DbSet<SaleOrderItem> SaleOrderItems { get; set; }
         public DbSet<InventoryTransaction> InventoryTransactions { get; set; }
-}
+
+
+        protected override void OnModelCreating(ModelBuilder modelBuilder)
+        {
+            base.OnModelCreating(modelBuilder);
+
+            // ---- Seed Categories ----
+            modelBuilder.Entity<Category>().HasData(
+                new Category { CategoryId = 1, Name = "Laptops" },
+                new Category { CategoryId = 2, Name = "Mobiles" }
+            );
+
+            
+        }
+    }
 }
