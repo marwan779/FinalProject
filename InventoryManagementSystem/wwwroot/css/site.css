@@ -1,4 +1,3 @@
-/* Add these styles to your site.css */
 
 :root {
     /* Your existing variables */
@@ -32,15 +31,34 @@
     --shadow-medium: rgba(0, 0, 0, 0.2);
 }
 
-/* Apply the custom properties to elements */
+/* Base Styles */
+html {
+    font-size: 14px;
+    position: relative;
+    min-height: 100%;
+}
+
+@media (min-width: 768px) {
+    html {
+        font-size: 16px;
+    }
+}
+
+body {
+    margin-bottom: 60px;
+}
+
+/* Focus Styles */
+.btn:focus, .btn:active:focus, .btn-link.nav-link:focus, .form-control:focus, .form-check-input:focus {
+    box-shadow: 0 0 0 0.1rem white, 0 0 0 0.25rem #258cfb;
+}
+
+/* Navbar Styles */
 .navbar.bg-navbar {
     background-color: var(--bg-navbar) !important;
 }
 
-.navbar-dark .navbar-nav .nav-link.text-light {
-    color: var(--text-light) !important;
-}
-
+.navbar-dark .navbar-nav .nav-link.text-light,
 .navbar-brand.text-light {
     color: var(--text-light) !important;
 }
@@ -53,86 +71,23 @@ footer .text-light {
     color: var(--text-light) !important;
 }
 
-/* Additional utility classes you might find useful */
-.bg-primary-custom {
-    background-color: var(--primary-color);
-}
-
-.bg-secondary-custom {
-    background-color: var(--secondary-color);
-}
-
-.text-primary-custom {
-    color: var(--primary-color);
-}
-
-.text-secondary-custom {
-    color: var(--secondary-color);
-}
-
-.btn-primary-custom {
-    background-color: var(--primary-color);
-    border-color: var(--primary-color);
-    color: var(--white);
-}
-
-    .btn-primary-custom:hover {
-        background-color: var(--primary-hover);
-        border-color: var(--primary-hover);
-    }
-
-.btn-secondary-custom {
-    background-color: var(--secondary-color);
-    border-color: var(--secondary-color);
-    color: var(--white);
-}
-
-    .btn-secondary-custom:hover {
-        background-color: var(--secondary-hover);
-        border-color: var(--secondary-hover);
-    }
-
-html {
-    font-size: 14px;
-}
-
-@media (min-width: 768px) {
-    html {
-        font-size: 16px;
-    }
-}
-
-/* Navbar link hover effects */
-.nav-link-custom {
+/* Navbar Link Effects */
+.nav-link-custom,
+.navbar-nav .nav-link.text-light {
     color: var(--text-light) !important;
     transition: color 0.3s ease;
     position: relative;
 }
 
     .nav-link-custom:hover,
-    .nav-link-custom:focus {
-        color: var(--primary-color) !important;
-        background-color: transparent !important;
-    }
-
-   
-
-/* Ensure the login partial links also have the same hover effect */
-.navbar-nav .nav-link.text-light {
-    transition: color 0.3s ease;
-}
-
+    .nav-link-custom:focus,
     .navbar-nav .nav-link.text-light:hover,
     .navbar-nav .nav-link.text-light:focus {
         color: var(--primary-color) !important;
         background-color: transparent !important;
     }
 
-.btn:focus, .btn:active:focus, .btn-link.nav-link:focus, .form-control:focus, .form-check-input:focus {
-    box-shadow: 0 0 0 0.1rem white, 0 0 0 0.25rem #258cfb;
-}
-
-
+/* Dropdown Styles */
 .dropdown-menu {
     background-color: var(--bg-dark);
     border: 1px solid var(--light-gray);
@@ -157,7 +112,7 @@ html {
     margin: 4px 0;
 }
 
-/* Dropdown toggle arrow color */
+/* Dropdown Toggle */
 .navbar-dark .navbar-nav .dropdown-toggle::after {
     border-top-color: var(--text-light);
     transition: border-top-color 0.3s ease;
@@ -168,21 +123,677 @@ html {
     border-top-color: var(--primary-color);
 }
 
-/* Ensure dropdown works with existing nav-link styles */
 .navbar-nav .dropdown-toggle.nav-link-custom::after {
     margin-left: 6px;
 }
 
-/* Active dropdown state */
 .navbar-nav .dropdown.show .dropdown-toggle.nav-link-custom {
     color: var(--primary-color) !important;
 }
 
-html {
-    position: relative;
-    min-height: 100%;
+/* Utility Classes */
+.bg-primary-custom {
+    background-color: var(--primary-color);
 }
 
-body {
-    margin-bottom: 60px;
+.bg-secondary-custom {
+    background-color: var(--secondary-color);
+}
+
+.text-primary-custom {
+    color: var(--primary-color);
+}
+
+.text-secondary-custom {
+    color: var(--secondary-color);
+}
+
+/* Button Styles */
+.btn-primary-custom {
+    background-color: var(--primary-color);
+    border-color: var(--primary-color);
+    color: var(--white);
+    padding: 12px 24px;
+    border: none;
+    border-radius: 6px;
+    text-decoration: none;
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    font-weight: 500;
+    transition: all 0.3s ease;
+    box-shadow: 0 2px 8px var(--shadow-light);
+}
+
+    .btn-primary-custom:hover {
+        background-color: var(--primary-hover);
+        border-color: var(--primary-hover);
+        transform: translateY(-2px);
+        box-shadow: 0 4px 12px var(--shadow-medium);
+        color: var(--white);
+    }
+
+.btn-secondary-custom {
+    background-color: var(--secondary-color);
+    border-color: var(--secondary-color);
+    color: var(--white);
+}
+
+    .btn-secondary-custom:hover {
+        background-color: var(--secondary-hover);
+        border-color: var(--secondary-hover);
+    }
+
+.btn-lg {
+    padding: 15px 30px;
+    font-size: 1.1rem;
+}
+
+/* Page Layout Styles */
+.products-page,
+.create-product-page,
+.update-product-page {
+    padding: 30px 20px;
+    color: var(--text-light);
+    min-height: 80vh;
+    background: linear-gradient(135deg, var(--medium-gray) 0%, var(--dark-gray) 100%);
+}
+
+.page-header {
+    text-align: center;
+    margin-bottom: 40px;
+}
+
+    .page-header h1 {
+        font-size: 2.5rem;
+        margin-bottom: 10px;
+        color: var(--text-light);
+        font-weight: 300;
+    }
+
+.page-subtitle {
+    font-size: 1.1rem;
+    color: var(--text-light);
+    opacity: 0.8;
+}
+
+.page-actions {
+    display: flex;
+    justify-content: flex-end;
+    margin-bottom: 30px;
+}
+
+/* Form Container Styles */
+.form-container {
+    max-width: 1000px;
+    margin: 0 auto;
+    background: var(--bg-overlay-dark);
+    border-radius: 12px;
+    padding: 30px;
+    box-shadow: 0 4px 15px var(--shadow-light);
+}
+
+.form-grid {
+    display: grid;
+    gap: 30px;
+    margin-bottom: 30px;
+}
+
+.form-section {
+    background: var(--white);
+    padding: 25px;
+    border-radius: 8px;
+    box-shadow: 0 2px 8px var(--shadow-medium);
+}
+
+.section-title {
+    color: var(--primary-color);
+    margin-bottom: 20px;
+    font-size: 1.3rem;
+    font-weight: 600;
+    border-bottom: 2px solid var(--primary-color);
+    padding-bottom: 10px;
+}
+
+.form-group {
+    margin-bottom: 20px;
+}
+
+.form-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 15px;
+}
+
+.form-label {
+    display: block;
+    margin-bottom: 8px;
+    font-weight: 600;
+    color: var(--text-primary);
+}
+
+.form-control {
+    width: 100%;
+    padding: 12px;
+    border: 2px solid var(--border-gray);
+    border-radius: 6px;
+    font-size: 1rem;
+    transition: all 0.3s ease;
+    background: var(--white);
+    color: var(--text-primary);
+}
+
+    .form-control:focus {
+        outline: none;
+        border-color: var(--primary-color);
+        box-shadow: 0 0 0 3px rgba(76, 175, 80, 0.1);
+    }
+
+textarea.form-control {
+    resize: vertical;
+    min-height: 100px;
+}
+
+.input-group {
+    display: flex;
+    align-items: center;
+}
+
+.input-group-text {
+    background: var(--bg-light);
+    border: 2px solid var(--border-gray);
+    border-right: none;
+    padding: 12px 15px;
+    border-radius: 6px 0 0 6px;
+    color: var(--text-secondary);
+    font-weight: 500;
+}
+
+.input-group .form-control {
+    border-radius: 0 6px 6px 0;
+}
+
+/* File Upload Styles */
+.file-upload-container {
+    position: relative;
+}
+
+.file-input {
+    position: absolute;
+    opacity: 0;
+    width: 100%;
+    height: 100%;
+    cursor: pointer;
+}
+
+.file-upload-area {
+    border: 2px dashed var(--border-gray);
+    border-radius: 8px;
+    padding: 40px 20px;
+    text-align: center;
+    transition: all 0.3s ease;
+    background: var(--bg-light);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+}
+
+    .file-upload-area:hover,
+    .file-upload-area.drag-over {
+        border-color: var(--primary-color);
+        background: rgba(76, 175, 80, 0.05);
+    }
+
+.upload-icon {
+    font-size: 3rem;
+    color: var(--primary-color);
+    margin-bottom: 15px;
+}
+
+.upload-text {
+    font-weight: 600;
+    color: var(--text-primary);
+    margin-bottom: 5px;
+}
+
+.upload-hint {
+    color: var(--text-secondary);
+    font-size: 0.9rem;
+}
+
+.image-preview-container {
+    position: relative;
+    text-align: center;
+    margin-top: 15px;
+}
+
+.image-preview,
+.current-image {
+    max-width: 200px;
+    max-height: 200px;
+    border-radius: 8px;
+    border: 2px solid var(--border-gray);
+}
+
+.current-image {
+    width: 100px;
+    height: 100px;
+    object-fit: cover;
+}
+
+.remove-image-btn {
+    position: absolute;
+    top: -10px;
+    right: -10px;
+    background: var(--danger-color);
+    color: var(--white);
+    border: none;
+    border-radius: 50%;
+    width: 28px;
+    height: 28px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    font-size: 12px;
+    font-weight: bold;
+    box-shadow: 0 2px 5px var(--shadow-light);
+}
+
+    .remove-image-btn:hover {
+        background: var(--danger-hover);
+        transform: scale(1.1);
+        box-shadow: 0 3px 8px var(--shadow-medium);
+    }
+
+    .remove-image-btn .fa-times {
+        font-size: 11px;
+        font-weight: 900;
+    }
+
+/* Current Image Section */
+.current-image-section {
+    margin-bottom: 25px;
+    padding: 15px;
+    background: var(--bg-light);
+    border-radius: 8px;
+    border-left: 4px solid var(--primary-color);
+}
+
+.current-image-container {
+    display: flex;
+    align-items: center;
+    gap: 20px;
+}
+
+.current-image-info p {
+    margin: 0;
+    color: var(--text-secondary);
+}
+
+    .current-image-info p:first-child {
+        font-weight: 600;
+        color: var(--text-primary);
+    }
+
+/* Validation Styles */
+.validation-summary {
+    background: var(--danger-color);
+    color: var(--white);
+    padding: 15px;
+    border-radius: 6px;
+    margin-bottom: 20px;
+}
+
+    .validation-summary ul {
+        margin: 0;
+        padding-left: 20px;
+    }
+
+.validation-message {
+    color: var(--danger-color);
+    font-size: 0.9rem;
+    margin-top: 5px;
+    display: block;
+    font-weight: 500;
+}
+
+.input-validation-error {
+    border-color: var(--danger-color) !important;
+}
+
+.form-text.text-muted {
+    color: var(--text-secondary) !important;
+    font-size: 0.85rem;
+    margin-top: 5px;
+}
+
+/* Form Actions */
+.form-actions {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-top: 30px;
+    padding-top: 20px;
+    border-top: 1px solid var(--border-gray);
+}
+
+.action-buttons {
+    display: flex;
+    gap: 15px;
+}
+
+.btn {
+    padding: 12px 24px;
+    border: none;
+    border-radius: 6px;
+    text-decoration: none;
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    font-weight: 500;
+    transition: all 0.3s ease;
+    cursor: pointer;
+    font-size: 1rem;
+}
+
+.btn-submit,
+.btn-update {
+    background: var(--primary-color);
+    color: var(--white);
+}
+
+    .btn-submit:hover,
+    .btn-update:hover {
+        background: var(--primary-hover);
+        transform: translateY(-2px);
+        box-shadow: 0 4px 12px var(--shadow-medium);
+        color: var(--white);
+    }
+
+.btn-update {
+    background: var(--warning-color);
+}
+
+    .btn-update:hover {
+        background: #e68900;
+    }
+
+.btn-cancel {
+    background: var(--light-gray);
+    color: var(--white);
+}
+
+    .btn-cancel:hover {
+        background: var(--medium-gray);
+        color: var(--white);
+        transform: translateY(-2px);
+    }
+
+.btn-delete {
+    background: var(--danger-color);
+    color: var(--white);
+}
+
+    .btn-delete:hover {
+        background: var(--danger-hover);
+        color: var(--white);
+        transform: translateY(-2px);
+    }
+
+/* Table Container */
+.table-container {
+    background: var(--bg-overlay-dark);
+    border-radius: 12px;
+    padding: 20px;
+    margin-bottom: 30px;
+    box-shadow: 0 4px 15px var(--shadow-light);
+}
+
+.products-table {
+    width: 100%;
+    border-collapse: collapse;
+    background: var(--white);
+    color: var(--text-primary);
+    border-radius: 8px;
+    overflow: hidden;
+    box-shadow: 0 2px 8px var(--shadow-medium);
+}
+
+    .products-table th {
+        background: var(--primary-color);
+        color: var(--white);
+        padding: 16px 12px;
+        font-weight: 600;
+        text-transform: uppercase;
+        font-size: 0.9rem;
+        letter-spacing: 0.5px;
+    }
+
+    .products-table td {
+        padding: 14px 12px;
+        border-bottom: 1px solid var(--table-border);
+        vertical-align: middle;
+    }
+
+    .products-table tr:hover {
+        background: var(--table-hover);
+        transform: scale(1.01);
+        transition: all 0.2s ease;
+    }
+
+/* Product Image */
+.product-image-cell {
+    text-align: center;
+}
+
+.product-image {
+    width: 50px;
+    height: 50px;
+    object-fit: cover;
+    border-radius: 6px;
+    border: 2px solid var(--border-gray);
+}
+
+.no-image {
+    width: 50px;
+    height: 50px;
+    background: var(--bg-light);
+    border: 2px dashed var(--border-gray);
+    border-radius: 6px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 0.8rem;
+    color: var(--text-secondary);
+}
+
+/* Stock Badges */
+.stock-badge {
+    padding: 4px 12px;
+    border-radius: 20px;
+    font-weight: 600;
+    font-size: 0.85rem;
+}
+
+.in-stock {
+    background: var(--success-color);
+    color: var(--white);
+}
+
+.low-stock {
+    background: var(--warning-color);
+    color: var(--white);
+}
+
+.out-of-stock {
+    background: var(--danger-color);
+    color: var(--white);
+}
+
+/* Action Buttons */
+.product-actions {
+    display: flex;
+    gap: 8px;
+    justify-content: center;
+}
+
+.btn-edit, .btn-delete {
+    padding: 8px 16px;
+    border: none;
+    border-radius: 6px;
+    text-decoration: none;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 0.85rem;
+    font-weight: 500;
+    transition: all 0.3s ease;
+    cursor: pointer;
+}
+
+.btn-edit {
+    background: var(--secondary-color);
+    color: var(--white);
+}
+
+    .btn-edit:hover {
+        background: var(--secondary-hover);
+        color: var(--white);
+        transform: translateY(-1px);
+    }
+
+.btn-delete {
+    background: var(--danger-color);
+    color: var(--white);
+}
+
+    .btn-delete:hover {
+        background: var(--danger-hover);
+        color: var(--white);
+        transform: translateY(-1px);
+    }
+
+/* Summary Cards */
+.products-summary {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 20px;
+    margin-top: 30px;
+}
+
+.summary-card {
+    background: var(--bg-overlay-dark);
+    padding: 25px;
+    border-radius: 10px;
+    text-align: center;
+    box-shadow: 0 4px 12px var(--shadow-light);
+    transition: transform 0.3s ease;
+}
+
+    .summary-card:hover {
+        transform: translateY(-5px);
+    }
+
+    .summary-card h3 {
+        font-size: 2.5rem;
+        margin-bottom: 8px;
+        color: var(--primary-color);
+        font-weight: 300;
+    }
+
+    .summary-card p {
+        color: black;
+        font-size: 1rem;
+        margin: 0;
+    }
+
+/* No Products State */
+.no-products {
+    text-align: center;
+    padding: 60px 20px;
+    background: var(--bg-overlay-dark);
+    border-radius: 12px;
+    box-shadow: 0 4px 15px var(--shadow-light);
+}
+
+.no-products-icon {
+    font-size: 4rem;
+    color: var(--primary-color);
+    margin-bottom: 20px;
+}
+
+.no-products h2 {
+    color: var(--text-light);
+    margin-bottom: 15px;
+    font-weight: 300;
+}
+
+.no-products p {
+    color: var(--text-light);
+    opacity: 0.8;
+    margin-bottom: 30px;
+    font-size: 1.1rem;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+    .products-page,
+    .create-product-page,
+    .update-product-page {
+        padding: 20px 10px;
+    }
+
+    .page-header h1 {
+        font-size: 2rem;
+    }
+
+    .form-container {
+        padding: 20px;
+    }
+
+    .form-row {
+        grid-template-columns: 1fr;
+    }
+
+    .form-actions {
+        flex-direction: column;
+        gap: 15px;
+    }
+
+    .action-buttons {
+        flex-direction: column;
+        width: 100%;
+    }
+
+    .btn {
+        width: 100%;
+        justify-content: center;
+    }
+
+    .products-table {
+        font-size: 0.9rem;
+    }
+
+    .product-actions {
+        flex-direction: column;
+        gap: 5px;
+    }
+
+    .btn-edit, .btn-delete {
+        padding: 6px 12px;
+        font-size: 0.8rem;
+    }
+
+    .products-summary {
+        grid-template-columns: 1fr;
+    }
+
+    .current-image-container {
+        flex-direction: column;
+        text-align: center;
+    }
 }
