@@ -3,10 +3,12 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 #nullable disable
 
+#pragma warning disable CA1814 // Prefer jagged arrays over multidimensional
+
 namespace InventoryManagementSystem.DataAccess.Migrations
 {
     /// <inheritdoc />
-    public partial class CreateDataBaseAndAddingTables : Migration
+    public partial class createDb : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -114,8 +116,8 @@ namespace InventoryManagementSystem.DataAccess.Migrations
                 name: "AspNetUserLogins",
                 columns: table => new
                 {
-                    LoginProvider = table.Column<string>(type: "nvarchar(128)", maxLength: 128, nullable: false),
-                    ProviderKey = table.Column<string>(type: "nvarchar(128)", maxLength: 128, nullable: false),
+                    LoginProvider = table.Column<string>(type: "nvarchar(450)", nullable: false),
+                    ProviderKey = table.Column<string>(type: "nvarchar(450)", nullable: false),
                     ProviderDisplayName = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     UserId = table.Column<string>(type: "nvarchar(450)", nullable: false)
                 },
@@ -159,8 +161,8 @@ namespace InventoryManagementSystem.DataAccess.Migrations
                 columns: table => new
                 {
                     UserId = table.Column<string>(type: "nvarchar(450)", nullable: false),
-                    LoginProvider = table.Column<string>(type: "nvarchar(128)", maxLength: 128, nullable: false),
-                    Name = table.Column<string>(type: "nvarchar(128)", maxLength: 128, nullable: false),
+                    LoginProvider = table.Column<string>(type: "nvarchar(450)", nullable: false),
+                    Name = table.Column<string>(type: "nvarchar(450)", nullable: false),
                     Value = table.Column<string>(type: "nvarchar(max)", nullable: true)
                 },
                 constraints: table =>
@@ -204,7 +206,7 @@ namespace InventoryManagementSystem.DataAccess.Migrations
                         .Annotation("SqlServer:Identity", "1, 1"),
                     CustomerId = table.Column<string>(type: "nvarchar(450)", nullable: false),
                     OrderDate = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    Status = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: false),
+                    Status = table.Column<string>(type: "nvarchar(20)", maxLength: 20, nullable: false),
                     TotalAmount = table.Column<decimal>(type: "decimal(18,2)", nullable: false)
                 },
                 constraints: table =>
@@ -227,14 +229,12 @@ namespace InventoryManagementSystem.DataAccess.Migrations
                     Name = table.Column<string>(type: "nvarchar(150)", maxLength: 150, nullable: false),
                     Description = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     CategoryId = table.Column<int>(type: "int", nullable: false),
-                    SKU = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: false),
-                    Barcode = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: true),
                     UnitPrice = table.Column<decimal>(type: "decimal(18,2)", nullable: false),
                     CostPrice = table.Column<decimal>(type: "decimal(18,2)", nullable: false),
                     QuantityInStock = table.Column<int>(type: "int", nullable: false),
-                    ReorderLevel = table.Column<int>(type: "int", nullable: false),
-                    IsActive = table.Column<bool>(type: "bit", nullable: false),
-                    CreatedAt = table.Column<DateTime>(type: "datetime2", nullable: false)
+                    CreatedAt = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    UpdatedAt = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    ProductImagePath = table.Column<string>(type: "nvarchar(max)", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -327,6 +327,20 @@ namespace InventoryManagementSystem.DataAccess.Migrations
                         principalColumn: "SaleOrderId",
                         onDelete: ReferentialAction.Cascade);
                 });
+
+            migrationBuilder.InsertData(
+                table: "Categories",
+                columns: new[] { "CategoryId", "CreatedAt", "Description", "Name" },
+                values: new object[,]
+                {
+                    { 1, new DateTime(2025, 10, 4, 14, 27, 19, 424, DateTimeKind.Utc).AddTicks(8297), null, "Laptops" },
+                    { 2, new DateTime(2025, 10, 4, 14, 27, 19, 424, DateTimeKind.Utc).AddTicks(8326), null, "Mobiles" }
+                });
+
+            migrationBuilder.InsertData(
+                table: "Products",
+                columns: new[] { "ProductId", "CategoryId", "CostPrice", "CreatedAt", "Description", "Name", "ProductImagePath", "QuantityInStock", "UnitPrice", "UpdatedAt" },
+                values: new object[] { 1, 1, 18000.00m, new DateTime(2025, 10, 4, 14, 27, 19, 424, DateTimeKind.Utc).AddTicks(8480), "Professional espresso coffee machine.", "Espresso Machine", "Images/Products/test.jpg", 10, 25000.00m, new DateTime(2025, 10, 4, 14, 27, 19, 424, DateTimeKind.Utc).AddTicks(8481) });
 
             migrationBuilder.CreateIndex(
                 name: "IX_AspNetRoleClaims_RoleId",

@@ -9,6 +9,6 @@ namespace InventoryManagementSystem.DataAccess.Repository.IRepository
 {
     public interface IInventoryTransactionRepository: IRepository<InventoryTransaction>
     {
-
+        void Update(InventoryTransaction transaction);
     }
 }

@@ -1,17 +1,16 @@
+/* Add these styles to your site.css */
+
 :root {
-    /* Primary Colors */
+    /* Your existing variables */
     --primary-color: #4CAF50;
     --primary-hover: #45a049;
     --primary-dark: #388E3C;
-    /* Secondary Colors */
     --secondary-color: #2196F3;
     --secondary-hover: #1976D2;
-    /* Status Colors */
     --success-color: #4CAF50;
     --warning-color: #ff9800;
     --danger-color: #f44336;
     --danger-hover: #d32f2f;
-    /* Neutral Colors */
     --white: #ffffff;
     --black: #000000;
     --dark-gray: #222222;
@@ -20,41 +19,170 @@
     --border-gray: #cccccc;
     --table-hover: #f1f1f1;
     --table-border: #dddddd;
-    /* Background Colors */
     --bg-overlay: rgba(255, 255, 255, 0.9);
     --bg-overlay-dark: rgba(255, 255, 255, 0.95);
     --bg-navbar: rgba(0, 0, 0, 0.8);
     --bg-dark: rgba(0, 0, 0, 0.8);
     --bg-light: #f9f9f9;
-    /* Text Colors */
     --text-primary: #333333;
     --text-secondary: #555555;
     --text-light: #ffffff;
     --text-dark: #222222;
-    /* Shadow Colors */
     --shadow-light: rgba(0, 0, 0, 0.3);
     --shadow-medium: rgba(0, 0, 0, 0.2);
 }
 
+/* Apply the custom properties to elements */
+.navbar.bg-navbar {
+    background-color: var(--bg-navbar) !important;
+}
+
+.navbar-dark .navbar-nav .nav-link.text-light {
+    color: var(--text-light) !important;
+}
+
+.navbar-brand.text-light {
+    color: var(--text-light) !important;
+}
+
+footer.bg-dark {
+    background-color: var(--bg-dark) !important;
+}
+
+footer .text-light {
+    color: var(--text-light) !important;
+}
+
+/* Additional utility classes you might find useful */
+.bg-primary-custom {
+    background-color: var(--primary-color);
+}
+
+.bg-secondary-custom {
+    background-color: var(--secondary-color);
+}
+
+.text-primary-custom {
+    color: var(--primary-color);
+}
+
+.text-secondary-custom {
+    color: var(--secondary-color);
+}
+
+.btn-primary-custom {
+    background-color: var(--primary-color);
+    border-color: var(--primary-color);
+    color: var(--white);
+}
+
+    .btn-primary-custom:hover {
+        background-color: var(--primary-hover);
+        border-color: var(--primary-hover);
+    }
+
+.btn-secondary-custom {
+    background-color: var(--secondary-color);
+    border-color: var(--secondary-color);
+    color: var(--white);
+}
+
+    .btn-secondary-custom:hover {
+        background-color: var(--secondary-hover);
+        border-color: var(--secondary-hover);
+    }
+
 html {
-  font-size: 14px;
+    font-size: 14px;
 }
 
 @media (min-width: 768px) {
-  html {
-    font-size: 16px;
-  }
+    html {
+        font-size: 16px;
+    }
 }
 
+/* Navbar link hover effects */
+.nav-link-custom {
+    color: var(--text-light) !important;
+    transition: color 0.3s ease;
+    position: relative;
+}
+
+    .nav-link-custom:hover,
+    .nav-link-custom:focus {
+        color: var(--primary-color) !important;
+        background-color: transparent !important;
+    }
+
+   
+
+/* Ensure the login partial links also have the same hover effect */
+.navbar-nav .nav-link.text-light {
+    transition: color 0.3s ease;
+}
+
+    .navbar-nav .nav-link.text-light:hover,
+    .navbar-nav .nav-link.text-light:focus {
+        color: var(--primary-color) !important;
+        background-color: transparent !important;
+    }
+
 .btn:focus, .btn:active:focus, .btn-link.nav-link:focus, .form-control:focus, .form-check-input:focus {
-  box-shadow: 0 0 0 0.1rem white, 0 0 0 0.25rem #258cfb;
+    box-shadow: 0 0 0 0.1rem white, 0 0 0 0.25rem #258cfb;
+}
+
+
+.dropdown-menu {
+    background-color: var(--bg-dark);
+    border: 1px solid var(--light-gray);
+    border-radius: 4px;
+    box-shadow: 0 4px 6px var(--shadow-light);
+}
+
+.dropdown-item {
+    color: var(--text-light);
+    transition: all 0.3s ease;
+    padding: 8px 16px;
+}
+
+    .dropdown-item:hover,
+    .dropdown-item:focus {
+        background-color: transparent;
+        color: var(--primary-color);
+    }
+
+.dropdown-divider {
+    border-color: var(--light-gray);
+    margin: 4px 0;
+}
+
+/* Dropdown toggle arrow color */
+.navbar-dark .navbar-nav .dropdown-toggle::after {
+    border-top-color: var(--text-light);
+    transition: border-top-color 0.3s ease;
+}
+
+.navbar-dark .navbar-nav .dropdown-toggle:hover::after,
+.navbar-dark .navbar-nav .show > .dropdown-toggle::after {
+    border-top-color: var(--primary-color);
+}
+
+/* Ensure dropdown works with existing nav-link styles */
+.navbar-nav .dropdown-toggle.nav-link-custom::after {
+    margin-left: 6px;
+}
+
+/* Active dropdown state */
+.navbar-nav .dropdown.show .dropdown-toggle.nav-link-custom {
+    color: var(--primary-color) !important;
 }
 
 html {
-  position: relative;
-  min-height: 100%;
+    position: relative;
+    min-height: 100%;
 }
 
 body {
-  margin-bottom: 60px;
+    margin-bottom: 60px;
 }

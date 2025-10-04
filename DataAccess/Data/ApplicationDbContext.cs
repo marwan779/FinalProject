@@ -1,7 +1,11 @@
-﻿using InventoryManagementSystem.Models;
-using InventoryManagementSystem.Models.Entities;
+﻿using InventoryManagementSystem.Models.Entities;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
 
 namespace InventoryManagementSystem.DataAccess.Data
 {
@@ -26,13 +30,31 @@ namespace InventoryManagementSystem.DataAccess.Data
         {
             base.OnModelCreating(modelBuilder);
 
-            // ---- Seed Categories ----
+            // ---- Seed Main Categories ----
             modelBuilder.Entity<Category>().HasData(
                 new Category { CategoryId = 1, Name = "Laptops" },
                 new Category { CategoryId = 2, Name = "Mobiles" }
             );
 
-            
+            modelBuilder.Entity<Product>().HasData(
+            new Product
+            {
+                ProductId = 1,
+                Name = "Espresso Machine",
+                Description = "Professional espresso coffee machine.",
+                CategoryId = 1,
+                UnitPrice = 25000.00m,
+                CostPrice = 18000.00m,
+                QuantityInStock = 10,
+                ProductImagePath = "Images/Products/test.jpg",
+                CreatedAt = DateTime.UtcNow,
+                UpdatedAt = DateTime.UtcNow
+            }
+            );
+
         }
+
     }
+
+
 }

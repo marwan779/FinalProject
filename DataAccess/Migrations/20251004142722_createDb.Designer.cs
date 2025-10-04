@@ -12,8 +12,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace InventoryManagementSystem.DataAccess.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20251004104649_UpdateingProductsTable")]
-    partial class UpdateingProductsTable
+    [Migration("20251004142722_createDb")]
+    partial class createDb
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -124,6 +124,20 @@ namespace InventoryManagementSystem.DataAccess.Migrations
                     b.HasKey("CategoryId");
 
                     b.ToTable("Categories");
+
+                    b.HasData(
+                        new
+                        {
+                            CategoryId = 1,
+                            CreatedAt = new DateTime(2025, 10, 4, 14, 27, 19, 424, DateTimeKind.Utc).AddTicks(8297),
+                            Name = "Laptops"
+                        },
+                        new
+                        {
+                            CategoryId = 2,
+                            CreatedAt = new DateTime(2025, 10, 4, 14, 27, 19, 424, DateTimeKind.Utc).AddTicks(8326),
+                            Name = "Mobiles"
+                        });
                 });
 
             modelBuilder.Entity("InventoryManagementSystem.Models.Entities.InventoryTransaction", b =>
@@ -160,11 +174,11 @@ namespace InventoryManagementSystem.DataAccess.Migrations
 
             modelBuilder.Entity("InventoryManagementSystem.Models.Entities.Product", b =>
                 {
-                    b.Property<int>("Id")
+                    b.Property<int>("ProductId")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int");
 
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("ProductId"));
 
                     b.Property<int>("CategoryId")
                         .HasColumnType("int");
@@ -178,13 +192,14 @@ namespace InventoryManagementSystem.DataAccess.Migrations
                     b.Property<string>("Description")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<bool>("IsDamaged")
-                        .HasColumnType("bit");
-
                     b.Property<string>("Name")
                         .IsRequired()
                         .HasMaxLength(150)
                         .HasColumnType("nvarchar(150)");
+
+                    b.Property<string>("ProductImagePath")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<int>("QuantityInStock")
                         .HasColumnType("int");
@@ -195,11 +210,26 @@ namespace InventoryManagementSystem.DataAccess.Migrations
                     b.Property<DateTime>("UpdatedAt")
                         .HasColumnType("datetime2");
 
-                    b.HasKey("Id");
+                    b.HasKey("ProductId");
 
                     b.HasIndex("CategoryId");
 
                     b.ToTable("Products");
+
+                    b.HasData(
+                        new
+                        {
+                            ProductId = 1,
+                            CategoryId = 1,
+                            CostPrice = 18000.00m,
+                            CreatedAt = new DateTime(2025, 10, 4, 14, 27, 19, 424, DateTimeKind.Utc).AddTicks(8480),
+                            Description = "Professional espresso coffee machine.",
+                            Name = "Espresso Machine",
+                            ProductImagePath = "Images/Products/test.jpg",
+                            QuantityInStock = 10,
+                            UnitPrice = 25000.00m,
+                            UpdatedAt = new DateTime(2025, 10, 4, 14, 27, 19, 424, DateTimeKind.Utc).AddTicks(8481)
+                        });
                 });
 
             modelBuilder.Entity("InventoryManagementSystem.Models.Entities.PurchaseOrder", b =>

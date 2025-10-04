@@ -126,13 +126,13 @@ namespace InventoryManagementSystem.DataAccess.Migrations
                         new
                         {
                             CategoryId = 1,
-                            CreatedAt = new DateTime(2025, 10, 4, 11, 25, 36, 351, DateTimeKind.Utc).AddTicks(2846),
+                            CreatedAt = new DateTime(2025, 10, 4, 14, 27, 19, 424, DateTimeKind.Utc).AddTicks(8297),
                             Name = "Laptops"
                         },
                         new
                         {
                             CategoryId = 2,
-                            CreatedAt = new DateTime(2025, 10, 4, 11, 25, 36, 351, DateTimeKind.Utc).AddTicks(2849),
+                            CreatedAt = new DateTime(2025, 10, 4, 14, 27, 19, 424, DateTimeKind.Utc).AddTicks(8326),
                             Name = "Mobiles"
                         });
                 });
@@ -212,6 +212,21 @@ namespace InventoryManagementSystem.DataAccess.Migrations
                     b.HasIndex("CategoryId");
 
                     b.ToTable("Products");
+
+                    b.HasData(
+                        new
+                        {
+                            ProductId = 1,
+                            CategoryId = 1,
+                            CostPrice = 18000.00m,
+                            CreatedAt = new DateTime(2025, 10, 4, 14, 27, 19, 424, DateTimeKind.Utc).AddTicks(8480),
+                            Description = "Professional espresso coffee machine.",
+                            Name = "Espresso Machine",
+                            ProductImagePath = "Images/Products/test.jpg",
+                            QuantityInStock = 10,
+                            UnitPrice = 25000.00m,
+                            UpdatedAt = new DateTime(2025, 10, 4, 14, 27, 19, 424, DateTimeKind.Utc).AddTicks(8481)
+                        });
                 });
 
             modelBuilder.Entity("InventoryManagementSystem.Models.Entities.PurchaseOrder", b =>

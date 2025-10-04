@@ -1,8 +1,10 @@
 ﻿using InventoryManagementSystem.DataAccess.Repository.IRepository;
 using InventoryManagementSystem.Models.Entities;
 using InventoryManagementSystem.Models.ViewModels.Product;
+using InventoryManagementSystem.Services.ImageService;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
+using System.Linq.Expressions;
 
 namespace InventoryManagementSystem.Areas.Owner.Controllers
 {
@@ -10,17 +12,21 @@ namespace InventoryManagementSystem.Areas.Owner.Controllers
     public class ProductsController : Controller
     {
         private readonly IUnitOfWork _unitOfWork;
+        private readonly IImageService _imageService;
 
-        public ProductsController(IUnitOfWork unitOfWork)
+        public ProductsController(IUnitOfWork unitOfWork, IImageService imageService)
         {
             _unitOfWork = unitOfWork;
+            _imageService = imageService;
         }
 
+        [HttpGet]
         public IActionResult Index()
         {
             try
             {
-                List<Product> products = _unitOfWork.ProductRepository.GetAll(IncludeProperties: "Category,").ToList();
+                List<Product> products = new List<Product>();
+                products = _unitOfWork.ProductRepository.GetAll(IncludeProperties: "Category,").ToList();
                 List<ProductVM> productsVM = new List<ProductVM>();
 
                 if (products.Any())
@@ -64,8 +70,8 @@ namespace InventoryManagementSystem.Areas.Owner.Controllers
                 CreateProductVM createProductVM = new CreateProductVM()
                 {
                     Categories = _unitOfWork.CategoryRepository.GetAll()
-                .Select(c => new SelectListItem { Value = c.CategoryId.ToString(), Text = c.Name })
-                .ToList()
+                    .Select(c => new SelectListItem { Value = c.CategoryId.ToString(), Text = c.Name })
+                    .ToList()
                 };
 
                 return View(createProductVM);
@@ -78,7 +84,7 @@ namespace InventoryManagementSystem.Areas.Owner.Controllers
         }
 
         [HttpPost]
-        public IActionResult CreateProduct(CreateProductVM createProductVM)
+        public async Task<IActionResult> CreateProduct(CreateProductVM createProductVM)
         {
             try
             {
@@ -96,9 +102,19 @@ namespace InventoryManagementSystem.Areas.Owner.Controllers
                     CostPrice = createProductVM.CostPrice,
                     QuantityInStock = createProductVM.QuantityInStock,
                     CreatedAt = DateTime.UtcNow,
-                    UpdatedAt = DateTime.UtcNow
-                    // ProductImagePath will be set later after you upload or process the image
                 };
+
+                _unitOfWork.ProductRepository.Add(product);
+                _unitOfWork.Save();
+
+                string? relativePath = await _imageService.SaveImageAsync(createProductVM.ProductImage, $"Images/Products/{product.ProductId.ToString()}");
+                
+                if(!String.IsNullOrEmpty(relativePath)) 
+                    product.ProductImagePath = relativePath;
+
+                _unitOfWork.ProductRepository.Update(product);
+
+                _unitOfWork.Save();
 
 
                 return RedirectToAction(nameof(Index));
