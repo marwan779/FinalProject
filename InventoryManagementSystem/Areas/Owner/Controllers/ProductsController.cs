@@ -2,6 +2,7 @@
 using InventoryManagementSystem.Models.Entities;
 using InventoryManagementSystem.Models.ViewModels.Product;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Rendering;
 
 namespace InventoryManagementSystem.Areas.Owner.Controllers
 {
@@ -36,7 +37,6 @@ namespace InventoryManagementSystem.Areas.Owner.Controllers
                             UnitPrice = p.UnitPrice,
                             CostPrice = p.CostPrice,
                             QuantityInStock = p.QuantityInStock,
-                            IsDamaged = p.IsDamaged,
                             CreatedAt = p.CreatedAt,
                             UpdatedAt = p.UpdatedAt,
                             ProductImagePath = p.ProductImagePath
@@ -54,5 +54,62 @@ namespace InventoryManagementSystem.Areas.Owner.Controllers
                 return View();
             }
         }
+
+
+        [HttpGet]
+        public IActionResult CreateProduct()
+        {
+            try
+            {
+                CreateProductVM createProductVM = new CreateProductVM()
+                {
+                    Categories = _unitOfWork.CategoryRepository.GetAll()
+                .Select(c => new SelectListItem { Value = c.CategoryId.ToString(), Text = c.Name })
+                .ToList()
+                };
+
+                return View(createProductVM);
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex.ToString());
+                return View(new CreateProductVM());
+            }
+        }
+
+        [HttpPost]
+        public IActionResult CreateProduct(CreateProductVM createProductVM)
+        {
+            try
+            {
+                if (!ModelState.IsValid)
+                {
+                    return View(createProductVM);
+                }
+
+                Product product = new Product()
+                {
+                    Name = createProductVM.Name,
+                    Description = createProductVM.Description,
+                    CategoryId = createProductVM.CategoryId,
+                    UnitPrice = createProductVM.UnitPrice,
+                    CostPrice = createProductVM.CostPrice,
+                    QuantityInStock = createProductVM.QuantityInStock,
+                    CreatedAt = DateTime.UtcNow,
+                    UpdatedAt = DateTime.UtcNow
+                    // ProductImagePath will be set later after you upload or process the image
+                };
+
+
+                return RedirectToAction(nameof(Index));
+
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex.ToString());
+                return View(createProductVM);
+            }
+        }
+
     }
 }

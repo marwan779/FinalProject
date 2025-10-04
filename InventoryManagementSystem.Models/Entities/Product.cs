@@ -23,7 +23,6 @@ namespace InventoryManagementSystem.Models.Entities
         [Column(TypeName = "decimal(18,2)")]
         public decimal CostPrice { get; set; }
         public int QuantityInStock { get; set; }
-        public bool IsDamaged { get; set; } = true;
         public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
         public DateTime UpdatedAt { get; set; } = DateTime.UtcNow;
         public string ProductImagePath { get; set; } = string.Empty;
