@@ -26,7 +26,7 @@ namespace InventoryManagementSystem.Models.Entities
         public bool IsDamaged { get; set; } = true;
         public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
         public DateTime UpdatedAt { get; set; } = DateTime.UtcNow;
-
+        public string ProductImagePath { get; set; } = string.Empty;
 
     }
 }
