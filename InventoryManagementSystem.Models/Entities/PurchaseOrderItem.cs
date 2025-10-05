@@ -20,8 +20,5 @@ namespace InventoryManagementSystem.Models.Entities
 
         [Column(TypeName = "decimal(18,2)")]
         public decimal CostPrice { get; set; }
-
-        [Column(TypeName = "decimal(18,2)")]
-        public decimal Total { get; set; }
     }
 }

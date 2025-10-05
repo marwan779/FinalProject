@@ -1,0 +1,150 @@
+﻿@using InventoryManagementSystem.Models.ViewModels.PurchaseOrder
+@model CreatePurchaseOrderVM
+
+@{
+    ViewData["Title"] = "Create Purchase Order";
+    Layout = "_Layout";
+
+}
+
+<div class="create-purchase-order-page">
+    <div class="page-header">
+        <h1><i class="fas fa-cart-plus me-2"></i>Create Purchase Order</h1>
+        <p class="page-subtitle">Add new products to your inventory through purchase orders</p>
+    </div>
+
+    <div class="form-container">
+        <form asp-action="CreatePurchaseOrder" method="post" class="purchase-order-form">
+            <div asp-validation-summary="ModelOnly" class="validation-summary"></div>
+
+            <input type="hidden" asp-for="ProductId" />
+
+            <div class="form-grid">
+                <!-- Supplier Information Section -->
+                <div class="form-section">
+                    <h3 class="section-title"><i class="fas fa-truck me-2"></i>Supplier Information</h3>
+
+                    <div class="form-group">
+                        <label asp-for="SupplierId" class="form-label">
+                            <i class="fas fa-user-tie me-1"></i>Supplier *
+                        </label>
+                        <select asp-for="SupplierId" asp-items="Model.Suppliers" class="form-control">
+                            <option value="">-- Select Supplier --</option>
+                        </select>
+                        <span asp-validation-for="SupplierId" class="validation-message"></span>
+                    </div>
+                </div>
+
+                <!-- Order Details Section -->
+                <div class="form-section">
+                    <h3 class="section-title"><i class="fas fa-clipboard-list me-2"></i>Order Details</h3>
+
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label asp-for="Quantity" class="form-label">
+                                <i class="fas fa-boxes me-1"></i>Quantity *
+                            </label>
+                            <input asp-for="Quantity" type="number" class="form-control" placeholder="Enter quantity" min="1" />
+                            <span asp-validation-for="Quantity" class="validation-message"></span>
+                        </div>
+
+                        <div class="form-group">
+                            <label asp-for="CostPrice" class="form-label">
+                                <i class="fas fa-money-bill-wave me-1"></i>Cost Price *
+                            </label>
+                            <div class="input-group">
+                                <span class="input-group-text"><i class="fas fa-dollar-sign"></i></span>
+                                <input disabled asp-for="CostPrice" type="number" step="0.01" class="form-control" placeholder="0.00" min="0" />
+                            </div>
+                            <span asp-validation-for="CostPrice" class="validation-message"></span>
+                        </div>
+                    </div>
+
+                    <!-- Order Summary -->
+                    <div class="order-summary">
+                        <h4 class="summary-title"><i class="fas fa-calculator me-2"></i>Order Summary</h4>
+                        <div class="summary-details">
+                            <div class="summary-item">
+                                <span class="summary-label">Quantity:</span>
+                                <span id="summaryQuantity" class="summary-value">0</span>
+                            </div>
+                            <div class="summary-item">
+                                <span class="summary-label">Cost Price:</span>
+                                <span id="summaryCostPrice" class="summary-value">$0.00</span>
+                            </div>
+                            <div class="summary-item total">
+                                <span class="summary-label">Total Amount:</span>
+                                <span id="summaryTotal" class="summary-value">$0.00</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Form Actions -->
+            <div class="form-actions">
+                <a asp-action="Index" asp-controller="Products" asp-area="Owner" class="btn btn-cancel">
+                    <i class="fas fa-arrow-left me-2"></i>Back to Products
+                </a>
+                <button type="submit" class="btn btn-submit">
+                    <i class="fas fa-check-circle me-2"></i>Create Purchase Order
+                </button>
+            </div>
+        </form>
+    </div>
+</div>
+
+
+@section Scripts {
+    <script>
+        // Real-time order summary calculation
+        const quantityInput = document.getElementById('Quantity');
+        const costPriceInput = document.getElementById('CostPrice');
+        const summaryQuantity = document.getElementById('summaryQuantity');
+        const summaryCostPrice = document.getElementById('summaryCostPrice');
+        const summaryTotal = document.getElementById('summaryTotal');
+
+        function updateOrderSummary() {
+            const quantity = parseInt(quantityInput.value) || 0;
+            const costPrice = parseFloat(costPriceInput.value) || 0;
+            const total = quantity * costPrice;
+
+            summaryQuantity.textContent = quantity.toLocaleString();
+            summaryCostPrice.textContent = '$' + costPrice.toFixed(2);
+            summaryTotal.textContent = '$' + total.toFixed(2);
+        }
+
+        // Add event listeners for real-time updates
+        quantityInput.addEventListener('input', updateOrderSummary);
+        costPriceInput.addEventListener('input', updateOrderSummary);
+
+        // Initialize summary on page load
+        document.addEventListener('DOMContentLoaded', updateOrderSummary);
+
+        // Form validation enhancement
+        const form = document.querySelector('.purchase-order-form');
+        form.addEventListener('submit', function (e) {
+            const quantity = parseInt(quantityInput.value);
+            const costPrice = parseFloat(costPriceInput.value);
+
+            if (quantity <= 0) {
+                e.preventDefault();
+                alert('Please enter a valid quantity greater than 0.');
+                quantityInput.focus();
+                return;
+            }
+
+            if (costPrice <= 0) {
+                e.preventDefault();
+                alert('Please enter a valid cost price greater than 0.');
+                costPriceInput.focus();
+                return;
+            }
+
+            // Confirm purchase order creation
+            if (!confirm('Are you sure you want to create this purchase order?')) {
+                e.preventDefault();
+            }
+        });
+    </script>
+}

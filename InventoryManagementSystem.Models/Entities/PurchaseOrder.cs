@@ -1,4 +1,5 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using InventoryManagementSystem.Utility;
+using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
 namespace InventoryManagementSystem.Models.Entities
@@ -12,14 +13,14 @@ namespace InventoryManagementSystem.Models.Entities
         public string SupplierId { get; set; } = string.Empty;
         public ApplicationUser Supplier { get; set; }
 
-        public DateTime OrderDate { get; set; } = DateTime.UtcNow;
+        public DateTime OrderDate { get; set; } 
 
         [MaxLength(50)]
-        public string Status { get; set; } = "Pending";
+        public string Status { get; set; }
 
         [Column(TypeName = "decimal(18,2)")]
         public decimal TotalAmount { get; set; }
 
-        public ICollection<PurchaseOrderItem> Items { get; set; } = new List<PurchaseOrderItem>();
+        public PurchaseOrderItem PurchaseOrderItem { get; set; }
     }
 }

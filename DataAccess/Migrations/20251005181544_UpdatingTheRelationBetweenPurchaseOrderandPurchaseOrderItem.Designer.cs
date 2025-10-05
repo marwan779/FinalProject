@@ -4,6 +4,7 @@ using InventoryManagementSystem.DataAccess.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace InventoryManagementSystem.DataAccess.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20251005181544_UpdatingTheRelationBetweenPurchaseOrderandPurchaseOrderItem")]
+    partial class UpdatingTheRelationBetweenPurchaseOrderandPurchaseOrderItem
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -126,13 +129,13 @@ namespace InventoryManagementSystem.DataAccess.Migrations
                         new
                         {
                             CategoryId = 1,
-                            CreatedAt = new DateTime(2025, 10, 5, 18, 46, 58, 406, DateTimeKind.Utc).AddTicks(1416),
+                            CreatedAt = new DateTime(2025, 10, 5, 18, 15, 41, 24, DateTimeKind.Utc).AddTicks(4407),
                             Name = "Laptops"
                         },
                         new
                         {
                             CategoryId = 2,
-                            CreatedAt = new DateTime(2025, 10, 5, 18, 46, 58, 406, DateTimeKind.Utc).AddTicks(1421),
+                            CreatedAt = new DateTime(2025, 10, 5, 18, 15, 41, 24, DateTimeKind.Utc).AddTicks(4410),
                             Name = "Mobiles"
                         });
                 });
@@ -219,13 +222,13 @@ namespace InventoryManagementSystem.DataAccess.Migrations
                             ProductId = 1,
                             CategoryId = 1,
                             CostPrice = 18000.00m,
-                            CreatedAt = new DateTime(2025, 10, 5, 18, 46, 58, 406, DateTimeKind.Utc).AddTicks(1572),
+                            CreatedAt = new DateTime(2025, 10, 5, 18, 15, 41, 24, DateTimeKind.Utc).AddTicks(4619),
                             Description = "Professional espresso coffee machine.",
                             Name = "Espresso Machine",
                             ProductImagePath = "Images/Products/test.jpg",
                             QuantityInStock = 10,
                             UnitPrice = 25000.00m,
-                            UpdatedAt = new DateTime(2025, 10, 5, 18, 46, 58, 406, DateTimeKind.Utc).AddTicks(1573)
+                            UpdatedAt = new DateTime(2025, 10, 5, 18, 15, 41, 24, DateTimeKind.Utc).AddTicks(4620)
                         });
                 });
 
@@ -278,6 +281,9 @@ namespace InventoryManagementSystem.DataAccess.Migrations
 
                     b.Property<int>("Quantity")
                         .HasColumnType("int");
+
+                    b.Property<decimal>("Total")
+                        .HasColumnType("decimal(18,2)");
 
                     b.HasKey("PurchaseOrderItemId");
 

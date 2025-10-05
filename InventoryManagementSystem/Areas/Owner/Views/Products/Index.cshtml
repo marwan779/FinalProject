@@ -33,6 +33,7 @@
                         <th>Cost Price</th>
                         <th>Stock</th>
                         <th>Created At</th>
+                        <th>Updated At</th>
                         <th>Actions</th>
                     </tr>
                 </thead>
@@ -61,6 +62,7 @@
                                 </span>
                             </td>
                             <td class="product-date">@product.CreatedAt.ToString("MMM dd, yyyy")</td>
+                            <td class="product-date">@product.UpdatedAt.ToString("MMM dd, yyyy")</td>
                             <td class="product-actions">
                                 <a asp-area="Owner" asp-controller="Products" asp-action="UpdateProduct" asp-route-productId="@product.ProductId" class="btn btn-edit">
                                     <i class="fas fa-edit"></i> Edit
@@ -71,7 +73,9 @@
                                     <i class="fas fa-trash"></i> Delete
                                 </a>
 
-
+                                <a asp-area="Owner" asp-controller="OwnerPurchaseOrders" asp-action="CreatePurchaseOrder" asp-route-productId="@product.ProductId" class="btn btn-purchase">
+                                    <i class="fas fa-shopping-cart"></i> Purchase
+                                </a>
                             </td>
                         </tr>
                     }
@@ -139,3 +143,30 @@
     </script>
 
 
+<style>
+
+    /* Purchase Button Styles */
+    .btn-purchase {
+        background: var(--success-color);
+        color: var(--white);
+        padding: 8px 16px;
+        border: none;
+        border-radius: 6px;
+        text-decoration: none;
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+        font-size: 0.85rem;
+        font-weight: 500;
+        transition: all 0.3s ease;
+        cursor: pointer;
+    }
+
+        .btn-purchase:hover {
+            background: var(--primary-dark);
+            color: var(--white);
+            transform: translateY(-1px);
+            box-shadow: 0 2px 8px var(--shadow-light);
+        }
+
+</style>
