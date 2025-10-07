@@ -1,0 +1,316 @@
+﻿@using InventoryManagementSystem.Models.ViewModels.PurchaseOrder
+@using InventoryManagementSystem.Utility
+@model UpdatePurchaseOrderVM
+
+@{
+    ViewData["Title"] = "Update Purchase Order";
+    Layout = "_Layout";
+}
+
+<div class="create-purchase-order-page">
+    <div class="page-container">
+        <div class="page-header">
+            <h1><i class="fas fa-edit me-2"></i>Update Purchase Order</h1>
+            <p class="page-subtitle">Modify purchase order details and supplier information</p>
+        </div>
+
+        <div class="form-container">
+            <form asp-action="UpdatePurchaseOrder" method="post" class="purchase-order-form">
+                <div asp-validation-summary="ModelOnly" class="validation-summary"></div>
+
+                <input type="hidden" asp-for="PurchaseOrderId" />
+                <input type="hidden" asp-for="ProductId" />
+
+                <div class="form-grid">
+                    <!-- Order Information Section -->
+                    <div class="form-section">
+                        <h3 class="section-title"><i class="fas fa-info-circle me-2"></i>Order Information</h3>
+
+                        <div class="form-group">
+                            <label asp-for="Status" class="form-label">
+                                <i class="fas fa-tasks me-1"></i>Order Status *
+                            </label>
+                            <select asp-for="Status" class="form-control">
+                                <option value="">-- Select Status --</option>
+                                <option value="@StaticDetails.PurchaseOrderPending">@StaticDetails.PurchaseOrderPending</option>
+                                <option value="@StaticDetails.PurchaseOrderDelivered">@StaticDetails.PurchaseOrderDelivered.Trim()</option>
+                            </select>
+                            <span asp-validation-for="Status" class="validation-message"></span>
+                        </div>
+
+                       
+                    </div>
+
+                    <!-- Supplier Information Section -->
+                    <div class="form-section">
+                        <h3 class="section-title"><i class="fas fa-truck me-2"></i>Supplier Information</h3>
+
+                        <div class="form-group">
+                            <label asp-for="SupplierId" class="form-label">
+                                <i class="fas fa-user-tie me-1"></i>Supplier *
+                            </label>
+                            <select asp-for="SupplierId" asp-items="Model.Suppliers" class="form-control">
+                                <option value="">-- Select Supplier --</option>
+                            </select>
+                            <span asp-validation-for="SupplierId" class="validation-message"></span>
+                        </div>
+                    </div>
+
+                    <!-- Order Details Section -->
+                    <div class="form-section">
+                        <h3 class="section-title"><i class="fas fa-clipboard-list me-2"></i>Order Details</h3>
+
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label asp-for="Quantity" class="form-label">
+                                    <i class="fas fa-boxes me-1"></i>Quantity *
+                                </label>
+                                <input asp-for="Quantity" type="number" class="form-control" placeholder="Enter quantity" min="1" />
+                                <span asp-validation-for="Quantity" class="validation-message"></span>
+                            </div>
+
+                            <div class="form-group">
+                                <label asp-for="CostPrice" class="form-label">
+                                    <i class="fas fa-money-bill-wave me-1"></i>Cost Price *
+                                </label>
+                                <div class="input-group">
+                                    <span class="input-group-text"><i class="fas fa-dollar-sign"></i></span>
+                                    <input disabled asp-for="CostPrice" type="number" step="0.01" class="form-control" placeholder="0.00" min="0" />
+                                </div>
+                                <span asp-validation-for="CostPrice" class="validation-message"></span>
+                            </div>
+                        </div>
+
+                        <!-- Order Summary -->
+                        <div class="order-summary">
+                            <h4 class="summary-title"><i class="fas fa-calculator me-2"></i>Order Summary</h4>
+                            <div class="summary-details">
+                                <div class="summary-item">
+                                    <span class="summary-label">Quantity:</span>
+                                    <span id="summaryQuantity" class="summary-value">@Model.Quantity.ToString("N0")</span>
+                                </div>
+                                <div class="summary-item">
+                                    <span class="summary-label">Cost Price:</span>
+                                    <span id="summaryCostPrice" class="summary-value">$@Model.CostPrice.ToString("F2")</span>
+                                </div>
+                                <div class="summary-item total">
+                                    <span class="summary-label">Total Amount:</span>
+                                    <span id="summaryTotal" class="summary-value">$@Model.Total.ToString("F2")</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Update Notes Section -->
+                    
+                </div>
+
+                <!-- Form Actions -->
+                <div class="form-actions">
+                    <a asp-action="Index" asp-controller="OwnerPurchaseOrders" asp-area="Owner" class="btn btn-cancel">
+                        <i class="fas fa-arrow-left me-2"></i>Back to Orders
+                    </a>
+                    <div class="action-buttons">
+                        <button type="submit" class="btn btn-update">
+                            <i class="fas fa-save me-2"></i>Update Order
+                        </button>
+
+                        @* <a asp-action="Delete" asp-controller="PurchaseOrders" asp-area="Owner"
+                           asp-route-id="@Model.PurchaseOrderId"
+                           class="btn btn-delete"
+                           onclick="return confirm('Are you sure you want to delete this purchase order? This action cannot be undone.');">
+                            <i class="fas fa-trash me-2"></i>Delete Order
+                        </a> *@
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<style>
+    /* Order Details Styles */
+    .order-details {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+        gap: 15px;
+        margin-bottom: 10px;
+        margin-top: 15px;
+    }
+
+    .detail-item {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 12px;
+        background: var(--bg-light);
+        border-radius: 6px;
+        border-left: 3px solid var(--primary-color);
+    }
+
+    .detail-label {
+        font-weight: 600;
+        color: var(--text-primary);
+    }
+
+    .detail-value {
+        font-weight: 700;
+        color: var(--primary-color);
+        font-size: 1.1rem;
+    }
+
+    /* Update Notice Styles */
+    .update-notice {
+        display: flex;
+        align-items: flex-start;
+        gap: 15px;
+        padding: 20px;
+        background: linear-gradient(135deg, #fff3cd, #ffeaa7);
+        border: 1px solid #ffecb5;
+        border-radius: 8px;
+        border-left: 4px solid var(--warning-color);
+    }
+
+    .notice-icon {
+        font-size: 1.5rem;
+        color: var(--warning-color);
+        margin-top: 2px;
+    }
+
+    .notice-content h4 {
+        color: #856404;
+        margin-bottom: 8px;
+        font-weight: 600;
+    }
+
+    .notice-content p {
+        color: #856404;
+        margin: 0;
+        line-height: 1.5;
+    }
+
+        .notice-content p:not(:last-child) {
+            margin-bottom: 10px;
+        }
+
+    /* Enhanced form styles for update page */
+    .purchase-order-form .form-section {
+        position: relative;
+    }
+
+    .purchase-order-form .section-title {
+        display: flex;
+        align-items: center;
+    }
+
+    /* Status select styling */
+    .form-control[asp-for="Status"] {
+        background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 20 20'%3e%3cpath stroke='%236b7280' stroke-linecap='round' stroke-linejoin='round' stroke-width='1.5' d='m6 8 4 4 4-4'/%3e%3c/svg%3e");
+        background-position: right 0.5rem center;
+        background-repeat: no-repeat;
+        background-size: 1.5em 1.5em;
+        padding-right: 2.5rem;
+        -webkit-appearance: none;
+        -moz-appearance: none;
+        appearance: none;
+    }
+</style>
+
+@section Scripts {
+    <script>
+        // Real-time order summary calculation
+        const quantityInput = document.getElementById('Quantity');
+        const costPriceInput = document.getElementById('CostPrice');
+        const summaryQuantity = document.getElementById('summaryQuantity');
+        const summaryCostPrice = document.getElementById('summaryCostPrice');
+        const summaryTotal = document.getElementById('summaryTotal');
+
+        function updateOrderSummary() {
+            const quantity = parseInt(quantityInput.value) || 0;
+            const costPrice = parseFloat(costPriceInput.value) || 0;
+            const total = quantity * costPrice;
+
+            summaryQuantity.textContent = quantity.toLocaleString();
+            summaryCostPrice.textContent = '$' + costPrice.toFixed(2);
+            summaryTotal.textContent = '$' + total.toFixed(2);
+        }
+
+        // Add event listeners for real-time updates
+        quantityInput.addEventListener('input', updateOrderSummary);
+        costPriceInput.addEventListener('input', updateOrderSummary);
+
+        // Initialize summary on page load
+        document.addEventListener('DOMContentLoaded', updateOrderSummary);
+
+        // Form validation enhancement
+        const form = document.querySelector('.purchase-order-form');
+        form.addEventListener('submit', function (e) {
+            const quantity = parseInt(quantityInput.value);
+            const costPrice = parseFloat(costPriceInput.value);
+            const statusSelect = document.getElementById('Status');
+            const selectedStatus = statusSelect.value;
+
+            if (quantity <= 0) {
+                e.preventDefault();
+                alert('Please enter a valid quantity greater than 0.');
+                quantityInput.focus();
+                return;
+            }
+
+            if (costPrice <= 0) {
+                e.preventDefault();
+                alert('Please enter a valid cost price greater than 0.');
+                costPriceInput.focus();
+                return;
+            }
+
+            if (!selectedStatus) {
+                e.preventDefault();
+                alert('Please select an order status.');
+                statusSelect.focus();
+                return;
+            }
+
+            // Status change confirmation
+            if (selectedStatus === '@StaticDetails.PurchaseOrderDelivered.Trim()') {
+                if (!confirm('Changing status to "Delivered" will update inventory stock levels. Are you sure you want to proceed?')) {
+                    e.preventDefault();
+                    return;
+                }
+            }
+
+           
+        });
+
+        // Auto-calculate total when inputs change
+        function calculateTotal() {
+            const quantity = parseInt(quantityInput.value) || 0;
+            const costPrice = parseFloat(costPriceInput.value) || 0;
+            return quantity * costPrice;
+        }
+
+        // Update hidden total field if needed
+        quantityInput.addEventListener('change', function() {
+            document.getElementById('Total').value = calculateTotal();
+        });
+
+        costPriceInput.addEventListener('change', function() {
+            document.getElementById('Total').value = calculateTotal();
+        });
+
+        // Status change handler
+        const statusSelect = document.getElementById('Status');
+        statusSelect.addEventListener('change', function() {
+            const selectedStatus = this.value;
+
+            if (selectedStatus === '@StaticDetails.PurchaseOrderDelivered.Trim()') {
+                // Add visual indicator for delivered status
+                this.style.borderColor = 'var(--success-color)';
+                this.style.boxShadow = '0 0 0 2px rgba(76, 175, 80, 0.2)';
+            } else {
+                this.style.borderColor = '';
+                this.style.boxShadow = '';
+            }
+        });
+    </script>
+}

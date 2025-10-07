@@ -1,0 +1,480 @@
+﻿@using InventoryManagementSystem.Models.ViewModels.PurchaseOrder
+@using InventoryManagementSystem.Utility
+@model List<PurchaseOrderVM>
+
+@{
+    ViewData["Title"] = "Purchase Orders";
+    Layout = "_Layout";
+
+}
+
+<div class="purchase-orders-page">
+    <div class="page-header">
+        <h1><i class="fas fa-shopping-cart me-2"></i>Purchase Orders</h1>
+        <p class="page-subtitle">Manage and track your purchase orders</p>
+    </div>
+
+   
+
+    @if (Model.Any())
+    {
+        <div class="table-container">
+            <table class="purchase-orders-table">
+                <thead>
+                    <tr>
+                        <th>Supplier</th>
+                        <th>Product</th>
+                        <th>Quantity</th>
+                        <th>Cost Price</th>
+                        <th>Total Amount</th>
+                        <th>Status</th>
+                        <th>Order Date</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var order in Model)
+                    {
+                        <tr>
+                            <td class="supplier-name">@order.SupplierUserName</td>
+                            <td class="product-id">@order.ProductName</td>
+                            <td class="quantity">@order.Quantity.ToString("N0")</td>
+                            <td class="cost-price">$@order.CostPrice.ToString("F2")</td>
+                            <td class="total-amount">$@order.TotalAmount.ToString("F2")</td>
+                            <td class="order-status">
+                                <span class="status-badge @GetStatusClass(order.Status)">
+                                    @order.Status
+                                </span>
+                            </td>
+                            <td class="order-date">@order.OrderDate.ToString("MMM dd, yyyy")</td>
+                            <td class="order-actions">
+                                <a href="#" class="btn btn-view" title="View Details">
+                                    <i class="fas fa-eye"></i>
+                                </a>
+                                @if (order.Status == StaticDetails.PurchaseOrderPending)
+                                {
+                                   @*  <a href="#" class="btn btn-update" title="Update Status">
+                                        <i class="fas fa-edit"></i>
+                                    </a> *@
+                                    <a asp-action="UpdatePurchaseOrder" asp-controller="OwnerPurchaseOrders" asp-area="Owner" asp-route-purchaseOrderId="@order.PurchaseOrderId" class="btn btn-update">
+                                        <i class="fas fa-edit"></i>
+                                    </a>
+
+                                    <a href="javascript:void(0);"
+                                       class="btn btn-cancel"
+                                       data-url="@Url.Action("CancelPurchaseOrder", "OwnerPurchaseOrders", new { area = "Owner", purchaseOrderId = order.PurchaseOrderId })">
+                                        <i class="fas fa-times"></i>
+                                    </a>
+                                }
+
+
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+
+        <div class="orders-summary">
+            <div class="summary-card">
+                <h3>@Model.Count</h3>
+                <p>Total Orders</p>
+            </div>
+            <div class="summary-card">
+                <h3>@Model.Count(o => o.Status == StaticDetails.PurchaseOrderPending)</h3>
+                <p>Pending</p>
+            </div>
+            <div class="summary-card">
+                <h3>@Model.Count(o => o.Status == StaticDetails.PurchaseOrderShipped)</h3>
+                <p>Shipped</p>
+            </div>
+            <div class="summary-card">
+                <h3>@Model.Count(o => o.Status == StaticDetails.PurchaseOrderDelivered)</h3>
+                <p>Delivered</p>
+            </div>
+            <div class="summary-card">
+                <h3>@Model.Count(o => o.Status == StaticDetails.PurchaseOrderRejected)</h3>
+                <p>Rejected</p>
+            </div>
+            <div class="summary-card">
+                <h3>$@Model.Sum(o => o.TotalAmount).ToString("F2")</h3>
+                <p>Total Value</p>
+            </div>
+        </div>
+    }
+    else
+    {
+        <div class="no-orders">
+            <div class="no-orders-icon">
+                <i class="fas fa-clipboard-list"></i>
+            </div>
+            <h2>No Purchase Orders Found</h2>
+            
+        </div>
+    }
+</div>
+
+@functions {
+    public string GetStatusClass(string status)
+    {
+        return status switch
+        {
+            StaticDetails.PurchaseOrderPending => "status-pending",
+            StaticDetails.PurchaseOrderShipped => "status-shipped",
+            StaticDetails.PurchaseOrderDelivered => "status-delivered",
+            StaticDetails.PurchaseOrderRejected => "status-rejected",
+            _ => "status-unknown"
+        };
+    }
+}
+
+<style>
+    .purchase-orders-page {
+        padding: 30px 20px;
+        color: var(--text-light);
+        min-height: 80vh;
+        background: linear-gradient(135deg, var(--medium-gray) 0%, var(--dark-gray) 100%);
+    }
+
+    .page-header {
+        text-align: center;
+        margin-bottom: 40px;
+    }
+
+        .page-header h1 {
+            font-size: 2.5rem;
+            margin-bottom: 10px;
+            color: var(--text-light);
+            font-weight: 300;
+        }
+
+    .page-subtitle {
+        font-size: 1.1rem;
+        color: var(--text-light);
+        opacity: 0.8;
+    }
+
+    .page-actions {
+        display: flex;
+        justify-content: flex-end;
+        margin-bottom: 30px;
+    }
+
+    .btn-primary-custom {
+        background: var(--primary-color);
+        color: var(--white);
+        padding: 12px 24px;
+        border: none;
+        border-radius: 6px;
+        text-decoration: none;
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        font-weight: 500;
+        transition: all 0.3s ease;
+        box-shadow: 0 2px 8px var(--shadow-light);
+    }
+
+        .btn-primary-custom:hover {
+            background: var(--primary-hover);
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px var(--shadow-medium);
+            color: var(--white);
+        }
+
+    .btn-lg {
+        padding: 15px 30px;
+        font-size: 1.1rem;
+    }
+
+    /* Table Styles */
+    .table-container {
+        background: var(--bg-overlay-dark);
+        border-radius: 12px;
+        padding: 20px;
+        margin-bottom: 30px;
+        box-shadow: 0 4px 15px var(--shadow-light);
+    }
+
+    .purchase-orders-table {
+        width: 100%;
+        border-collapse: collapse;
+        background: var(--white);
+        color: var(--text-primary);
+        border-radius: 8px;
+        overflow: hidden;
+        box-shadow: 0 2px 8px var(--shadow-medium);
+    }
+
+        .purchase-orders-table th {
+            background: var(--primary-color);
+            color: var(--white);
+            padding: 16px 12px;
+            font-weight: 600;
+            text-transform: uppercase;
+            font-size: 0.9rem;
+            letter-spacing: 0.5px;
+            text-align: center;
+        }
+
+        .purchase-orders-table td {
+            padding: 14px 12px;
+            border-bottom: 1px solid var(--table-border);
+            vertical-align: middle;
+            text-align: center;
+        }
+
+        .purchase-orders-table tr:hover {
+            background: var(--table-hover);
+            transition: all 0.2s ease;
+        }
+
+    /* Status Badges */
+    .status-badge {
+        padding: 6px 12px;
+        border-radius: 20px;
+        font-weight: 600;
+        font-size: 0.8rem;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+    }
+
+    .status-pending {
+        background: var(--warning-color);
+        color: var(--white);
+    }
+
+    .status-shipped {
+        background: var(--secondary-color);
+        color: var(--white);
+    }
+
+    .status-delivered {
+        background: var(--success-color);
+        color: var(--white);
+    }
+
+    .status-rejected {
+        background: var(--danger-color);
+        color: var(--white);
+    }
+
+    .status-unknown {
+        background: var(--light-gray);
+        color: var(--white);
+    }
+
+    /* Action Buttons */
+    .order-actions {
+        display: flex;
+        gap: 6px;
+        justify-content: center;
+    }
+
+    .btn-view, .btn-update, .btn-cancel {
+        padding: 6px 10px;
+        border: none;
+        border-radius: 4px;
+        text-decoration: none;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        transition: all 0.3s ease;
+        cursor: pointer;
+        width: 32px;
+        height: 32px;
+    }
+
+    .btn-view {
+        background: var(--secondary-color);
+        color: var(--white);
+    }
+
+        .btn-view:hover {
+            background: var(--secondary-hover);
+            color: var(--white);
+            transform: translateY(-1px);
+        }
+
+    .btn-update {
+        background: var(--warning-color);
+        color: var(--white);
+    }
+
+        .btn-update:hover {
+            background: #e68900;
+            color: var(--white);
+            transform: translateY(-1px);
+        }
+
+    .btn-cancel {
+        background: var(--danger-color);
+        color: var(--white);
+    }
+
+        .btn-cancel:hover {
+            background: var(--danger-hover);
+            color: var(--white);
+            transform: translateY(-1px);
+        }
+
+    /* Text Alignment for specific columns */
+    .supplier-name, .product-id, .quantity, .cost-price, .total-amount {
+        font-weight: 500;
+    }
+
+    .total-amount {
+        font-weight: 600;
+        color: var(--primary-color);
+    }
+
+    /* Orders Summary */
+    .orders-summary {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+        gap: 20px;
+        margin-top: 30px;
+    }
+
+    .summary-card {
+        background: var(--bg-overlay-dark);
+        padding: 35px;
+        border-radius: 10px;
+        text-align: center;
+        box-shadow: 0 4px 12px var(--shadow-light);
+        transition: transform 0.3s ease;
+    }
+
+        .summary-card:hover {
+            transform: translateY(-5px);
+        }
+
+        .summary-card h3 {
+            font-size: 2.2rem;
+            margin-bottom: 8px;
+            color: var(--primary-color);
+            font-weight: 300;
+        }
+
+        .summary-card p {
+            color: black;
+            font-size: 1rem;
+            margin: 0;
+
+        }
+
+    /* No Orders State */
+    .no-orders {
+        text-align: center;
+        padding: 60px 20px;
+        background: var(--bg-overlay-dark);
+        border-radius: 12px;
+        box-shadow: 0 4px 15px var(--shadow-light);
+    }
+
+    .no-orders-icon {
+        font-size: 4rem;
+        color: var(--primary-color);
+        margin-bottom: 20px;
+    }
+
+    .no-orders h2 {
+        color: var(--text-light);
+        margin-bottom: 15px;
+        font-weight: 300;
+    }
+
+    .no-orders p {
+        color: var(--text-light);
+        opacity: 0.8;
+        margin-bottom: 30px;
+        font-size: 1.1rem;
+    }
+
+    /* Responsive Design */
+    @@media (max-width: 768px) {
+        .purchase-orders-page {
+            padding: 20px 10px;
+        }
+
+        .page-header h1 {
+            font-size: 2rem;
+        }
+
+        .purchase-orders-table {
+            font-size: 0.8rem;
+        }
+
+            .purchase-orders-table th,
+            .purchase-orders-table td {
+                padding: 10px 6px;
+            }
+
+        .order-actions {
+            flex-direction: column;
+            gap: 4px;
+        }
+
+        .btn-view, .btn-update, .btn-cancel {
+            width: 28px;
+            height: 28px;
+            padding: 4px;
+        }
+
+        .orders-summary {
+            grid-template-columns: repeat(2, 1fr);
+            gap: 15px;
+        }
+
+        .summary-card {
+            padding: 20px 15px;
+        }
+
+            .summary-card h3 {
+                font-size: 1.8rem;
+            }
+    }
+
+    @@media (max-width: 480px) {
+        .orders-summary {
+            grid-template-columns: 1fr;
+        }
+
+        .purchase-orders-table {
+            font-size: 0.7rem;
+        }
+
+        .status-badge {
+            font-size: 0.7rem;
+            padding: 4px 8px;
+        }
+    }
+</style>
+
+
+@section Scripts {
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script>
+        document.querySelectorAll('.btn-cancel').forEach(btn => {
+            btn.addEventListener('click', function () {
+                const url = this.getAttribute('data-url');
+
+                Swal.fire({
+                    title: 'Are you sure?',
+                    text: "Do you really want to cancel this purchase order?",
+                    icon: 'warning',
+                    showCancelButton: true,
+                    confirmButtonColor: '#d33',
+                    cancelButtonColor: '#3085d6',
+                    confirmButtonText: 'Yes, cancel it!',
+                    cancelButtonText: 'No, keep it'
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        // Redirect to action if confirmed
+                        window.location.href = url;
+                    }
+                });
+            });
+        });
+    </script>
+}

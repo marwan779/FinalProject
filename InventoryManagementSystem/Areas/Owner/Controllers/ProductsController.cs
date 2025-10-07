@@ -3,6 +3,7 @@ using InventoryManagementSystem.Models.Entities;
 using InventoryManagementSystem.Models.ViewModels.Product;
 using InventoryManagementSystem.Services.ImageService;
 using InventoryManagementSystem.Utility;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
@@ -12,6 +13,8 @@ using System.Linq.Expressions;
 namespace InventoryManagementSystem.Areas.Owner.Controllers
 {
     [Area("Owner")]
+    [Authorize(Roles = StaticDetails.OwnerRole)]
+
     public class ProductsController : Controller
     {
         private readonly IUnitOfWork _unitOfWork;
@@ -31,8 +34,11 @@ namespace InventoryManagementSystem.Areas.Owner.Controllers
             try
             {
                 List<Product> products = new List<Product>();
-                products = _unitOfWork.ProductRepository.GetAll(IncludeProperties: "Category,").ToList();
+                products = _unitOfWork.ProductRepository.GetAll(IncludeProperties: "Category").ToList();
                 List<ProductVM> productsVM = new List<ProductVM>();
+
+
+                List<Category> categories = _unitOfWork.CategoryRepository.GetAll().ToList();
 
                 if (products.Any())
                 {

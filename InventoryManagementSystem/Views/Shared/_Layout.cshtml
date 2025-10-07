@@ -1,4 +1,5 @@
-﻿<!DOCTYPE html>
+﻿@using InventoryManagementSystem.Utility
+<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="utf-8" />
@@ -30,18 +31,25 @@
                         </li>
 
                         @* Owner Options Dropdown *@
-                        <li class="nav-item dropdown">
-                            <a class="nav-link dropdown-toggle text-light nav-link-custom" href="#" id="ownerDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-                                Owner Options
-                            </a>
-                            <ul class="dropdown-menu" aria-labelledby="ownerDropdown">
-                                <li>
-                                    <a class="dropdown-item nav-link-custom" asp-area="Owner" asp-controller="Products" asp-action="Index">Products</a>
-                                </li>
-                                <li><hr class="dropdown-divider"></li>
-                                
-                            </ul>
-                        </li>
+                        @if(User.IsInRole(StaticDetails.OwnerRole))
+                        {
+                            <li class="nav-item dropdown">
+                                <a class="nav-link dropdown-toggle text-light nav-link-custom" href="#" id="ownerDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                                    Owner Options
+                                </a>
+                                <ul class="dropdown-menu" aria-labelledby="ownerDropdown">
+                                    <li>
+                                        <a class="dropdown-item nav-link-custom" asp-area="Owner" asp-controller="Products" asp-action="Index">Products</a>
+                                    </li>
+                                    <li><hr class="dropdown-divider"></li>
+                                    <li>
+                                        <a class="dropdown-item nav-link-custom" asp-area="Owner" asp-controller="OwnerPurchaseOrders" asp-action="Index">Purchase Orders</a>
+                                    </li>
+                                    <li><hr class="dropdown-divider"></li>
+                                </ul>
+                            </li>
+
+                        }
                     </ul>
                     <partial name="_LoginPartial" />
                 </div>
