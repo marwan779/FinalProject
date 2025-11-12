@@ -25,5 +25,10 @@ namespace InventoryManagementSystem.DataAccess.Repository
         }
 
 
+
+        public IEnumerable<Category> GetAllCategories()
+        {
+            return _context.Categories.OrderBy(c => c.Name).ToList();
+        }
     }
 }

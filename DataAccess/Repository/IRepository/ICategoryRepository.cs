@@ -7,5 +7,7 @@ namespace InventoryManagementSystem.DataAccess.Repository.IRepository
     {
         public void Update(Category category);
 
+        IEnumerable<Category> GetAllCategories();
+
     }
 }

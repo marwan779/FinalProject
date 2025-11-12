@@ -1,0 +1,49 @@
+﻿@{
+    ViewData["Title"] = "Mock Payment - Instapay";
+}
+
+<div class="products-page">
+    <div class="page-header">
+        <h1><i class="fas fa-credit-card"></i> Mock Payment Gateway</h1>
+        <p class="page-subtitle">This is a simulation of Instapay payment</p>
+    </div>
+
+    <div class="form-container">
+        <div class="text-center">
+            <div class="success-icon" style="font-size: 4rem; color: #4CAF50; margin-bottom: 20px;">
+                <i class="fas fa-credit-card"></i>
+            </div>
+
+            <h2>Instapay Payment Simulation</h2>
+            <p class="mb-4">This is a mock payment page for development purposes.</p>
+
+            <div class="payment-details" style="background: #f8f9fa; padding: 20px; border-radius: 8px; margin-bottom: 30px;">
+                <h4>Payment Details</h4>
+                <p><strong>Order ID:</strong> @ViewBag.OrderId</p>
+                <p><strong>Payment Intent ID:</strong> @ViewBag.PaymentIntentId</p>
+                <p><strong>Status:</strong> <span class="badge badge-warning">Pending</span></p>
+            </div>
+
+            <form method="post" asp-action="ProcessMockPayment">
+                <input type="hidden" name="orderId" value="@ViewBag.OrderId" />
+                <input type="hidden" name="paymentIntentId" value="@ViewBag.PaymentIntentId" />
+
+                <div class="form-actions">
+                    <button type="submit" name="success" value="true" class="btn btn-submit">
+                        <i class="fas fa-check-circle"></i> Simulate Successful Payment
+                    </button>
+                    <button type="submit" name="success" value="false" class="btn btn-cancel">
+                        <i class="fas fa-times-circle"></i> Simulate Failed Payment
+                    </button>
+                </div>
+            </form>
+
+            <div class="mt-4">
+                <small class="text-muted">
+                    <i class="fas fa-info-circle"></i>
+                    In production, this would redirect to the real Instapay payment page.
+                </small>
+            </div>
+        </div>
+    </div>
+</div>

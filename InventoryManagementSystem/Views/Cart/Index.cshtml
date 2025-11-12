@@ -1,0 +1,175 @@
+﻿@model InventoryManagementSystem.Models.ViewModels.ShoppingCartViewModel
+
+@{
+    ViewData["Title"] = "Shopping Cart";
+}
+
+<div class="products-page">
+    <!-- Page Header -->
+    <div class="page-header">
+        <h1><i class="fas fa-shopping-cart"></i> Shopping Cart</h1>
+        <p class="page-subtitle">Review your items before checkout</p>
+    </div>
+
+    @if (Model.CartItems != null && Model.CartItems.Any())
+    {
+        <div class="cart-container">
+            <!-- Cart Items -->
+            <div class="cart-items-section">
+                @foreach (var item in Model.CartItems)
+                {
+                    <div class="cart-item" data-cart-id="@item.ShoppingCartId">
+                        <!-- Product Image -->
+                        <div class="cart-item-image">
+                            @if (!string.IsNullOrEmpty(item.ProductImage))
+                            {
+                                <img src="~/@item.ProductImage" alt="@item.ProductName" />
+                            }
+                            else
+                            {
+                                <div class="no-image-small">
+                                    <i class="fas fa-image"></i>
+                                </div>
+                            }
+                        </div>
+
+                        <!-- Product Info -->
+                        <div class="cart-item-info">
+                            <h3 class="cart-item-name">@item.ProductName</h3>
+                            <p class="cart-item-price">EGP @item.UnitPrice.ToString("N2")</p>
+                        </div>
+
+                        <!-- Quantity Controls -->
+                        <div class="cart-item-quantity">
+                            <label>Quantity:</label>
+                            <div class="quantity-controls">
+                                <button type="button"
+                                        class="qty-btn qty-decrease"
+                                        onclick="updateQuantity(@item.ShoppingCartId, @(item.Quantity - 1), @item.MaxQuantity)"
+                                        @(item.Quantity <= 1 ? "disabled" : "")>
+                                    <i class="fas fa-minus"></i>
+                                </button>
+
+                                <input type="number"
+                                       class="qty-input"
+                                       value="@item.Quantity"
+                                       min="1"
+                                       max="@item.MaxQuantity"
+                                       readonly />
+
+                                <button type="button"
+                                        class="qty-btn qty-increase"
+                                        onclick="updateQuantity(@item.ShoppingCartId, @(item.Quantity + 1), @item.MaxQuantity)"
+                                        @(item.Quantity >= item.MaxQuantity ? "disabled" : "")>
+                                    <i class="fas fa-plus"></i>
+                                </button>
+                            </div>
+                            <small class="stock-info">Max: @item.MaxQuantity</small>
+                        </div>
+
+                        <!-- Item Total -->
+                        <div class="cart-item-total">
+                            <span class="item-total-label">Total:</span>
+                            <span class="item-total-amount">EGP <span class="item-total-value">@item.TotalPrice.ToString("N2")</span></span>
+                        </div>
+
+                        <!-- Remove Button -->
+                        <div class="cart-item-actions">
+                            <button type="button"
+                                    class="btn-remove-item"
+                                    onclick="removeItem(@item.ShoppingCartId)"
+                                    title="Remove">
+                                <i class="fas fa-trash"></i>
+                            </button>
+                        </div>
+                    </div>
+                }
+            </div>
+
+            <!-- Cart Summary -->
+
+            <div class="summary-actions">
+                <button type="button" class="btn btn-checkout" onclick="checkout()">
+                    <i class="fas fa-lock"></i> Proceed to Checkout
+                </button>
+
+                <!-- ... الأزرار التانية -->
+              <div class="cart-summary">
+                <div class="summary-card">
+                    <h3 class="summary-title">
+                        <i class="fas fa-receipt"></i> Order Summary
+                    </h3>
+
+                    <div class="summary-details">
+                        <div class="summary-row">
+                            <span>Items:</span>
+                            <span id="cart-count">@Model.CartCount</span>
+                        </div>
+
+                        <div class="summary-row">
+                            <span>Subtotal:</span>
+                            <span>EGP <span id="cart-subtotal">@Model.CartTotal.ToString("N2")</span></span>
+                        </div>
+
+                        <div class="summary-row">
+                            <span>Shipping:</span>
+                            <span class="text-success">Free</span>
+                        </div>
+
+                        <div class="summary-divider"></div>
+
+                        <div class="summary-row summary-total">
+                            <span>Total:</span>
+                            <span class="total-amount">EGP <span id="cart-total">@Model.CartTotal.ToString("N2")</span></span>
+                        </div>
+                    </div>
+
+               </div>
+              
+           
+                    <!-- Action Buttons -->
+                    <div class="summary-actions">
+                        <button type="button" class="btn btn-checkout" onclick="checkout()">
+                            <i class="fas fa-lock"></i> Proceed to Checkout
+                        </button>
+
+                        <a asp-controller="Home" asp-action="Index" class="btn btn-continue">
+                            <i class="fas fa-arrow-left"></i> Continue Shopping
+                        </a>
+
+                        <button type="button" class="btn btn-clear-cart" onclick="clearCart()">
+                            <i class="fas fa-trash-alt"></i> Clear Cart
+                        </button>
+                    </div>
+                </div>
+              </div>
+            </div>
+    }
+    else
+    {
+        <!-- Empty Cart State -->
+        <div class="empty-cart">
+            <div class="empty-cart-icon">
+                <i class="fas fa-shopping-cart"></i>
+            </div>
+            <h2>Your Cart is Empty</h2>
+            <p>Looks like you haven't added anything to your cart yet.</p>
+            <a asp-controller="Home" asp-action="Index" class="btn btn-primary-custom btn-lg">
+                <i class="fas fa-shopping-bag"></i> Start Shopping
+            </a>
+        </div>
+    }
+</div>
+
+@section Scripts {
+
+
+    <script>
+        function checkout() {
+            console.log('Proceeding to checkout');
+            window.location.href = '@Url.Action("Checkout", "Cart")';
+        }
+    </script>
+}
+
+

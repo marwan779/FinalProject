@@ -4,6 +4,7 @@ using InventoryManagementSystem.DataAccess.Repository.IRepository;
 using InventoryManagementSystem.Models.Entities;
 using InventoryManagementSystem.Services.EmailService;
 using InventoryManagementSystem.Services.ImageService;
+using InventoryManagementSystem.Services.PaymentService;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.UI.Services;
 using Microsoft.EntityFrameworkCore;
@@ -16,8 +17,13 @@ namespace InventoryManagementSystem
         {
             var builder = WebApplication.CreateBuilder(args);
 
+
+
+
             builder.Services.AddDbContext<ApplicationDbContext>(options =>
-            options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
+     options.UseSqlServer(
+         builder.Configuration.GetConnectionString("DefaultConnection"),
+         b => b.MigrationsAssembly("InventoryManagementSystem")));
 
 
 
@@ -29,14 +35,39 @@ namespace InventoryManagementSystem
             builder.Services.AddRazorPages();
 
 
+
+
             builder.Services.AddSingleton<IEmailSender, DummyEmailSender>();
             builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
             builder.Services.AddScoped<IImageService, ImageService>();
 
+            //builder.Services.AddScoped<IProductRepository, ProductRepository>();
+            //builder.Services.AddScoped<ICategoryRepository, CategoryRepository>();
+            //builder.Services.AddScoped<IShoppingCartRepository, ShoppingCartRepository>();
+
+            builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
+
+
+
+
+
+
             // Add services to the container.
             builder.Services.AddControllersWithViews();
 
+
+
+            // Payment Services
+            builder.Services.AddHttpClient<IPaymentService, InstapayPaymentService>();
+            builder.Services.AddScoped<IPaymentService, InstapayPaymentService>();
+
+
+
+
+
             var app = builder.Build();
+
+
 
             // Configure the HTTP request pipeline.
             if (!app.Environment.IsDevelopment())

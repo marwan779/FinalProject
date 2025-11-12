@@ -18,6 +18,12 @@ namespace InventoryManagementSystem.DataAccess.Repository
         public IApplicationUserRepository ApplicationUserRepository { get; private set; }
         private readonly ApplicationDbContext _context;
 
+
+        public IShoppingCartRepository ShoppingCartRepository { get; private set; }
+        public IOrderRepository OrderRepository { get; private set; }
+
+
+
         public UnitOfWork(ApplicationDbContext context)
         {
             _context = context;
@@ -33,6 +39,10 @@ namespace InventoryManagementSystem.DataAccess.Repository
             SaleOrderRepository = new SaleOrderRepository(_context);
 
             ApplicationUserRepository = new ApplicationUserRepository(_context);
+
+            ShoppingCartRepository = new ShoppingCartRepository(_context);
+
+           OrderRepository = new OrderRepository(_context);
         }
         public void Save()
         {

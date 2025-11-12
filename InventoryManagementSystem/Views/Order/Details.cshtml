@@ -1,0 +1,135 @@
+﻿@model InventoryManagementSystem.Models.Entities.Order
+
+@{
+    ViewData["Title"] = "Order Details";
+}
+
+<div class="products-page">
+    <div class="page-header">
+        <h1><i class="fas fa-file-invoice"></i> Order Details</h1>
+        <p class="page-subtitle">Order #@Model.OrderId</p>
+    </div>
+
+    <div class="confirmation-container">
+        <!-- Order Details -->
+        <div class="confirmation-left">
+            <!-- Order Items -->
+            <div class="confirmation-section">
+                <h3 class="section-title">
+                    <i class="fas fa-boxes"></i> Order Items
+                </h3>
+
+                <div class="order-items-list">
+                    @foreach (var item in Model.OrderItems)
+                    {
+                        <div class="order-item">
+                            <div class="item-image">
+                                @if (!string.IsNullOrEmpty(item.ProductImagePath))
+                                {
+                                    <img src="~/@item.ProductImagePath" alt="@item.ProductName" />
+                                }
+                                else
+                                {
+                                    <div class="no-img">
+                                        <i class="fas fa-image"></i>
+                                    </div>
+                                }
+                            </div>
+                            <div class="item-details">
+                                <h4>@item.ProductName</h4>
+                                <p>Quantity: @item.Quantity</p>
+                                <p>Unit Price: EGP @item.UnitPrice.ToString("N2")</p>
+                            </div>
+                            <div class="item-total">EGP @item.TotalPrice.ToString("N2")</div>
+                        </div>
+                    }
+                </div>
+
+                <div class="order-total-box">
+                    <div class="total-row">
+                        <span>Total Amount:</span>
+                        <span class="total-amount">EGP @Model.OrderTotal.ToString("N2")</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Shipping Information -->
+            <div class="confirmation-section">
+                <h3 class="section-title">
+                    <i class="fas fa-truck"></i> Shipping Information
+                </h3>
+
+                <div class="info-content">
+                    <p><strong>Name:</strong> @Model.ShippingFullName</p>
+                    <p><strong>Address:</strong> @Model.ShippingAddress</p>
+                    <p><strong>Phone:</strong> @Model.ShippingPhone</p>
+                    <p><strong>Email:</strong> @Model.ShippingEmail</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Order Summary -->
+        <div class="confirmation-right">
+            <!-- Order Status -->
+            <div class="info-box">
+                <h4><i class="fas fa-info-circle"></i> Order Information</h4>
+                <div class="info-content">
+                    <div class="info-row">
+                        <span>Order Number:</span>
+                        <span>#@Model.OrderId</span>
+                    </div>
+                    <div class="info-row">
+                        <span>Order Date:</span>
+                        <span>@Model.OrderDate.ToString("f")</span>
+                    </div>
+                    <div class="info-row">
+                        <span>Status:</span>
+                        <span class="badge
+                            @(Model.OrderStatus == "Confirmed" || Model.OrderStatus == "Delivered" ? "in-stock" :
+                                                            Model.OrderStatus == "Cancelled" ? "out-of-stock" : "low-stock")">
+                            @Model.OrderStatus
+                        </span>
+                    </div>
+                    <div class="info-row">
+                        <span>Payment Method:</span>
+                        <span>@Model.PaymentMethod</span>
+                    </div>
+                    <div class="info-row">
+                        <span>Payment Status:</span>
+                        <span class="badge @(Model.PaymentStatus == "Paid" ? "in-stock" : "out-of-stock")">
+                            @Model.PaymentStatus
+                        </span>
+                    </div>
+                    @if (Model.PaymentDate.HasValue)
+                    {
+                        <div class="info-row">
+                            <span>Payment Date:</span>
+                            <span>@Model.PaymentDate.Value.ToString("f")</span>
+                        </div>
+                    }
+                </div>
+            </div>
+
+            <!-- Actions -->
+            <div class="confirmation-actions">
+                <a asp-action="History" class="btn btn-cancel">
+                    <i class="fas fa-arrow-left"></i> Back to History
+                </a>
+                <a asp-controller="Home" asp-action="Index" class="btn btn-continue">
+                    <i class="fas fa-shopping-bag"></i> Continue Shopping
+                </a>
+
+                @if (Model.OrderStatus == "Pending" && Model.PaymentStatus != "Paid")
+                {
+                    <form asp-action="Cancel" asp-route-id="@Model.OrderId" method="post">
+                        @Html.AntiForgeryToken()
+                        <button type="submit" class="btn btn-delete"
+                                onclick="return confirm('Are you sure you want to cancel this order?')">
+                            <i class="fas fa-times"></i> Cancel Order
+                        </button>
+                    </form>
+                }
+            </div>
+        </div>
+    </div>
+</div>
