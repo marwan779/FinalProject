@@ -12,7 +12,6 @@ namespace InventoryManagementSystem.DataAccess.Repository.IRepository
         public ICategoryRepository CategoryRepository { get; }
         public IInventoryTransactionRepository InventoryTransactionRepository { get; }
         public IPurchaseOrderRepository PurchaseOrderRepository  { get; }
-        public ISaleOrderRepository SaleOrderRepository  { get; }
         public IApplicationUserRepository ApplicationUserRepository { get; }
 
         IShoppingCartRepository ShoppingCartRepository { get; }

@@ -4,16 +4,19 @@ using InventoryManagementSystem.DataAccess.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
 
-namespace InventoryManagementSystem.Migrations
+namespace InventoryManagementSystem.DataAccess.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20251112165347_RemovingSaleOrederItemAndSaleOrdersTable")]
+    partial class RemovingSaleOrederItemAndSaleOrdersTable
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -126,13 +129,13 @@ namespace InventoryManagementSystem.Migrations
                         new
                         {
                             CategoryId = 1,
-                            CreatedAt = new DateTime(2025, 11, 10, 5, 9, 14, 921, DateTimeKind.Utc).AddTicks(2625),
+                            CreatedAt = new DateTime(2025, 11, 12, 16, 53, 46, 752, DateTimeKind.Utc).AddTicks(8910),
                             Name = "Laptops"
                         },
                         new
                         {
                             CategoryId = 2,
-                            CreatedAt = new DateTime(2025, 11, 10, 5, 9, 14, 921, DateTimeKind.Utc).AddTicks(2633),
+                            CreatedAt = new DateTime(2025, 11, 12, 16, 53, 46, 752, DateTimeKind.Utc).AddTicks(8913),
                             Name = "Mobiles"
                         });
                 });
@@ -326,26 +329,26 @@ namespace InventoryManagementSystem.Migrations
                             ProductId = 1,
                             CategoryId = 1,
                             CostPrice = 12000.00m,
-                            CreatedAt = new DateTime(2025, 11, 10, 5, 9, 14, 921, DateTimeKind.Utc).AddTicks(2863),
+                            CreatedAt = new DateTime(2025, 11, 12, 16, 53, 46, 752, DateTimeKind.Utc).AddTicks(9036),
                             Description = "High performance laptop",
                             Name = "Laptop",
                             ProductImagePath = "/images/laptop.jpg",
                             QuantityInStock = 10,
                             UnitPrice = 15000.00m,
-                            UpdatedAt = new DateTime(2025, 11, 10, 5, 9, 14, 921, DateTimeKind.Utc).AddTicks(2863)
+                            UpdatedAt = new DateTime(2025, 11, 12, 16, 53, 46, 752, DateTimeKind.Utc).AddTicks(9036)
                         },
                         new
                         {
                             ProductId = 2,
                             CategoryId = 2,
                             CostPrice = 6000.00m,
-                            CreatedAt = new DateTime(2025, 11, 10, 5, 9, 14, 921, DateTimeKind.Utc).AddTicks(2868),
+                            CreatedAt = new DateTime(2025, 11, 12, 16, 53, 46, 752, DateTimeKind.Utc).AddTicks(9042),
                             Description = "Latest smartphone",
                             Name = "Smartphone",
                             ProductImagePath = "/images/phone.jpg",
                             QuantityInStock = 20,
                             UnitPrice = 8000.00m,
-                            UpdatedAt = new DateTime(2025, 11, 10, 5, 9, 14, 921, DateTimeKind.Utc).AddTicks(2869)
+                            UpdatedAt = new DateTime(2025, 11, 12, 16, 53, 46, 752, DateTimeKind.Utc).AddTicks(9042)
                         });
                 });
 
@@ -407,68 +410,6 @@ namespace InventoryManagementSystem.Migrations
                         .IsUnique();
 
                     b.ToTable("PurchaseOrderItems");
-                });
-
-            modelBuilder.Entity("InventoryManagementSystem.Models.Entities.SaleOrder", b =>
-                {
-                    b.Property<int>("SaleOrderId")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("SaleOrderId"));
-
-                    b.Property<string>("CustomerId")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(450)");
-
-                    b.Property<DateTime>("OrderDate")
-                        .HasColumnType("datetime2");
-
-                    b.Property<string>("Status")
-                        .IsRequired()
-                        .HasMaxLength(20)
-                        .HasColumnType("nvarchar(20)");
-
-                    b.Property<decimal>("TotalAmount")
-                        .HasColumnType("decimal(18,2)");
-
-                    b.HasKey("SaleOrderId");
-
-                    b.HasIndex("CustomerId");
-
-                    b.ToTable("SaleOrders");
-                });
-
-            modelBuilder.Entity("InventoryManagementSystem.Models.Entities.SaleOrderItem", b =>
-                {
-                    b.Property<int>("SaleOrderItemId")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("SaleOrderItemId"));
-
-                    b.Property<int>("ProductId")
-                        .HasColumnType("int");
-
-                    b.Property<int>("Quantity")
-                        .HasColumnType("int");
-
-                    b.Property<int>("SaleOrderId")
-                        .HasColumnType("int");
-
-                    b.Property<decimal>("Total")
-                        .HasColumnType("decimal(18,2)");
-
-                    b.Property<decimal>("UnitPrice")
-                        .HasColumnType("decimal(18,2)");
-
-                    b.HasKey("SaleOrderItemId");
-
-                    b.HasIndex("ProductId");
-
-                    b.HasIndex("SaleOrderId");
-
-                    b.ToTable("SaleOrderItems");
                 });
 
             modelBuilder.Entity("InventoryManagementSystem.Models.Entities.ShoppingCart", b =>
@@ -716,36 +657,6 @@ namespace InventoryManagementSystem.Migrations
                     b.Navigation("PurchaseOrder");
                 });
 
-            modelBuilder.Entity("InventoryManagementSystem.Models.Entities.SaleOrder", b =>
-                {
-                    b.HasOne("InventoryManagementSystem.Models.Entities.ApplicationUser", "Customer")
-                        .WithMany()
-                        .HasForeignKey("CustomerId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Customer");
-                });
-
-            modelBuilder.Entity("InventoryManagementSystem.Models.Entities.SaleOrderItem", b =>
-                {
-                    b.HasOne("InventoryManagementSystem.Models.Entities.Product", "Product")
-                        .WithMany()
-                        .HasForeignKey("ProductId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("InventoryManagementSystem.Models.Entities.SaleOrder", "SaleOrder")
-                        .WithMany("Items")
-                        .HasForeignKey("SaleOrderId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Product");
-
-                    b.Navigation("SaleOrder");
-                });
-
             modelBuilder.Entity("InventoryManagementSystem.Models.Entities.ShoppingCart", b =>
                 {
                     b.HasOne("InventoryManagementSystem.Models.Entities.ApplicationUser", "ApplicationUser")
@@ -830,11 +741,6 @@ namespace InventoryManagementSystem.Migrations
                 {
                     b.Navigation("PurchaseOrderItem")
                         .IsRequired();
-                });
-
-            modelBuilder.Entity("InventoryManagementSystem.Models.Entities.SaleOrder", b =>
-                {
-                    b.Navigation("Items");
                 });
 #pragma warning restore 612, 618
         }

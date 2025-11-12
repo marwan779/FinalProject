@@ -14,7 +14,6 @@ namespace InventoryManagementSystem.DataAccess.Repository
         public ICategoryRepository CategoryRepository { get; private set; }
         public IInventoryTransactionRepository InventoryTransactionRepository { get; private set; }
         public IPurchaseOrderRepository PurchaseOrderRepository { get; private set; }
-        public ISaleOrderRepository SaleOrderRepository { get; private set; }
         public IApplicationUserRepository ApplicationUserRepository { get; private set; }
         private readonly ApplicationDbContext _context;
 
@@ -36,7 +35,6 @@ namespace InventoryManagementSystem.DataAccess.Repository
 
             PurchaseOrderRepository = new PurchaseOrderRepository(_context);
 
-            SaleOrderRepository = new SaleOrderRepository(_context);
 
             ApplicationUserRepository = new ApplicationUserRepository(_context);
 

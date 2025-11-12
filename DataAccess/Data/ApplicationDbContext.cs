@@ -21,8 +21,6 @@ namespace InventoryManagementSystem.DataAccess.Data
         public DbSet<Product> Products { get; set; }
         public DbSet<PurchaseOrder> PurchaseOrders { get; set; }
         public DbSet<PurchaseOrderItem> PurchaseOrderItems { get; set; }
-        public DbSet<SaleOrder> SaleOrders { get; set; }
-        public DbSet<SaleOrderItem> SaleOrderItems { get; set; }
         public DbSet<InventoryTransaction> InventoryTransactions { get; set; }
         public DbSet<ShoppingCart> ShoppingCarts { get; set; }
         public DbSet<Order> Orders { get; set; }
