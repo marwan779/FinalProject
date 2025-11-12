@@ -1,0 +1,219 @@
+﻿@model InventoryManagementSystem.Models.ViewModels.CheckoutViewModel
+
+@{
+    ViewData["Title"] = "Checkout";
+}
+
+<div class="products-page">
+    <!-- Page Header -->
+    <div class="page-header">
+        <h1><i class="fas fa-credit-card"></i> Checkout</h1>
+        <p class="page-subtitle">Complete your order</p>
+    </div>
+
+    <div class="checkout-form">
+        <div class="checkout-container">
+            <!-- Checkout Form -->
+            <div class="checkout-left">
+                <!-- Shipping Information -->
+                <div class="checkout-section">
+                    <h3 class="section-title">
+                        <i class="fas fa-shipping-fast"></i> Shipping Information
+                    </h3>
+
+                    <form asp-controller="Checkout" asp-action="ProcessOrder" method="post" id="checkout-form">
+                        @Html.AntiForgeryToken()
+
+
+                        <div asp-validation-summary="ModelOnly" class="validation-summary"></div>
+
+
+
+                        <div class="form-grid">
+                            <!-- Full Name -->
+                            <div class="form-group">
+                                <label asp-for="ShippingFullName" class="form-label"></label>
+                                <input asp-for="ShippingFullName" class="form-control" placeholder="Enter your full name" />
+                                <span asp-validation-for="ShippingFullName" class="validation-message"></span>
+                            </div>
+
+                            <!-- Email -->
+                            <div class="form-group">
+                                <label asp-for="ShippingEmail" class="form-label"></label>
+                                <input asp-for="ShippingEmail" class="form-control" placeholder="Enter your email" />
+                                <span asp-validation-for="ShippingEmail" class="validation-message"></span>
+                            </div>
+
+                            <!-- Phone -->
+                            <div class="form-group">
+                                <label asp-for="ShippingPhone" class="form-label"></label>
+                                <input asp-for="ShippingPhone" class="form-control" placeholder="Enter your phone number" />
+                                <span asp-validation-for="ShippingPhone" class="validation-message"></span>
+                            </div>
+
+                            <!-- Address -->
+                            <div class="form-group">
+                                <label asp-for="ShippingAddress" class="form-label"></label>
+                                <textarea asp-for="ShippingAddress" class="form-control" rows="3" placeholder="Enter your complete shipping address"></textarea>
+                                <span asp-validation-for="ShippingAddress" class="validation-message"></span>
+                            </div>
+                        </div>
+
+                        <!-- Payment Methods -->
+                        <div class="checkout-section">
+                            <h3 class="section-title">
+                                <i class="fas fa-money-bill-wave"></i> Payment Method
+                            </h3>
+
+                            <div class="payment-methods">
+                                <!-- Cash on Delivery -->
+                                <div class="payment-option">
+                                    <input type="radio" asp-for="PaymentMethod" value="Cash" id="cash" checked />
+                                    <label for="cash" class="payment-label">
+                                        <i class="fas fa-money-bill"></i>
+                                        <div>
+                                            <strong>Cash on Delivery</strong>
+                                            <small>Pay when you receive your order</small>
+                                        </div>
+                                    </label>
+                                </div>
+
+                                <!-- Instapay -->
+                                <div class="payment-option">
+                                    <input type="radio" asp-for="PaymentMethod" value="Instapay" id="instapay" />
+                                    <label for="instapay" class="payment-label">
+                                        <i class="fas fa-credit-card"></i>
+                                        <div>
+                                            <strong>Instapay</strong>
+                                            <small>Pay securely with your bank card</small>
+                                        </div>
+                                    </label>
+                                </div>
+
+                                <!-- Wallet -->
+                                <div class="payment-option">
+                                    <input type="radio" asp-for="PaymentMethod" value="Wallet" id="wallet" />
+                                    <label for="wallet" class="payment-label">
+                                        <i class="fas fa-wallet"></i>
+                                        <div>
+                                            <strong>E-Wallet</strong>
+                                            <small>Pay using your digital wallet</small>
+                                        </div>
+                                    </label>
+                                </div>
+                            </div>
+                            <span asp-validation-for="PaymentMethod" class="validation-message"></span>
+                        </div>
+
+                        <!-- Submit Button -->
+                        <div class="form-actions">
+                            <a asp-controller="Cart" asp-action="Index" class="btn btn-cancel">
+                                <i class="fas fa-arrow-left"></i> Back to Cart
+                            </a>
+                            <button type="submit" class="btn btn-submit" id="submit-order">
+                                <i class="fas fa-lock"></i> Complete Order - EGP @Model.CartTotal.ToString("N2")
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+
+            <!-- Order Summary -->
+            <div class="checkout-right">
+                <div class="order-summary-box">
+                    <h3 class="summary-title">
+                        <i class="fas fa-receipt"></i> Order Summary
+                    </h3>
+
+                    <!-- Order Items -->
+                    <div class="summary-items">
+                        @foreach (var item in Model.CartItems)
+                        {
+                            <div class="summary-item">
+                                <div class="item-image">
+                                    @if (!string.IsNullOrEmpty(item.ProductImage))
+                                    {
+                                        <img src="~/@item.ProductImage" alt="@item.ProductName" />
+                                    }
+                                    else
+                                    {
+                                        <div class="no-img">
+                                            <i class="fas fa-image"></i>
+                                        </div>
+                                    }
+                                </div>
+                                <div class="item-details">
+                                    <h4>@item.ProductName</h4>
+                                    <p>Qty: @item.Quantity × EGP @item.UnitPrice.ToString("N2")</p>
+                                </div>
+                                <div class="item-total">EGP @item.TotalPrice.ToString("N2")</div>
+                            </div>
+                        }
+                    </div>
+
+                    <!-- Order Totals -->
+                    <div class="summary-totals">
+                        <div class="summary-row">
+                            <span>Subtotal:</span>
+                            <span>EGP @Model.CartTotal.ToString("N2")</span>
+                        </div>
+                        <div class="summary-row">
+                            <span>Shipping:</span>
+                            <span class="text-success">Free</span>
+                        </div>
+                        <div class="summary-divider"></div>
+                        <div class="summary-row summary-total">
+                            <span>Total:</span>
+                            <span class="total-amount">EGP @Model.CartTotal.ToString("N2")</span>
+                        </div>
+                    </div>
+
+                    <!-- Items Count -->
+                    <div class="summary-info">
+                        <p><i class="fas fa-box"></i> @Model.CartCount items in your order</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script>
+        $(document).ready(function () {
+            // Form submission handling
+            $('#checkout-form').on('submit', function (e) {
+                const submitBtn = $('#submit-order');
+                submitBtn.prop('disabled', true);
+                submitBtn.html('<i class="fas fa-spinner fa-spin"></i> Processing...');
+            });
+
+            // Payment method change
+            $('input[name="PaymentMethod"]').change(function () {
+                const selectedMethod = $('input[name="PaymentMethod"]:checked').val();
+                updateSubmitButton(selectedMethod);
+            });
+
+            function updateSubmitButton(method) {
+                const submitBtn = $('#submit-order');
+               const total = parseFloat('@Model.CartTotal').toFixed(2);
+
+                switch(method) {
+                    case 'Cash':
+                        submitBtn.html(`<i class="fas fa-lock"></i> Place Order - EGP ${total}`);
+                        break;
+                    case 'Instapay':
+                        submitBtn.html(`<i class="fas fa-credit-card"></i> Pay with Instapay - EGP ${total}`);
+                        break;
+                    case 'Wallet':
+                        submitBtn.html(`<i class="fas fa-wallet"></i> Pay with Wallet - EGP ${total}`);
+                        break;
+                }
+            }
+
+            // Initialize button text
+            updateSubmitButton('Cash');
+        });
+    </script>
+}

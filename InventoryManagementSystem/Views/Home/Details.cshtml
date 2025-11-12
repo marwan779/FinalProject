@@ -1,0 +1,127 @@
+﻿@model InventoryManagementSystem.Models.Entities.Product
+
+@{
+    ViewData["Title"] = Model.Name;
+}
+
+<div class="products-page">
+    <div class="page-header">
+        <h1>@Model.Name</h1>
+        <p class="page-subtitle">Product Details</p>
+    </div>
+
+    <div class="form-container">
+        <div class="product-details-grid">
+            <!-- Product Image -->
+            <div class="product-details-image">
+                @if (!string.IsNullOrEmpty(Model.ProductImagePath))
+                {
+                    <img src="~/@Model.ProductImagePath" alt="@Model.Name" class="detail-image" />
+                }
+                else
+                {
+                    <div class="no-image-large">
+                        <i class="fas fa-image"></i>
+                        <span>No Image Available</span>
+                    </div>
+                }
+            </div>
+
+            <!-- Product Information -->
+            <div class="product-details-info">
+                <div class="detail-section">
+                    <h3>Category</h3>
+                    <p>@Model.Category.Name</p>
+                </div>
+
+                <div class="detail-section">
+                    <h3>Description</h3>
+                    <p>@(string.IsNullOrEmpty(Model.Description) ? "No description available." : Model.Description)</p>
+                </div>
+
+                <div class="detail-section">
+                    <h3>Price</h3>
+                    <p class="detail-price">EGP @Model.UnitPrice.ToString("N2")</p>
+                </div>
+
+                <div class="detail-section">
+                    <h3>Stock Status</h3>
+                    @if (Model.QuantityInStock > 0)
+                    {
+                        <span class="stock-badge in-stock">In Stock (@Model.QuantityInStock units)</span>
+                    }
+                    else
+                    {
+                        <span class="stock-badge out-of-stock">Out of Stock</span>
+                    }
+                </div>
+
+                <!-- Actions -->
+                <!-- Actions -->
+                <div class="detail-actions">
+                    @if (User.Identity.IsAuthenticated)
+                    {
+                        <button class="btn btn-add-to-cart btn-lg" onclick="addToCart(@Model.ProductId)">
+                            <i class="fas fa-shopping-cart"></i>
+                            Add to Cart
+                        </button>
+                    }
+                    else
+                    {
+                        <a asp-area="Identity" asp-page="/Account/Login" asp-route-returnUrl="@Context.Request.Path" class="btn btn-add-to-cart btn-lg">
+                            <i class="fas fa-sign-in-alt"></i>
+                            Login to Add to Cart
+                        </a>
+                    }
+
+                    <a asp-controller="Home" asp-action="Index" class="btn btn-cancel">
+                        <i class="fas fa-arrow-left"></i>
+                        Back to Products
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script>
+        function addToCart(productId) {
+            $.ajax({
+                url: '@Url.Action("AddToCart", "Cart")',
+                type: 'POST',
+                data: { productId: productId, quantity: 1 },
+                success: function (response) {
+                    if (response.success) {
+                        showToast('success', response.message);
+
+                        if (window.updateNavbarCart) {
+                            window.updateNavbarCart(response.cartCount);
+                        }
+                    } else {
+                        showToast('error', response.message);
+                    }
+                },
+                error: function () {
+                    showToast('error', 'Failed to add product to cart!');
+                }
+            });
+        }
+
+        function showToast(type, message) {
+            const Toast = Swal.mixin({
+                toast: true,
+                position: 'top-end',
+                showConfirmButton: false,
+                timer: 3000,
+                timerProgressBar: true
+            });
+
+            Toast.fire({
+                icon: type,
+                title: message
+            });
+        }
+    </script>
+}

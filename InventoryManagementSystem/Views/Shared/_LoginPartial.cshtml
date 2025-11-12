@@ -1,28 +1,55 @@
-﻿@using InventoryManagementSystem.Models.Entities
-@using Microsoft.AspNetCore.Identity
+﻿@using Microsoft.AspNetCore.Identity
 
-@inject SignInManager<ApplicationUser> SignInManager
-@inject UserManager<ApplicationUser> UserManager
-
-<ul class="navbar-nav">
-@if (SignInManager.IsSignedIn(User))
+@if (User.Identity?.IsAuthenticated ?? false)
 {
-    <li class="nav-item">
-            <a id="manage" class="nav-link btn btn-link text-light" asp-area="Identity" asp-page="/Account/Manage/Index" title="Manage">Hello @UserManager.GetUserName(User)!</a>
-    </li>
-    <li class="nav-item">
-        <form id="logoutForm" class="form-inline" asp-area="Identity" asp-page="/Account/Logout" asp-route-returnUrl="@Url.Action("Index", "Home", new { area = "" })">
-            <button id="logout" type="submit" class="nav-link btn btn-link text-light border-0">Logout</button>
-        </form>
-    </li>
+    <ul class="navbar-nav">
+        <!-- Order History Link -->
+        <li class="nav-item">
+            <a class="nav-link text-light nav-link-custom" asp-controller="Order" asp-action="History">
+                <i class="fas fa-history"></i> My Orders
+            </a>
+        </li>
+
+        <li class="nav-item dropdown">
+            <a class="nav-link dropdown-toggle text-light nav-link-custom" href="#" id="userDropdown"
+               role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                <i class="fas fa-user-circle"></i> Account
+            </a>
+            <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="userDropdown">
+                <li>
+                    <a class="dropdown-item" asp-area="Identity" asp-page="/Account/Manage/Index">
+                        <i class="fas fa-user-cog"></i> Profile
+                    </a>
+                </li>
+                <li>
+                    <a class="dropdown-item" asp-controller="Order" asp-action="History">
+                        <i class="fas fa-shopping-bag"></i> My Orders
+                    </a>
+                </li>
+                <li><hr class="dropdown-divider"></li>
+                <li>
+                    <form method="post" asp-area="Identity" asp-page="/Account/Logout" asp-route-returnUrl="@Url.Action("Index", "Home")">
+                        <button type="submit" class="dropdown-item">
+                            <i class="fas fa-sign-out-alt"></i> Logout
+                        </button>
+                    </form>
+                </li>
+            </ul>
+        </li>
+    </ul>
 }
 else
 {
-    <li class="nav-item">
-        <a class="nav-link text-light" id="register" asp-area="Identity" asp-page="/Account/Register">Register</a>
-    </li>
-    <li class="nav-item">
-        <a class="nav-link text-light" id="login" asp-area="Identity" asp-page="/Account/Login">Login</a>
-    </li>
+    <ul class="navbar-nav">
+        <li class="nav-item">
+            <a class="nav-link text-light nav-link-custom" asp-area="Identity" asp-page="/Account/Register">
+                <i class="fas fa-user-plus"></i> Register
+            </a>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link text-light nav-link-custom" asp-area="Identity" asp-page="/Account/Login">
+                <i class="fas fa-sign-in-alt"></i> Login
+            </a>
+        </li>
+    </ul>
 }
-</ul>

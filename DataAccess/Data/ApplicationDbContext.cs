@@ -24,11 +24,31 @@ namespace InventoryManagementSystem.DataAccess.Data
         public DbSet<SaleOrder> SaleOrders { get; set; }
         public DbSet<SaleOrderItem> SaleOrderItems { get; set; }
         public DbSet<InventoryTransaction> InventoryTransactions { get; set; }
-
+        public DbSet<ShoppingCart> ShoppingCarts { get; set; }
+        public DbSet<Order> Orders { get; set; }
+        public DbSet<OrderItem> OrderItems { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             base.OnModelCreating(modelBuilder);
+
+
+
+
+            // Relationships
+            modelBuilder.Entity<Order>()
+                .HasMany(o => o.OrderItems)
+                .WithOne(oi => oi.Order)
+                .HasForeignKey(oi => oi.OrderId)
+                .OnDelete(DeleteBehavior.Cascade);
+
+            modelBuilder.Entity<OrderItem>()
+                .HasOne(oi => oi.Product)
+                .WithMany()
+                .HasForeignKey(oi => oi.ProductId)
+                .OnDelete(DeleteBehavior.Restrict);
+
+
 
             // ---- Seed Main Categories ----
             modelBuilder.Entity<Category>().HasData(
@@ -37,20 +57,33 @@ namespace InventoryManagementSystem.DataAccess.Data
             );
 
             modelBuilder.Entity<Product>().HasData(
-            new Product
-            {
-                ProductId = 1,
-                Name = "Espresso Machine",
-                Description = "Professional espresso coffee machine.",
-                CategoryId = 1,
-                UnitPrice = 25000.00m,
-                CostPrice = 18000.00m,
-                QuantityInStock = 10,
-                ProductImagePath = "Images/Products/test.jpg",
-                CreatedAt = DateTime.UtcNow,
-                UpdatedAt = DateTime.UtcNow
-            }
-            );
+        new Product
+        {
+            ProductId = 1,
+            Name = "Laptop",
+            Description = "High performance laptop",
+            CategoryId = 1,
+            UnitPrice = 15000.00m,
+            CostPrice = 12000.00m,
+            QuantityInStock = 10,
+            ProductImagePath = "/images/laptop.jpg"
+        },
+        new Product
+        {
+            ProductId = 2,
+            Name = "Smartphone",
+            Description = "Latest smartphone",
+            CategoryId = 2,
+            UnitPrice = 8000.00m,
+            CostPrice = 6000.00m,
+            QuantityInStock = 20,
+            ProductImagePath = "/images/phone.jpg"
+        }
+       
+    );
+
+
+
 
         }
 

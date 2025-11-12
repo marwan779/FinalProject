@@ -1,0 +1,84 @@
+﻿@model IEnumerable<InventoryManagementSystem.Models.Entities.Order>
+
+@{
+    ViewData["Title"] = "Order History";
+}
+
+<div class="products-page">
+    <!-- Page Header -->
+    <div class="page-header">
+        <h1><i class="fas fa-history"></i> Order History</h1>
+        <p class="page-subtitle">View your past orders and track their status</p>
+    </div>
+
+    @if (Model != null && Model.Any())
+    {
+        <div class="table-container">
+            <table class="products-table">
+                <thead>
+                    <tr>
+                        <th>Order #</th>
+                        <th>Date</th>
+                        <th>Items</th>
+                        <th>Total</th>
+                        <th>Payment</th>
+                        <th>Status</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var order in Model)
+                    {
+                        <tr>
+                            <td>#@order.OrderId</td>
+                            <td>@order.OrderDate.ToString("MMM dd, yyyy")</td>
+                            <td>@order.OrderItems.Sum(oi => oi.Quantity) items</td>
+                            <td>EGP @order.OrderTotal.ToString("N2")</td>
+                            <td>
+                                <span class="badge @(order.PaymentStatus == "Paid" ? "in-stock" : "out-of-stock")">
+                                    @order.PaymentStatus
+                                </span>
+                            </td>
+                            <td>
+                                <span class="badge
+                                            @(order.OrderStatus == "Confirmed" || order.OrderStatus == "Delivered" ? "in-stock" :
+                                                                            order.OrderStatus == "Cancelled" ? "out-of-stock" : "low-stock")">
+                            @order.OrderStatus
+                        </span>
+                    </td>
+                    <td class="product-actions">
+                        <a asp-action="Details" asp-route-id="@order.OrderId" class="btn-edit">
+                            <i class="fas fa-eye"></i> View
+                        </a>
+                        @if (order.OrderStatus == "Pending" && order.PaymentStatus != "Paid")
+                                {
+                                    <form asp-action="Cancel" asp-route-id="@order.OrderId" method="post" style="display: inline;">
+                                        @Html.AntiForgeryToken()
+                                        <button type="submit" class="btn-delete"
+                                                onclick="return confirm('Are you sure you want to cancel this order?')">
+                                            <i class="fas fa-times"></i> Cancel
+                                        </button>
+                                    </form>
+                                }
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    }
+    else
+    {
+        <!-- No Orders State -->
+        <div class="no-products">
+            <div class="no-products-icon">
+                <i class="fas fa-shopping-bag"></i>
+            </div>
+            <h2>No Orders Yet</h2>
+            <p>You haven't placed any orders yet. Start shopping to see your order history here!</p>
+            <a asp-controller="Home" asp-action="Index" class="btn btn-primary-custom">
+                <i class="fas fa-shopping-bag"></i> Start Shopping
+            </a>
+        </div>
+    }
+</div>

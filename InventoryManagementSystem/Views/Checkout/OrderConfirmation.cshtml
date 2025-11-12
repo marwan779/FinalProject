@@ -1,0 +1,118 @@
+﻿@model InventoryManagementSystem.Models.Entities.Order
+
+@{
+    ViewData["Title"] = "Order Confirmation";
+}
+
+<div class="products-page">
+    <!-- Success Header -->
+    <div class="order-success-header">
+        <div class="success-icon">
+            <i class="fas fa-check-circle"></i>
+        </div>
+        <h1>Order Confirmed!</h1>
+        <p>Thank you for your purchase. Your order has been received.</p>
+        <div class="order-number">
+            Order #@Model.OrderId
+        </div>
+    </div>
+
+    <div class="confirmation-container">
+        <!-- Order Details -->
+        <div class="confirmation-left">
+            <!-- Order Items -->
+            <div class="confirmation-section">
+                <h3 class="section-title">
+                    <i class="fas fa-boxes"></i> Order Details
+                </h3>
+
+                <div class="order-items-list">
+                    @foreach (var item in Model.OrderItems)
+                    {
+                        <div class="order-item">
+                            <div class="item-image">
+                                @if (!string.IsNullOrEmpty(item.ProductImagePath))
+                                {
+                                    <img src="~/@item.ProductImagePath" alt="@item.ProductName" />
+                                }
+                                else
+                                {
+                                    <div class="no-img">
+                                        <i class="fas fa-image"></i>
+                                    </div>
+                                }
+                            </div>
+                            <div class="item-details">
+                                <h4>@item.ProductName</h4>
+                                <p>Quantity: @item.Quantity</p>
+                                <p>Unit Price: EGP @item.UnitPrice.ToString("N2")</p>
+                            </div>
+                            <div class="item-total">EGP @item.TotalPrice.ToString("N2")</div>
+                        </div>
+                    }
+                </div>
+
+                <div class="order-total-box">
+                    <div class="total-row">
+                        <span>Total Amount:</span>
+                        <span class="total-amount">EGP @Model.OrderTotal.ToString("N2")</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Shipping Information -->
+            <div class="confirmation-section">
+                <h3 class="section-title">
+                    <i class="fas fa-truck"></i> Shipping Information
+                </h3>
+
+                <div class="info-content">
+                    <p><strong>Name:</strong> @Model.ShippingFullName</p>
+                    <p><strong>Address:</strong> @Model.ShippingAddress</p>
+                    <p><strong>Phone:</strong> @Model.ShippingPhone</p>
+                    <p><strong>Email:</strong> @Model.ShippingEmail</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Order Summary -->
+        <div class="confirmation-right">
+            <!-- Order Status -->
+            <div class="info-box">
+                <h4><i class="fas fa-info-circle"></i> Order Status</h4>
+                <div class="info-content">
+                    <div class="info-row">
+                        <span>Order Number:</span>
+                        <span>#@Model.OrderId</span>
+                    </div>
+                    <div class="info-row">
+                        <span>Order Date:</span>
+                        <span>@Model.OrderDate.ToString("f")</span>
+                    </div>
+                    <div class="info-row">
+                        <span>Status:</span>
+                        <span class="badge badge-warning">@Model.OrderStatus</span>
+                    </div>
+                    <div class="info-row">
+                        <span>Payment Method:</span>
+                        <span>@Model.PaymentMethod</span>
+                    </div>
+                    <div class="info-row">
+                        <span>Payment Status:</span>
+                        <span>@Model.PaymentStatus</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Actions -->
+            <div class="confirmation-actions">
+                <a asp-controller="Home" asp-action="Index" class="btn btn-continue">
+                    <i class="fas fa-shopping-bag"></i> Continue Shopping
+                </a>
+                <a asp-controller="Home" asp-action="Index" class="btn btn-secondary-custom">
+                    <i class="fas fa-home"></i> Back to Home
+                </a>
+            </div>
+        </div>
+    </div>
+</div>
