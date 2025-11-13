@@ -11,7 +11,7 @@
             <i class="fas fa-check-circle"></i>
         </div>
         <h1>Order Confirmed!</h1>
-        <p>Thank you for your purchase. Your order has been received.</p>
+        <p class="success-message">Thank you for your purchase. Your order has been received.</p>
         <div class="order-number">
             Order #@Model.OrderId
         </div>
@@ -43,9 +43,11 @@
                                 }
                             </div>
                             <div class="item-details">
-                                <h4>@item.ProductName</h4>
-                                <p>Quantity: @item.Quantity</p>
-                                <p>Unit Price: EGP @item.UnitPrice.ToString("N2")</p>
+                                <h4 class="product-name">@item.ProductName</h4>
+                                <div class="item-meta">
+                                    <span class="quantity">Quantity: @item.Quantity</span>
+                                    <span class="unit-price">Unit Price: EGP @item.UnitPrice.ToString("N2")</span>
+                                </div>
                             </div>
                             <div class="item-total">EGP @item.TotalPrice.ToString("N2")</div>
                         </div>
@@ -66,11 +68,23 @@
                     <i class="fas fa-truck"></i> Shipping Information
                 </h3>
 
-                <div class="info-content">
-                    <p><strong>Name:</strong> @Model.ShippingFullName</p>
-                    <p><strong>Address:</strong> @Model.ShippingAddress</p>
-                    <p><strong>Phone:</strong> @Model.ShippingPhone</p>
-                    <p><strong>Email:</strong> @Model.ShippingEmail</p>
+                <div class="info-grid">
+                    <div class="info-item">
+                        <label><i class="fas fa-user"></i> Full Name:</label>
+                        <span>@Model.ShippingFullName</span>
+                    </div>
+                    <div class="info-item">
+                        <label><i class="fas fa-map-marker-alt"></i> Address:</label>
+                        <span>@Model.ShippingAddress</span>
+                    </div>
+                    <div class="info-item">
+                        <label><i class="fas fa-phone"></i> Phone:</label>
+                        <span>@Model.ShippingPhone</span>
+                    </div>
+                    <div class="info-item">
+                        <label><i class="fas fa-envelope"></i> Email:</label>
+                        <span>@Model.ShippingEmail</span>
+                    </div>
                 </div>
             </div>
         </div>
@@ -79,40 +93,602 @@
         <div class="confirmation-right">
             <!-- Order Status -->
             <div class="info-box">
-                <h4><i class="fas fa-info-circle"></i> Order Status</h4>
+                <h3 class="section-title">
+                    <i class="fas fa-info-circle"></i> Order Summary
+                </h3>
                 <div class="info-content">
                     <div class="info-row">
-                        <span>Order Number:</span>
-                        <span>#@Model.OrderId</span>
+                        <span class="info-label">Order Number:</span>
+                        <span class="info-value">#@Model.OrderId</span>
                     </div>
                     <div class="info-row">
-                        <span>Order Date:</span>
-                        <span>@Model.OrderDate.ToString("f")</span>
+                        <span class="info-label">Order Date:</span>
+                        <span class="info-value">@Model.OrderDate.ToString("MMM dd, yyyy 'at' h:mm tt")</span>
                     </div>
                     <div class="info-row">
-                        <span>Status:</span>
-                        <span class="badge badge-warning">@Model.OrderStatus</span>
+                        <span class="info-label">Status:</span>
+                        <span class="status-badge @Model.OrderStatus.ToLower().Replace(" ", "-")">@Model.OrderStatus</span>
                     </div>
                     <div class="info-row">
-                        <span>Payment Method:</span>
-                        <span>@Model.PaymentMethod</span>
+                        <span class="info-label">Payment Method:</span>
+                        <span class="info-value payment-method">@Model.PaymentMethod</span>
                     </div>
                     <div class="info-row">
-                        <span>Payment Status:</span>
-                        <span>@Model.PaymentStatus</span>
+                        <span class="info-label">Payment Status:</span>
+                        <span class="status-badge @Model.PaymentStatus.ToLower().Replace(" ", "-")">@Model.PaymentStatus</span>
                     </div>
+                </div>
+            </div>
+
+            <!-- Delivery Estimate -->
+            <div class="delivery-estimate">
+                <div class="estimate-icon">
+                    <i class="fas fa-shipping-fast"></i>
+                </div>
+                <div class="estimate-content">
+                    <h4>Estimated Delivery</h4>
+                    <p>@DateTime.Now.AddDays(3).ToString("dddd, MMMM dd, yyyy")</p>
+                    <small>Usually delivered within 3 business days</small>
                 </div>
             </div>
 
             <!-- Actions -->
             <div class="confirmation-actions">
-                <a asp-controller="Home" asp-action="Index" class="btn btn-continue">
+                <a asp-controller="Home" asp-action="Index" class="btn btn-continue-shopping">
                     <i class="fas fa-shopping-bag"></i> Continue Shopping
                 </a>
-                <a asp-controller="Home" asp-action="Index" class="btn btn-secondary-custom">
+                <a href="#" class="btn btn-track-order">
+                    <i class="fas fa-map-marker-alt"></i> Track Order
+                </a>
+                <a asp-controller="Home" asp-action="Index" class="btn btn-back-home">
                     <i class="fas fa-home"></i> Back to Home
                 </a>
             </div>
         </div>
     </div>
 </div>
+
+<style>
+    /* ==================== ORDER CONFIRMATION STYLES ==================== */
+    .order-success-header {
+        text-align: center;
+        background: var(--bg-overlay-dark);
+        border-radius: 15px;
+        padding: 40px 30px;
+        margin-bottom: 30px;
+        box-shadow: 0 4px 15px var(--shadow-light);
+        border: 2px solid var(--primary-color);
+        animation: successPulse 2s ease-in-out;
+    }
+
+    .success-icon {
+        font-size: 4rem;
+        color: var(--success-color);
+        margin-bottom: 20px;
+        animation: bounceIn 1s ease;
+    }
+
+    .order-success-header h1 {
+        color: var(--primary-color);
+        font-size: 2.5rem;
+        margin-bottom: 15px;
+        font-weight: 600;
+    }
+
+    .success-message {
+        color: var(--primary-color);
+        font-size: 1.2rem;
+        opacity: 0.9;
+        margin-bottom: 20px;
+        line-height: 1.5;
+    }
+
+    .order-number {
+        display: inline-block;
+        background: var(--primary-color);
+        color: var(--white);
+        padding: 10px 25px;
+        border-radius: 25px;
+        font-size: 1.1rem;
+        font-weight: 600;
+        letter-spacing: 0.5px;
+        box-shadow: 0 4px 12px rgba(76, 175, 80, 0.3);
+    }
+
+    /* Confirmation Container */
+    .confirmation-container {
+        display: grid;
+        grid-template-columns: 1fr 400px;
+        gap: 30px;
+        align-items: start;
+    }
+
+    /* Left Side - Order Details */
+    .confirmation-left {
+        display: flex;
+        flex-direction: column;
+        gap: 25px;
+    }
+
+    .confirmation-section {
+        background: var(--bg-overlay-dark);
+        border-radius: 12px;
+        padding: 30px;
+        box-shadow: 0 4px 15px var(--shadow-light);
+    }
+
+    .section-title {
+        color: var(--primary-color);
+        font-size: 1.3rem;
+        font-weight: 600;
+        margin-bottom: 20px;
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        padding-bottom: 15px;
+        border-bottom: 2px solid var(--primary-color);
+    }
+
+    /* Order Items List */
+    .order-items-list {
+        display: flex;
+        flex-direction: column;
+        gap: 15px;
+        margin-bottom: 25px;
+    }
+
+    .order-item {
+        display: flex;
+        align-items: center;
+        gap: 20px;
+        padding: 20px;
+        background: var(--white);
+        border-radius: 8px;
+        box-shadow: 0 2px 8px var(--shadow-medium);
+        transition: all 0.3s ease;
+    }
+
+        .order-item:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px var(--shadow-light);
+        }
+
+    .item-image {
+        flex-shrink: 0;
+    }
+
+        .item-image img {
+            width: 70px;
+            height: 70px;
+            object-fit: cover;
+            border-radius: 8px;
+            border: 2px solid var(--border-gray);
+        }
+
+    .no-img {
+        width: 70px;
+        height: 70px;
+        background: var(--bg-light);
+        border: 2px dashed var(--border-gray);
+        border-radius: 8px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: var(--text-secondary);
+        font-size: 1.5rem;
+    }
+
+    .item-details {
+        flex: 1;
+        min-width: 0;
+    }
+
+    .product-name {
+        color: var(--text-dark);
+        font-size: 1.1rem;
+        font-weight: 600;
+        margin: 0 0 10px 0;
+        line-height: 1.3;
+    }
+
+    .item-meta {
+        display: flex;
+        gap: 20px;
+        flex-wrap: wrap;
+    }
+
+    .quantity,
+    .unit-price {
+        color: var(--text-secondary);
+        font-size: 0.9rem;
+        font-weight: 500;
+    }
+
+    .item-total {
+        color: var(--primary-color);
+        font-size: 1.2rem;
+        font-weight: 700;
+        flex-shrink: 0;
+        min-width: 100px;
+        text-align: right;
+    }
+
+    /* Order Total Box */
+    .order-total-box {
+        background: var(--primary-color);
+        color: var(--white);
+        padding: 25px;
+        border-radius: 10px;
+        text-align: center;
+        box-shadow: 0 4px 12px rgba(76, 175, 80, 0.3);
+    }
+
+    .total-row {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        font-size: 1.3rem;
+        font-weight: 600;
+    }
+
+    .total-amount {
+        font-size: 1.8rem;
+        font-weight: 700;
+    }
+
+    /* Shipping Information */
+    .info-grid {
+        display: grid;
+        grid-template-columns: 1fr;
+        gap: 15px;
+    }
+
+    .info-item {
+        display: flex;
+        align-items: center;
+        gap: 15px;
+        padding: 15px;
+        background: var(--white);
+        border-radius: 8px;
+        box-shadow: 0 2px 6px var(--shadow-medium);
+    }
+
+        .info-item label {
+            color: var(--text-primary);
+            font-weight: 600;
+            min-width: 120px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+            .info-item label i {
+                color: var(--primary-color);
+                width: 16px;
+            }
+
+        .info-item span {
+            color: var(--text-dark);
+            font-weight: 500;
+            flex: 1;
+        }
+
+    /* Right Side - Order Summary */
+    .confirmation-right {
+        display: flex;
+        flex-direction: column;
+        gap: 25px;
+    }
+
+    .info-box {
+        background: var(--bg-overlay-dark);
+        border-radius: 12px;
+        padding: 25px;
+        box-shadow: 0 4px 15px var(--shadow-light);
+    }
+
+    .info-content {
+        display: flex;
+        flex-direction: column;
+        gap: 12px;
+    }
+
+    .info-row {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 10px 0;
+        border-bottom: 1px solid var(--border-gray);
+    }
+
+        .info-row:last-child {
+            border-bottom: none;
+        }
+
+    .info-label {
+        color: var(--primary-color);
+        font-weight: 500;
+    }
+
+    .info-value {
+        color: var(--primary-color);
+        font-weight: 600;
+    }
+
+    .payment-method {
+        color: var(--primary-color);
+        font-weight: 700;
+    }
+
+    /* Status Badges */
+    .status-badge {
+        padding: 6px 12px;
+        border-radius: 20px;
+        font-size: 0.8rem;
+        font-weight: 600;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+    }
+
+    .pending,
+    .processing {
+        background: var(--warning-color);
+        color: var(--white);
+    }
+
+    .confirmed,
+    .completed,
+    .paid {
+        background: var(--success-color);
+        color: var(--white);
+    }
+
+    .shipped {
+        background: var(--secondary-color);
+        color: var(--white);
+    }
+
+    .cancelled,
+    .failed {
+        background: var(--danger-color);
+        color: var(--white);
+    }
+
+    /* Delivery Estimate */
+    .delivery-estimate {
+        background: linear-gradient(135deg, var(--secondary-color), var(--primary-color));
+        color: var(--white);
+        padding: 25px;
+        border-radius: 12px;
+        display: flex;
+        align-items: center;
+        gap: 20px;
+        box-shadow: 0 4px 15px var(--shadow-light);
+    }
+
+    .estimate-icon {
+        font-size: 2.5rem;
+        opacity: 0.9;
+    }
+
+    .estimate-content h4 {
+        margin: 0 0 8px 0;
+        font-size: 1.2rem;
+        font-weight: 600;
+    }
+
+    .estimate-content p {
+        margin: 0 0 5px 0;
+        font-size: 1.1rem;
+        font-weight: 500;
+    }
+
+    .estimate-content small {
+        opacity: 0.9;
+        font-size: 0.85rem;
+    }
+
+    /* Confirmation Actions */
+    .confirmation-actions {
+        display: flex;
+        flex-direction: column;
+        gap: 12px;
+    }
+
+    .btn-continue-shopping {
+        background: var(--primary-color);
+        color: var(--white);
+        border: none;
+        border-radius: 8px;
+        padding: 15px 20px;
+        font-weight: 600;
+        text-decoration: none;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 10px;
+        transition: all 0.3s ease;
+        text-align: center;
+        box-shadow: 0 4px 12px rgba(76, 175, 80, 0.3);
+    }
+
+        .btn-continue-shopping:hover {
+            background: var(--primary-hover);
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(76, 175, 80, 0.4);
+            color: var(--white);
+        }
+
+    .btn-track-order {
+        background: var(--secondary-color);
+        color: var(--white);
+        border: none;
+        border-radius: 8px;
+        padding: 15px 20px;
+        font-weight: 600;
+        text-decoration: none;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 10px;
+        transition: all 0.3s ease;
+        text-align: center;
+    }
+
+        .btn-track-order:hover {
+            background: var(--secondary-hover);
+            transform: translateY(-2px);
+            color: var(--white);
+            box-shadow: 0 6px 20px rgba(33, 150, 243, 0.4);
+        }
+
+    .btn-back-home {
+        background: var(--light-gray);
+        color: var(--white);
+        border: none;
+        border-radius: 8px;
+        padding: 12px 20px;
+        font-weight: 600;
+        text-decoration: none;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 8px;
+        transition: all 0.3s ease;
+        text-align: center;
+    }
+
+        .btn-back-home:hover {
+            background: var(--medium-gray);
+            transform: translateY(-2px);
+            color: var(--white);
+            box-shadow: 0 4px 12px var(--shadow-medium);
+        }
+
+    /* ==================== ANIMATIONS ==================== */
+    @@keyframes successPulse {
+        0% {
+            box-shadow: 0 0 0 0 rgba(76, 175, 80, 0.7);
+        }
+
+        70% {
+            box-shadow: 0 0 0 20px rgba(76, 175, 80, 0);
+        }
+
+        100% {
+            box-shadow: 0 0 0 0 rgba(76, 175, 80, 0);
+        }
+    }
+
+    @@keyframes bounceIn {
+        0% {
+            opacity: 0;
+            transform: scale(0.3);
+        }
+
+        50% {
+            opacity: 1;
+            transform: scale(1.05);
+        }
+
+        70% {
+            transform: scale(0.9);
+        }
+
+        100% {
+            opacity: 1;
+            transform: scale(1);
+        }
+    }
+
+    /* ==================== RESPONSIVE DESIGN ==================== */
+    @@media (max-width: 1024px) {
+        .confirmation-container {
+            grid-template-columns: 1fr;
+            gap: 25px;
+        }
+
+        .confirmation-right {
+            order: -1;
+        }
+    }
+
+    @@media (max-width: 768px) {
+        .order-success-header {
+            padding: 30px 20px;
+        }
+
+            .order-success-header h1 {
+                font-size: 2rem;
+            }
+
+        .success-icon {
+            font-size: 3rem;
+        }
+
+        .confirmation-section {
+            padding: 25px 20px;
+        }
+
+        .order-item {
+            flex-direction: column;
+            text-align: center;
+            gap: 15px;
+        }
+
+        .item-meta {
+            justify-content: center;
+        }
+
+        .item-total {
+            text-align: center;
+        }
+
+        .info-item {
+            flex-direction: column;
+            align-items: flex-start;
+            gap: 8px;
+        }
+
+        .delivery-estimate {
+            flex-direction: column;
+            text-align: center;
+            gap: 15px;
+        }
+    }
+
+    @@media (max-width: 480px) {
+        .order-success-header {
+            padding: 25px 15px;
+        }
+
+            .order-success-header h1 {
+                font-size: 1.8rem;
+            }
+
+        .success-message {
+            font-size: 1rem;
+        }
+
+        .confirmation-section {
+            padding: 20px 15px;
+        }
+
+        .section-title {
+            font-size: 1.1rem;
+        }
+
+        .total-amount {
+            font-size: 1.5rem;
+        }
+
+        .confirmation-actions {
+            gap: 10px;
+        }
+
+            .confirmation-actions .btn {
+                padding: 12px 15px;
+                font-size: 0.9rem;
+            }
+    }
+</style>

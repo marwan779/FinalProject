@@ -10,106 +10,95 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
 </head>
 <body>
-    <header>
-        <nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-dark bg-navbar border-bottom box-shadow mb-3">
-            <div class="container-fluid">
-                <a class="navbar-brand text-light" asp-area="" asp-controller="Home" asp-action="Index">
-                    <i class="fas fa-box"></i> Inventory System
-                </a>
-                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target=".navbar-collapse"
-                        aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
-                    <span class="navbar-toggler-icon"></span>
-                </button>
-                <div class="navbar-collapse collapse d-sm-inline-flex justify-content-between">
-                    <ul class="navbar-nav flex-grow-1">
-                        <li class="nav-item">
-                            <a class="nav-link text-light nav-link-custom" asp-area="" asp-controller="Home" asp-action="Index">
-                                <i class="fas fa-home"></i> Home
-                            </a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link text-light nav-link-custom" asp-area="" asp-controller="Home" asp-action="Privacy">
-                                <i class="fas fa-shield-alt"></i> Privacy
-                            </a>
-                        </li>
-
-
-
-
-
-                       
-
-
-                        @* Owner Options Dropdown *@
-                        @if (User.IsInRole(StaticDetails.OwnerRole))
-                        {
-                            <li class="nav-item dropdown">
-                                <a class="nav-link dropdown-toggle text-light nav-link-custom" href="#" id="ownerDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-                                    Owner Options
+    <div class="d-flex flex-column min-vh-100">
+        <header>
+            <nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-dark bg-navbar border-bottom box-shadow mb-3">
+                <div class="container-fluid">
+                    <a class="navbar-brand text-light" asp-area="" asp-controller="Home" asp-action="Index">
+                        <i class="fas fa-box"></i> Inventory System
+                    </a>
+                    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target=".navbar-collapse"
+                            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+                        <span class="navbar-toggler-icon"></span>
+                    </button>
+                    <div class="navbar-collapse collapse d-sm-inline-flex justify-content-between">
+                        <ul class="navbar-nav flex-grow-1">
+                            <li class="nav-item">
+                                <a class="nav-link text-light nav-link-custom" asp-area="" asp-controller="Home" asp-action="Index">
+                                    <i class="fas fa-home"></i> Home
                                 </a>
-                                <ul class="dropdown-menu" aria-labelledby="ownerDropdown">
-                                    <li>
-                                        <a class="dropdown-item nav-link-custom" asp-area="Owner" asp-controller="Products" asp-action="Index">Products</a>
-                                    </li>
-                                    <li><hr class="dropdown-divider"></li>
-                                    <li>
-                                        <a class="dropdown-item nav-link-custom" asp-area="Owner" asp-controller="OwnerPurchaseOrders" asp-action="Index">Purchase Orders</a>
-                                    </li>
-                                    <li><hr class="dropdown-divider"></li>
-                                </ul>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link text-light nav-link-custom" asp-area="" asp-controller="Home" asp-action="Privacy">
+                                    <i class="fas fa-shield-alt"></i> Privacy
+                                </a>
                             </li>
 
-                        }
+                            @* Owner Options Dropdown *@
+                            @if (User.IsInRole(StaticDetails.OwnerRole))
+                            {
+                                <li class="nav-item dropdown">
+                                    <a class="nav-link dropdown-toggle text-light nav-link-custom" href="#" id="ownerDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                                        Owner Options
+                                    </a>
+                                    <ul class="dropdown-menu" aria-labelledby="ownerDropdown">
+                                        <li>
+                                            <a class="dropdown-item nav-link-custom" asp-area="Owner" asp-controller="Products" asp-action="Index">Products</a>
+                                        </li>
+                                        <li><hr class="dropdown-divider"></li>
+                                        <li>
+                                            <a class="dropdown-item nav-link-custom" asp-area="Owner" asp-controller="OwnerPurchaseOrders" asp-action="Index">Purchase Orders</a>
+                                        </li>
+                                        <li><hr class="dropdown-divider"></li>
+                                    </ul>
+                                </li>
+                            }
 
+                            @if (User.IsInRole(StaticDetails.SupplierRole))
+                            {
+                                <li class="nav-item dropdown">
+                                    <a class="nav-link dropdown-toggle text-light nav-link-custom" href="#" id="ownerDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                                        Supplier Options
+                                    </a>
+                                    <ul class="dropdown-menu" aria-labelledby="ownerDropdown">
+                                        <li>
+                                            <a class="dropdown-item nav-link-custom" asp-area="Supplier" asp-controller="SupplierPurchaseOrders" asp-action="Index">Purchase Orders</a>
+                                        </li>
+                                        <li><hr class="dropdown-divider"></li>
+                                    </ul>
+                                </li>
+                            }
+                        </ul>
 
-                        @if (User.IsInRole(StaticDetails.SupplierRole))
-                        {
-                            <li class="nav-item dropdown">
-                                <a class="nav-link dropdown-toggle text-light nav-link-custom" href="#" id="ownerDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-                                    Supplier Options
+                        <!-- Right Side - Always Show Cart -->
+                        <partial name="_LoginPartial" />
+
+                        <!-- Cart Icon - Show for everyone -->
+                        <ul class="navbar-nav">
+                            <li class="nav-item">
+                                <a class="nav-link text-light cart-link position-relative" asp-controller="Cart" asp-action="Index" title="Shopping Cart">
+                                    <i class="fas fa-shopping-cart fa-lg"></i>
+                                    <span class="cart-badge" id="navbar-cart-count" style="display: none;">0</span>
                                 </a>
-                                <ul class="dropdown-menu" aria-labelledby="ownerDropdown">
-                                    <li>
-                                        <a class="dropdown-item nav-link-custom" asp-area="Supplier" asp-controller="SupplierPurchaseOrders" asp-action="Index">Purchase Orders</a>
-                                    </li>
-                                    <li><hr class="dropdown-divider"></li>
-                                    
-                                </ul>
                             </li>
-                        }
-
-
-
-                    </ul>
-
-                    <!-- Right Side - Always Show Cart -->
-                    <partial name="_LoginPartial" />
-
-                    <!-- Cart Icon - Show for everyone -->
-                    <ul class="navbar-nav">
-                        <li class="nav-item">
-                            <a class="nav-link text-light cart-link position-relative" asp-controller="Cart" asp-action="Index" title="Shopping Cart">
-                                <i class="fas fa-shopping-cart fa-lg"></i>
-                                <span class="cart-badge" id="navbar-cart-count" style="display: none;">0</span>
-                            </a>
-                        </li>
-                    </ul>
+                        </ul>
+                    </div>
                 </div>
-            </div>
-        </nav>
-    </header>
+            </nav>
+        </header>
 
-    <div class="container-fluid px-0">
-        <main role="main">
-            @RenderBody()
-        </main>
-    </div>
-
-    <footer class="border-top footer text-muted bg-dark mt-5">
-        <div class="container text-center py-3">
-            <span class="text-light">&copy; 2024 - InventoryManagementSystem - <a asp-area="" asp-controller="Home" asp-action="Privacy" class="text-light">Privacy</a></span>
+        <div class="container-fluid px-0 flex-grow-1">
+            <main role="main" class="pb-3">
+                @RenderBody()
+            </main>
         </div>
-    </footer>
+
+        <footer class="border-top footer text-muted bg-dark mt-auto">
+            <div class="container text-center py-3">
+                <span class="text-light">&copy; 2024 - InventoryManagementSystem - <a asp-area="" asp-controller="Home" asp-action="Privacy" class="text-light">Privacy</a></span>
+            </div>
+        </footer>
+    </div>
 
     <script src="~/lib/jquery/dist/jquery.min.js"></script>
     <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
@@ -157,4 +146,3 @@
     @await RenderSectionAsync("Scripts", required: false)
 </body>
 </html>
-

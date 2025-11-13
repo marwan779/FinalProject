@@ -16,7 +16,7 @@
             <div class="product-details-image">
                 @if (!string.IsNullOrEmpty(Model.ProductImagePath))
                 {
-                    <img src="~/@Model.ProductImagePath" alt="@Model.Name" class="detail-image" />
+                    <img src="@Model.ProductImagePath" alt="@Model.Name" class="detail-image" />
                 }
                 else
                 {
@@ -25,56 +25,80 @@
                         <span>No Image Available</span>
                     </div>
                 }
-            </div>
 
-            <!-- Product Information -->
-            <div class="product-details-info">
-                <div class="detail-section">
-                    <h3>Category</h3>
-                    <p>@Model.Category.Name</p>
-                </div>
-
-                <div class="detail-section">
-                    <h3>Description</h3>
-                    <p>@(string.IsNullOrEmpty(Model.Description) ? "No description available." : Model.Description)</p>
-                </div>
-
-                <div class="detail-section">
-                    <h3>Price</h3>
-                    <p class="detail-price">EGP @Model.UnitPrice.ToString("N2")</p>
-                </div>
-
-                <div class="detail-section">
-                    <h3>Stock Status</h3>
+                <!-- Stock Badge on Image -->
+                <div class="image-stock-badge">
                     @if (Model.QuantityInStock > 0)
                     {
-                        <span class="stock-badge in-stock">In Stock (@Model.QuantityInStock units)</span>
+                        <span class="stock-badge in-stock">In Stock</span>
                     }
                     else
                     {
                         <span class="stock-badge out-of-stock">Out of Stock</span>
                     }
                 </div>
+            </div>
 
-                <!-- Actions -->
+            <!-- Product Information -->
+            <div class="product-details-info">
+                <div class="detail-section">
+                    <h3 class="section-title">Product Information</h3>
+
+                    <div class="detail-item">
+                        <label class="detail-label">Category:</label>
+                        <span class="detail-value">@Model.Category.Name</span>
+                    </div>
+
+                    <div class="detail-item">
+                        <label class="detail-label">Description:</label>
+                        <p class="detail-description">@(string.IsNullOrEmpty(Model.Description) ? "No description available." : Model.Description)</p>
+                    </div>
+
+                    <div class="detail-item">
+                        <label class="detail-label">Price:</label>
+                        <span class="detail-price">EGP @Model.UnitPrice.ToString("N2")</span>
+                    </div>
+
+                    <div class="detail-item">
+                        <label class="detail-label">Available Quantity:</label>
+                        <span class="detail-quantity @(Model.QuantityInStock > 0 ? "in-stock-text" : "out-of-stock-text")">
+                            @Model.QuantityInStock units
+                        </span>
+                    </div>
+
+                    <!-- Additional Product Details -->
+                    <div class="product-meta">
+                        <div class="meta-item">
+                            <i class="fas fa-barcode"></i>
+                            <span>Product ID: @Model.ProductId</span>
+                        </div>
+                        <div class="meta-item">
+                            <i class="fas fa-calendar-alt"></i>
+                            <span>Last Updated: @Model.UpdatedAt.ToString("MMM dd, yyyy")</span>
+                        </div>
+                    </div>
+                </div>
+
                 <!-- Actions -->
                 <div class="detail-actions">
                     @if (User.Identity.IsAuthenticated)
                     {
-                        <button class="btn btn-add-to-cart btn-lg" onclick="addToCart(@Model.ProductId)">
+                        <button class="btn btn-add-to-cart-detail @(Model.QuantityInStock <= 0 ? "disabled" : "")"
+                                onclick="addToCart(@Model.ProductId)"
+                                @(Model.QuantityInStock <= 0 ? "disabled" : "")>
                             <i class="fas fa-shopping-cart"></i>
-                            Add to Cart
+                            @(Model.QuantityInStock > 0 ? "Add to Cart" : "Out of Stock")
                         </button>
                     }
                     else
                     {
-                        <a asp-area="Identity" asp-page="/Account/Login" asp-route-returnUrl="@Context.Request.Path" class="btn btn-add-to-cart btn-lg">
+                        <a asp-area="Identity" asp-page="/Account/Login" asp-route-returnUrl="@Context.Request.Path" class="btn btn-login-required">
                             <i class="fas fa-sign-in-alt"></i>
-                            Login to Add to Cart
+                            Login to Purchase
                         </a>
                     }
 
-                    <a asp-controller="Home" asp-action="Index" class="btn btn-cancel">
+                    <a asp-controller="Home" asp-action="Index" class="btn btn-back">
                         <i class="fas fa-arrow-left"></i>
                         Back to Products
                     </a>
@@ -84,6 +108,384 @@
     </div>
 </div>
 
+<style>
+    /* ==================== PRODUCT DETAILS STYLES ==================== */
+    .product-details-grid {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 40px;
+        align-items: start;
+    }
+
+    /* Product Image Styles */
+    .product-details-image {
+        position: relative;
+        background: var(--white);
+        border-radius: 12px;
+        overflow: hidden;
+        box-shadow: 0 4px 15px var(--shadow-light);
+    }
+
+    .detail-image {
+        width: 100%;
+        height: 400px;
+        object-fit: cover;
+        display: block;
+    }
+
+    .no-image-large {
+        width: 100%;
+        height: 400px;
+        background: var(--bg-light);
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        color: var(--text-secondary);
+        font-size: 4rem;
+    }
+
+        .no-image-large span {
+            font-size: 1.1rem;
+            margin-top: 15px;
+            font-weight: 500;
+        }
+
+    .image-stock-badge {
+        position: absolute;
+        top: 15px;
+        right: 15px;
+    }
+
+    /* Product Information Styles */
+    .product-details-info {
+        display: flex;
+        flex-direction: column;
+        gap: 25px;
+    }
+
+    .detail-section {
+        background: var(--white);
+        padding: 25px;
+        border-radius: 10px;
+        box-shadow: 0 2px 8px var(--shadow-medium);
+    }
+
+    .section-title {
+        color: var(--primary-color);
+        font-size: 1.4rem;
+        font-weight: 600;
+        margin-bottom: 20px;
+        padding-bottom: 10px;
+        border-bottom: 2px solid var(--primary-color);
+    }
+
+    .detail-item {
+        margin-bottom: 20px;
+        display: flex;
+        flex-direction: column;
+        gap: 8px;
+    }
+
+        .detail-item:last-child {
+            margin-bottom: 0;
+        }
+
+    .detail-label {
+        font-weight: 600;
+        color: var(--text-primary);
+        font-size: 0.95rem;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+    }
+
+    .detail-value {
+        color: var(--text-dark);
+        font-size: 1.1rem;
+        font-weight: 500;
+    }
+
+    .detail-description {
+        color: var(--text-secondary);
+        line-height: 1.6;
+        font-size: 1rem;
+        margin: 0;
+        padding: 15px;
+        background: var(--bg-light);
+        border-radius: 6px;
+        border-left: 4px solid var(--primary-color);
+    }
+
+    .detail-price {
+        color: var(--primary-color);
+        font-size: 2rem;
+        font-weight: 700;
+        font-family: 'Arial', sans-serif;
+    }
+
+    .detail-quantity {
+        font-size: 1.2rem;
+        font-weight: 600;
+        padding: 8px 16px;
+        border-radius: 6px;
+        display: inline-block;
+    }
+
+    .in-stock-text {
+        color: var(--success-color);
+        background: rgba(76, 175, 80, 0.1);
+        border: 1px solid var(--success-color);
+    }
+
+    .out-of-stock-text {
+        color: var(--danger-color);
+        background: rgba(244, 67, 54, 0.1);
+        border: 1px solid var(--danger-color);
+    }
+
+    /* Product Meta Information */
+    .product-meta {
+        display: flex;
+        flex-direction: column;
+        gap: 12px;
+        margin-top: 20px;
+        padding-top: 20px;
+        border-top: 1px solid var(--border-gray);
+    }
+
+    .meta-item {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        color: var(--text-secondary);
+        font-size: 0.9rem;
+    }
+
+        .meta-item i {
+            color: var(--primary-color);
+            width: 16px;
+        }
+
+    /* Action Buttons */
+    .detail-actions {
+        display: flex;
+        flex-direction: column;
+        gap: 15px;
+        background: var(--white);
+        padding: 25px;
+        border-radius: 10px;
+        box-shadow: 0 2px 8px var(--shadow-medium);
+    }
+
+    .btn-add-to-cart-detail {
+        background: var(--primary-color);
+        color: var(--white);
+        border: none;
+        border-radius: 8px;
+        padding: 18px 30px;
+        font-size: 1.2rem;
+        font-weight: 600;
+        text-decoration: none;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 12px;
+        transition: all 0.3s ease;
+        cursor: pointer;
+        box-shadow: 0 4px 12px rgba(76, 175, 80, 0.3);
+    }
+
+        .btn-add-to-cart-detail:hover:not(.disabled) {
+            background: var(--primary-hover);
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(76, 175, 80, 0.4);
+            color: var(--white);
+        }
+
+        .btn-add-to-cart-detail.disabled {
+            background: var(--light-gray);
+            cursor: not-allowed;
+            opacity: 0.6;
+            box-shadow: none;
+        }
+
+            .btn-add-to-cart-detail.disabled:hover {
+                transform: none;
+                box-shadow: none;
+            }
+
+    .btn-login-required {
+        background: var(--secondary-color);
+        color: var(--white);
+        border: none;
+        border-radius: 8px;
+        padding: 18px 30px;
+        font-size: 1.2rem;
+        font-weight: 600;
+        text-decoration: none;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 12px;
+        transition: all 0.3s ease;
+        text-align: center;
+    }
+
+        .btn-login-required:hover {
+            background: var(--secondary-hover);
+            transform: translateY(-2px);
+            color: var(--white);
+            box-shadow: 0 6px 20px rgba(33, 150, 243, 0.4);
+        }
+
+    .btn-back {
+        background: var(--light-gray);
+        color: var(--white);
+        border: none;
+        border-radius: 8px;
+        padding: 15px 25px;
+        font-size: 1rem;
+        font-weight: 600;
+        text-decoration: none;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 10px;
+        transition: all 0.3s ease;
+        text-align: center;
+    }
+
+        .btn-back:hover {
+            background: var(--medium-gray);
+            transform: translateY(-2px);
+            color: var(--white);
+            box-shadow: 0 4px 12px var(--shadow-medium);
+        }
+
+    /* Stock Badge Styles */
+    .stock-badge {
+        padding: 8px 16px;
+        border-radius: 20px;
+        font-weight: 700;
+        font-size: 0.85rem;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+        box-shadow: 0 2px 6px var(--shadow-light);
+    }
+
+    .in-stock {
+        background: var(--success-color);
+        color: var(--white);
+    }
+
+    .out-of-stock {
+        background: var(--danger-color);
+        color: var(--white);
+    }
+
+    /* ==================== RESPONSIVE DESIGN ==================== */
+    @@media (max-width: 1024px) {
+        .product-details-grid {
+            gap: 30px;
+        }
+
+        .detail-image,
+        .no-image-large {
+            height: 350px;
+        }
+    }
+
+    @@media (max-width: 768px) {
+        .product-details-grid {
+            grid-template-columns: 1fr;
+            gap: 25px;
+        }
+
+        .product-details-image {
+            max-width: 500px;
+            margin: 0 auto;
+        }
+
+        .detail-image,
+        .no-image-large {
+            height: 300px;
+        }
+
+        .detail-price {
+            font-size: 1.8rem;
+        }
+
+        .btn-add-to-cart-detail,
+        .btn-login-required {
+            padding: 16px 25px;
+            font-size: 1.1rem;
+        }
+    }
+
+    @@media (max-width: 480px) {
+        .form-container {
+            padding: 20px;
+        }
+
+        .detail-section {
+            padding: 20px;
+        }
+
+        .detail-actions {
+            padding: 20px;
+        }
+
+        .detail-image,
+        .no-image-large {
+            height: 250px;
+        }
+
+        .detail-price {
+            font-size: 1.6rem;
+        }
+
+        .btn-add-to-cart-detail,
+        .btn-login-required {
+            padding: 14px 20px;
+            font-size: 1rem;
+        }
+
+        .btn-back {
+            padding: 12px 20px;
+            font-size: 0.95rem;
+        }
+
+        .section-title {
+            font-size: 1.2rem;
+        }
+
+        .detail-label {
+            font-size: 0.9rem;
+        }
+
+        .detail-value {
+            font-size: 1rem;
+        }
+    }
+
+    /* Animation for page load */
+    .product-details-grid {
+        animation: fadeInUp 0.6s ease;
+    }
+
+    @@keyframes fadeInUp {
+        from {
+            opacity: 0;
+            transform: translateY(20px);
+        }
+
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+</style>
+
 @section Scripts {
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <script>
@@ -91,7 +493,10 @@
             $.ajax({
                 url: '@Url.Action("AddToCart", "Cart")',
                 type: 'POST',
-                data: { productId: productId, quantity: 1 },
+                data: {
+                    productId: productId,
+                    quantity: 1
+                },
                 success: function (response) {
                     if (response.success) {
                         showToast('success', response.message);
@@ -103,8 +508,9 @@
                         showToast('error', response.message);
                     }
                 },
-                error: function () {
-                    showToast('error', 'Failed to add product to cart!');
+                error: function (xhr, status, error) {
+                    console.error('Error adding to cart:', error);
+                    showToast('error', 'Failed to add product to cart! Please try again.');
                 }
             });
         }
@@ -115,7 +521,9 @@
                 position: 'top-end',
                 showConfirmButton: false,
                 timer: 3000,
-                timerProgressBar: true
+                timerProgressBar: true,
+                background: 'var(--bg-overlay-dark)',
+                color: 'var(--text-light)'
             });
 
             Toast.fire({
@@ -123,5 +531,21 @@
                 title: message
             });
         }
+
+        // Add smooth scrolling for better UX
+        $(document).ready(function () {
+            // Add loading state to buttons
+            $('.btn-add-to-cart-detail').on('click', function () {
+                if (!$(this).hasClass('disabled')) {
+                    const originalText = $(this).html();
+                    $(this).html('<i class="fas fa-spinner fa-spin"></i> Adding...').prop('disabled', true);
+
+                    // Revert after 3 seconds if something goes wrong
+                    setTimeout(() => {
+                        $(this).html(originalText).prop('disabled', false);
+                    }, 3000);
+                }
+            });
+        });
     </script>
 }

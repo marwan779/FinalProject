@@ -1,0 +1,343 @@
+﻿@using InventoryManagementSystem.Models.ViewModels.Supplier
+@using InventoryManagementSystem.Utility
+@model SupplierUpdatePurchaseOrderVM
+
+@{
+    ViewData["Title"] = "Update Purchase Order Status";
+    Layout = "_Layout";
+
+}
+
+<div class="update-product-page">
+    <div class="page-header">
+        <h1><i class="fas fa-edit me-2"></i>Update Purchase Order Status</h1>
+        <p class="page-subtitle">Update the status of purchase order #@Model.PurchaseOrderId</p>
+    </div>
+
+    <div class="form-container">
+        <form asp-action="UpdatePurchaseOrder" method="post" class="product-form">
+            <div asp-validation-summary="ModelOnly" class="validation-summary"></div>
+
+            <input type="hidden" asp-for="PurchaseOrderId" />
+
+            <div class="form-grid">
+                <!-- Order Information Section -->
+                <div class="form-section">
+                    <h3 class="section-title"><i class="fas fa-info-circle me-2"></i>Order Information</h3>
+
+                    <div class="order-details">
+                        <div class="detail-item">
+                            <span class="detail-label">Order ID:</span>
+                            <span class="detail-value">#@Model.PurchaseOrderId</span>
+                        </div>
+                        <div class="detail-item">
+                            <span class="detail-label">Current Status:</span>
+                            <span class="detail-value status-badge @GetStatusClass(Model.CurrentStatus)">
+                                @Model.CurrentStatus
+                            </span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Status Update Section -->
+                <div class="form-section">
+                    <h3 class="section-title"><i class="fas fa-sync-alt me-2"></i>Update Status</h3>
+
+                    <div class="form-group">
+                        <label asp-for="CurrentStatus" class="form-label">
+                            <i class="fas fa-tasks me-1"></i>New Status *
+                        </label>
+                        <select asp-for="CurrentStatus" class="form-control">
+                            <option value="">-- Select New Status --</option>
+                            <option value="@StaticDetails.PurchaseOrderPending">@StaticDetails.PurchaseOrderPending</option>
+                            <option value="@StaticDetails.PurchaseOrderShipped">@StaticDetails.PurchaseOrderShipped</option>
+                            <option value="@StaticDetails.PurchaseOrderRejected">@StaticDetails.PurchaseOrderRejected</option>
+                        </select>
+                        <span asp-validation-for="CurrentStatus" class="validation-message"></span>
+                    </div>
+
+                    <!-- Status Descriptions -->
+                    <div class="status-info">
+                        <div class="status-item">
+                            <span class="status-badge in-stock">@StaticDetails.PurchaseOrderPending</span>
+                            <span class="status-description">Order is awaiting processing</span>
+                        </div>
+                        <div class="status-item">
+                            <span class="status-badge low-stock">@StaticDetails.PurchaseOrderShipped</span>
+                            <span class="status-description">Order has been shipped to customer</span>
+                        </div>
+                        <div class="status-item">
+                            <span class="status-badge out-of-stock">@StaticDetails.PurchaseOrderRejected</span>
+                            <span class="status-description">Order has been rejected/cancelled</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Update Notes Section -->
+                <div class="form-section">
+                    <h3 class="section-title"><i class="fas fa-sticky-note me-2"></i>Update Information</h3>
+
+                    <div class="update-notice">
+                        <div class="notice-icon">
+                            <i class="fas fa-info-circle"></i>
+                        </div>
+                        <div class="notice-content">
+                            <h4>Please Note</h4>
+                            <p>Updating the status will change the current state of this purchase order. Make sure to select the appropriate status based on the actual order progress.</p>
+                            <p><strong>Important:</strong> Changing status to "Shipped" indicates the order has been dispatched to the customer.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Form Actions -->
+            <div class="form-actions">
+                <a asp-action="Index" asp-controller="SupplierPurchaseOrders" asp-area="Supplier" class="btn btn-cancel">
+                    <i class="fas fa-arrow-left me-2"></i>Back to Orders
+                </a>
+                <button type="submit" class="btn btn-update">
+                    <i class="fas fa-save me-2"></i>Update Status
+                </button>
+            </div>
+        </form>
+    </div>
+</div>
+
+@functions {
+    public string GetStatusClass(string status)
+    {
+        return status switch
+        {
+            StaticDetails.PurchaseOrderPending => "in-stock",      // Green
+            StaticDetails.PurchaseOrderShipped => "low-stock",     // Yellow
+            StaticDetails.PurchaseOrderRejected => "out-of-stock", // Red
+            _ => "out-of-stock" // Default red for unknown
+        };
+    }
+}
+
+<style>
+    /* Order Details Styles */
+    .order-details {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+        gap: 15px;
+        margin-bottom: 10px;
+    }
+
+    .detail-item {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 15px;
+        background: var(--bg-light);
+        border-radius: 8px;
+        border-left: 4px solid var(--primary-color);
+    }
+
+    .detail-label {
+        font-weight: 600;
+        color: var(--text-primary);
+        font-size: 0.95rem;
+    }
+
+    .detail-value {
+        font-weight: 700;
+        font-size: 1.1rem;
+        color: black;
+    }
+
+    /* Status Info Styles */
+    .status-info {
+        display: flex;
+        flex-direction: column;
+        gap: 12px;
+        margin-top: 20px;
+        padding: 20px;
+        background: var(--bg-light);
+        border-radius: 8px;
+        border-left: 4px solid var(--secondary-color);
+    }
+
+    .status-item {
+        display: flex;
+        align-items: center;
+        gap: 15px;
+        padding: 10px 0;
+    }
+
+        .status-item:not(:last-child) {
+            border-bottom: 1px solid var(--border-gray);
+        }
+
+    .status-badge {
+        padding: 6px 12px;
+        border-radius: 20px;
+        font-weight: 600;
+        font-size: 0.8rem;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+        min-width: 100px;
+        text-align: center;
+    }
+
+    .status-description {
+        color: var(--text-primary);
+        font-size: 0.9rem;
+        flex: 1;
+    }
+
+    /* Update Notice Styles */
+    .update-notice {
+        display: flex;
+        align-items: flex-start;
+        gap: 15px;
+        padding: 20px;
+        background: linear-gradient(135deg, #fff3cd, #ffeaa7);
+        border: 1px solid #ffecb5;
+        border-radius: 8px;
+        border-left: 4px solid var(--warning-color);
+    }
+
+    .notice-icon {
+        font-size: 1.5rem;
+        color: var(--warning-color);
+        margin-top: 2px;
+    }
+
+    .notice-content h4 {
+        color: #856404;
+        margin-bottom: 8px;
+        font-weight: 600;
+    }
+
+    .notice-content p {
+        color: #856404;
+        margin: 0;
+        line-height: 1.5;
+    }
+
+        .notice-content p:not(:last-child) {
+            margin-bottom: 10px;
+        }
+
+    /* Enhanced form styles */
+    .product-form .form-section {
+        position: relative;
+    }
+
+    .product-form .section-title {
+        display: flex;
+        align-items: center;
+    }
+
+    /* Status select styling */
+    .form-control[asp-for="CurrentStatus"] {
+        background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 20 20'%3e%3cpath stroke='%236b7280' stroke-linecap='round' stroke-linejoin='round' stroke-width='1.5' d='m6 8 4 4 4-4'/%3e%3c/svg%3e");
+        background-position: right 0.5rem center;
+        background-repeat: no-repeat;
+        background-size: 1.5em 1.5em;
+        padding-right: 2.5rem;
+        -webkit-appearance: none;
+        -moz-appearance: none;
+        appearance: none;
+    }
+
+    /* Responsive adjustments */
+    @@media (max-width: 768px) {
+        .order-details {
+            grid-template-columns: 1fr;
+        }
+
+        .status-item {
+            flex-direction: column;
+            align-items: flex-start;
+            gap: 8px;
+        }
+
+        .status-badge {
+            min-width: auto;
+            align-self: flex-start;
+        }
+
+        .update-notice {
+            flex-direction: column;
+            text-align: center;
+        }
+
+        .notice-icon {
+            align-self: center;
+        }
+    }
+</style>
+
+@section Scripts {
+    <script>
+        // Form validation enhancement
+        const form = document.querySelector('.product-form');
+        const statusSelect = document.getElementById('CurrentStatus');
+
+        form.addEventListener('submit', function (e) {
+            const selectedStatus = statusSelect.value;
+
+            if (!selectedStatus) {
+                e.preventDefault();
+                alert('Please select a new status for the purchase order.');
+                statusSelect.focus();
+                return;
+            }
+
+            // Confirmation for status changes
+            const currentStatus = '@Model.CurrentStatus';
+
+            if (selectedStatus === '@StaticDetails.PurchaseOrderRejected') {
+                if (!confirm('Are you sure you want to reject this purchase order? This action cannot be undone.')) {
+                    e.preventDefault();
+                    return;
+                }
+            }
+            else if (selectedStatus === '@StaticDetails.PurchaseOrderShipped') {
+                if (!confirm('Confirm that this order has been shipped to the customer?')) {
+                    e.preventDefault();
+                    return;
+                }
+            }
+            else if (selectedStatus === currentStatus) {
+                if (!confirm('The selected status is the same as the current status. Do you want to continue?')) {
+                    e.preventDefault();
+                    return;
+                }
+            }
+            else {
+                if (!confirm('Are you sure you want to update the status of this purchase order?')) {
+                    e.preventDefault();
+                }
+            }
+        });
+
+        // Visual feedback for status selection
+        statusSelect.addEventListener('change', function() {
+            const selectedStatus = this.value;
+
+            // Remove previous styling
+            this.style.borderColor = '';
+            this.style.boxShadow = '';
+
+            // Add styling based on selected status
+            switch(selectedStatus) {
+                case '@StaticDetails.PurchaseOrderShipped':
+                    this.style.borderColor = 'var(--warning-color)';
+                    this.style.boxShadow = '0 0 0 2px rgba(255, 152, 0, 0.2)';
+                    break;
+                case '@StaticDetails.PurchaseOrderRejected':
+                    this.style.borderColor = 'var(--danger-color)';
+                    this.style.boxShadow = '0 0 0 2px rgba(244, 67, 54, 0.2)';
+                    break;
+                case '@StaticDetails.PurchaseOrderPending':
+                    this.style.borderColor = 'var(--success-color)';
+                    this.style.boxShadow = '0 0 0 2px rgba(76, 175, 80, 0.2)';
+                    break;
+            }
+        });
+    </script>
+}

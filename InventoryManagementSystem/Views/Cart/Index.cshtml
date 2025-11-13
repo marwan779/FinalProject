@@ -2,6 +2,7 @@
 
 @{
     ViewData["Title"] = "Shopping Cart";
+    Layout = "_Layout";
 }
 
 <div class="products-page">
@@ -87,14 +88,7 @@
             </div>
 
             <!-- Cart Summary -->
-
-            <div class="summary-actions">
-                <button type="button" class="btn btn-checkout" onclick="checkout()">
-                    <i class="fas fa-lock"></i> Proceed to Checkout
-                </button>
-
-                <!-- ... الأزرار التانية -->
-              <div class="cart-summary">
+            <div class="cart-summary">
                 <div class="summary-card">
                     <h3 class="summary-title">
                         <i class="fas fa-receipt"></i> Order Summary
@@ -124,26 +118,23 @@
                         </div>
                     </div>
 
-               </div>
-              
-           
                     <!-- Action Buttons -->
                     <div class="summary-actions">
-                        <button type="button" class="btn btn-checkout" onclick="checkout()">
+                        <button type="button" class="btn-checkout" onclick="checkout()">
                             <i class="fas fa-lock"></i> Proceed to Checkout
                         </button>
 
-                        <a asp-controller="Home" asp-action="Index" class="btn btn-continue">
+                        <a asp-controller="Home" asp-action="Index" class="btn-continue">
                             <i class="fas fa-arrow-left"></i> Continue Shopping
                         </a>
 
-                        <button type="button" class="btn btn-clear-cart" onclick="clearCart()">
+                        <button type="button" class="btn-clear-cart" onclick="clearCart()">
                             <i class="fas fa-trash-alt"></i> Clear Cart
                         </button>
                     </div>
                 </div>
-              </div>
             </div>
+        </div>
     }
     else
     {
@@ -162,14 +153,81 @@
 </div>
 
 @section Scripts {
-
-
     <script>
+        function updateQuantity(cartId, newQuantity, maxQuantity) {
+            if (newQuantity < 1 || newQuantity > maxQuantity) {
+                return;
+            }
+
+            $.ajax({
+                url: '/Cart/UpdateQuantity',
+                type: 'POST',
+                data: {
+                    cartId: cartId,
+                    quantity: newQuantity
+                },
+                success: function (response) {
+                    if (response.success) {
+                        location.reload();
+                    } else {
+                        alert('Error updating quantity: ' + response.message);
+                    }
+                },
+                error: function () {
+                    alert('Error updating quantity. Please try again.');
+                }
+            });
+        }
+
+        function removeItem(cartId) {
+            if (confirm('Are you sure you want to remove this item from your cart?')) {
+                $.ajax({
+                    url: '/Cart/RemoveItem',
+                    type: 'POST',
+                    data: { cartId: cartId },
+                    success: function (response) {
+                        if (response.success) {
+                            location.reload();
+                        } else {
+                            alert('Error removing item: ' + response.message);
+                        }
+                    },
+                    error: function () {
+                        alert('Error removing item. Please try again.');
+                    }
+                });
+            }
+        }
+
+        function clearCart() {
+            if (confirm('Are you sure you want to clear your entire cart?')) {
+                $.ajax({
+                    url: '/Cart/ClearCart',
+                    type: 'POST',
+                    success: function (response) {
+                        if (response.success) {
+                            location.reload();
+                        } else {
+                            alert('Error clearing cart: ' + response.message);
+                        }
+                    },
+                    error: function () {
+                        alert('Error clearing cart. Please try again.');
+                    }
+                });
+            }
+        }
+
         function checkout() {
             console.log('Proceeding to checkout');
             window.location.href = '@Url.Action("Checkout", "Cart")';
         }
+
+        // Update navbar cart count when page loads
+        $(document).ready(function () {
+            if (typeof updateNavbarCart === 'function') {
+                updateNavbarCart(@Model.CartCount);
+            }
+        });
     </script>
 }
-
-

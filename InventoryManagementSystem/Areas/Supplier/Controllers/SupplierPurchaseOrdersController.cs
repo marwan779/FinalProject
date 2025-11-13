@@ -1,10 +1,12 @@
 ﻿using InventoryManagementSystem.DataAccess.Repository.IRepository;
 using InventoryManagementSystem.Models.Entities;
+using InventoryManagementSystem.Models.ViewModels.PurchaseOrder;
 using InventoryManagementSystem.Models.ViewModels.Supplier;
 using InventoryManagementSystem.Utility;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Rendering;
 
 namespace InventoryManagementSystem.Areas.Supplier.Controllers
 {
@@ -61,5 +63,36 @@ namespace InventoryManagementSystem.Areas.Supplier.Controllers
 
             return View(supplierPurchaseOrderVMs);
         }
+
+        [HttpGet]
+        public IActionResult UpdatePurchaseOrder(int purchaseOrderId)
+        {
+            PurchaseOrder purchaseOrder = _unitOfWork.PurchaseOrderRepository
+                    .Get(p => p.PurchaseOrderId == purchaseOrderId, IncludeProperties: "PurchaseOrderItem");
+
+            SupplierUpdatePurchaseOrderVM supplierUpdatePurchaseOrderVM = new SupplierUpdatePurchaseOrderVM()
+            { 
+                PurchaseOrderId = purchaseOrderId,
+                CurrentStatus = purchaseOrder.Status,
+            };
+
+            return View(supplierUpdatePurchaseOrderVM);
+        }
+
+
+        [HttpPost]
+        public IActionResult UpdatePurchaseOrder(SupplierUpdatePurchaseOrderVM supplierUpdatePurchaseOrderVM)
+        {
+            PurchaseOrder purchaseOrder = _unitOfWork.PurchaseOrderRepository
+                    .Get(p => p.PurchaseOrderId == supplierUpdatePurchaseOrderVM.PurchaseOrderId);
+
+            purchaseOrder.Status = supplierUpdatePurchaseOrderVM.CurrentStatus;
+
+            _unitOfWork.PurchaseOrderRepository .Update(purchaseOrder);
+            _unitOfWork.Save();
+
+            return RedirectToAction(nameof(Index));  
+        }
+
     }
 }

@@ -48,10 +48,14 @@
                             <td class="product-actions">
                                 @if (order.Status == StaticDetails.PurchaseOrderPending)
                                 {
-                                    <a asp-action="UpdatePurchaseOrder" asp-controller="SupplierPurchaseOrders" asp-area="Supplier"
-                                       asp-route-purchaseOrderId="@order.PurchaseOrderId" class="btn btn-edit">
+                                    <a asp-action="UpdatePurchaseOrder"
+                                       asp-controller="SupplierPurchaseOrders"
+                                       asp-area="Supplier"
+                                       asp-route-purchaseOrderId="@order.PurchaseOrderId"
+                                       class="btn btn-edit">
                                         <i class="fas fa-edit"></i> Update
                                     </a>
+
                                 }
                                 <a asp-action="UpdatePurchaseOrder" asp-controller="SupplierPurchaseOrders" asp-area="Supplier"
                                    asp-route-purchaseOrderId="@order.PurchaseOrderId" class="btn btn-edit">
