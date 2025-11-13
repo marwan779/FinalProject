@@ -34,7 +34,6 @@
   <ItemGroup>
     <Folder Include="Areas\Owner\Data\" />
     <Folder Include="Areas\Owner\Models\" />
-    <Folder Include="Areas\Supplier\Controllers\" />
     <Folder Include="Areas\Supplier\Data\" />
     <Folder Include="Areas\Supplier\Models\" />
     <Folder Include="Areas\Supplier\Views\" />
