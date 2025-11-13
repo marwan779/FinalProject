@@ -21,7 +21,7 @@ namespace InventoryManagementSystem
 
 
             builder.Services.AddDbContext<ApplicationDbContext>(options =>
-     options.UseSqlServer(
+            options.UseSqlServer(
          builder.Configuration.GetConnectionString("DefaultConnection"),
          b => b.MigrationsAssembly("InventoryManagementSystem.DataAccess")));
 
