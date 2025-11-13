@@ -1,13 +1,19 @@
-﻿@using Microsoft.AspNetCore.Identity
+﻿@using InventoryManagementSystem.Utility
+@using Microsoft.AspNetCore.Identity
 
 @if (User.Identity?.IsAuthenticated ?? false)
 {
     <ul class="navbar-nav">
         <!-- Order History Link -->
         <li class="nav-item">
-            <a class="nav-link text-light nav-link-custom" asp-controller="Order" asp-action="History">
-                <i class="fas fa-history"></i> My Orders
-            </a>
+
+            @if (User.IsInRole(StaticDetails.CustomerRole))
+            {
+                <a class="nav-link text-light nav-link-custom" asp-controller="Order" asp-action="History">
+                    <i class="fas fa-history"></i> My Orders
+                </a>
+            }
+            
         </li>
 
         <li class="nav-item dropdown">
@@ -22,9 +28,13 @@
                     </a>
                 </li>
                 <li>
-                    <a class="dropdown-item" asp-controller="Order" asp-action="History">
-                        <i class="fas fa-shopping-bag"></i> My Orders
-                    </a>
+
+                    
+                        <a class="dropdown-item" asp-controller="Order" asp-action="History">
+                            <i class="fas fa-shopping-bag"></i> My Orders
+                        </a>
+
+                    
                 </li>
                 <li><hr class="dropdown-divider"></li>
                 <li>

@@ -1,0 +1,115 @@
+﻿@using InventoryManagementSystem.Models.ViewModels.Supplier
+@using InventoryManagementSystem.Utility
+@model List<SupplierPurchaseOrderVM>
+
+@{
+    ViewData["Title"] = "My Purchase Orders";
+    Layout = "_Layout";
+
+}
+
+<div class="products-page">
+    <div class="page-header">
+        <h1><i class="fas fa-clipboard-list me-2"></i>My Purchase Orders</h1>
+        <p class="page-subtitle">View and manage your purchase orders</p>
+    </div>
+
+    @if (Model.Any())
+    {
+        <div class="table-container">
+            <table class="products-table">
+                <thead>
+                    <tr>
+                        <th>Order ID</th>
+                        <th>Product Name</th>
+                        <th>Quantity</th>
+                        <th>Cost Price</th>
+                        <th>Total Amount</th>
+                        <th>Status</th>
+                        <th>Order Date</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var order in Model)
+                    {
+                        <tr>
+                            <td class="order-id">#@order.PurchaseOrderId</td>
+                            <td >@order.ProductName</td>
+                            <td class="quantity">@order.Quantity.ToString("N0")</td>
+                            <td class="cost-price">$@order.CostPrice.ToString("F2")</td>
+                            <td class="total-amount">$@order.TotalAmount.ToString("F2")</td>
+                            <td class="order-status">
+                                <span class="stock-badge @GetStatusClass(order.Status)">
+                                    @order.Status
+                                </span>
+                            </td>
+                            <td class="order-date">@order.OrderDate.ToString("MMM dd, yyyy")</td>
+                            <td class="product-actions">
+                                @if (order.Status == StaticDetails.PurchaseOrderPending)
+                                {
+                                    <a asp-action="UpdatePurchaseOrder" asp-controller="SupplierPurchaseOrders" asp-area="Supplier"
+                                       asp-route-purchaseOrderId="@order.PurchaseOrderId" class="btn btn-edit">
+                                        <i class="fas fa-edit"></i> Update
+                                    </a>
+                                }
+                                <a asp-action="UpdatePurchaseOrder" asp-controller="SupplierPurchaseOrders" asp-area="Supplier"
+                                   asp-route-purchaseOrderId="@order.PurchaseOrderId" class="btn btn-edit">
+                                    <i class="fas fa-eye"></i> View
+                                </a>
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+
+        <div class="products-summary">
+            <div class="summary-card">
+                <h3>@Model.Count</h3>
+                <p>Total Orders</p>
+            </div>
+            <div class="summary-card">
+                <h3>@Model.Count(o => o.Status == StaticDetails.PurchaseOrderPending)</h3>
+                <p>Pending</p>
+            </div>
+            <div class="summary-card">
+                <h3>@Model.Count(o => o.Status == StaticDetails.PurchaseOrderShipped)</h3>
+                <p>Shipped</p>
+            </div>
+            <div class="summary-card">
+                <h3>@Model.Count(o => o.Status == StaticDetails.PurchaseOrderDelivered)</h3>
+                <p>Delivered</p>
+            </div>
+            <div class="summary-card">
+                <h3>$@Model.Sum(o => o.TotalAmount).ToString("F2")</h3>
+                <p>Total Value</p>
+            </div>
+        </div>
+    }
+    else
+    {
+        <div class="no-products">
+            <div class="no-products-icon">
+                <i class="fas fa-clipboard-list"></i>
+            </div>
+            <h2>No Purchase Orders Found</h2>
+            <p>You don't have any purchase orders assigned to you yet.</p>
+            <p>When orders are assigned to you, they will appear here.</p>
+        </div>
+    }
+</div>
+
+@functions {
+    public string GetStatusClass(string status)
+    {
+        return status switch
+        {
+            StaticDetails.PurchaseOrderPending => "low-stock", // Yellow/Warning
+            StaticDetails.PurchaseOrderShipped => "in-stock",  // Green/Success
+            StaticDetails.PurchaseOrderDelivered => "in-stock", // Green/Success
+            StaticDetails.PurchaseOrderRejected => "out-of-stock", // Red/Danger
+            _ => "out-of-stock" // Red/Danger for unknown status
+        };
+    }
+}

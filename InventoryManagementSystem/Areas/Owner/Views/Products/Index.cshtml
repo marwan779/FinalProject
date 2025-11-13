@@ -50,10 +50,10 @@
                                     <div class="no-image">No Image</div>
                                 }
                             </td>
-                            <td class="product-name">@product.Name</td>
+                            <td >@product.Name</td>
                             <td class="product-description">@product.Description</td>
                             <td class="product-category">@product.CategoryName</td>
-                            <td class="product-price">$@product.UnitPrice.ToString("F2")</td>
+                            <td >$@product.UnitPrice.ToString("F2")</td>
                             <td class="product-cost">$@product.CostPrice.ToString("F2")</td>
                             <td class="product-stock">
                                 <span class="stock-badge @(product.QuantityInStock > 10 ? "in-stock" : product.QuantityInStock > 0 ? "low-stock" : "out-of-stock")">

@@ -1,24 +1,65 @@
 ﻿using InventoryManagementSystem.DataAccess.Repository.IRepository;
+using InventoryManagementSystem.Models.Entities;
+using InventoryManagementSystem.Models.ViewModels.Supplier;
 using InventoryManagementSystem.Utility;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 
 namespace InventoryManagementSystem.Areas.Supplier.Controllers
 {
+    [Authorize(Roles = StaticDetails.SupplierRole)]
     [Area(StaticDetails.SupplierRole)]
     public class SupplierPurchaseOrdersController : Controller
     {
         private readonly IUnitOfWork _unitOfWork;
-
-        public SupplierPurchaseOrdersController(IUnitOfWork unitOfWork)
+        private readonly UserManager<ApplicationUser> _userManager;
+        public SupplierPurchaseOrdersController(IUnitOfWork unitOfWork, 
+            UserManager<ApplicationUser> userManager)
         {
             _unitOfWork = unitOfWork;
+            _userManager = userManager;
         }
 
         public IActionResult Index()
         {
+            var supplierId = _userManager.GetUserId(User);
 
+            if(supplierId == null)
+            {
+                return RedirectToAction
+                        (
+                            actionName: "Index",
+                            controllerName: "Home",
+                            routeValues: new { area = "" }
+                        );
+            }
 
-            return View();
+            List<PurchaseOrder> purchaseOrders = _unitOfWork.PurchaseOrderRepository
+                .GetAll(o => o.SupplierId == supplierId, IncludeProperties: "PurchaseOrderItem").ToList();
+
+            List<SupplierPurchaseOrderVM> supplierPurchaseOrderVMs = new List<SupplierPurchaseOrderVM>();
+
+            if (purchaseOrders.Any())
+            {
+                foreach(var purchaseOrder in purchaseOrders)
+                {
+                    Product product = _unitOfWork.ProductRepository.Get(p => p.ProductId == purchaseOrder.PurchaseOrderItem.ProductId);
+
+                    supplierPurchaseOrderVMs.Add(new SupplierPurchaseOrderVM()
+                    {
+                        PurchaseOrderId = purchaseOrder.PurchaseOrderId,
+                        ProductName = product.Name,
+                        Quantity = purchaseOrder.PurchaseOrderItem.Quantity,
+                        CostPrice = purchaseOrder.PurchaseOrderItem.CostPrice,
+                        TotalAmount = purchaseOrder.TotalAmount,
+                        Status = purchaseOrder.Status,
+                        OrderDate = purchaseOrder.OrderDate,
+                    });
+                }
+            }
+
+            return View(supplierPurchaseOrderVMs);
         }
     }
 }

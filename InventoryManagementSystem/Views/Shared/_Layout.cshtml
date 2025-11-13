@@ -62,7 +62,21 @@
                         }
 
 
-
+                        @if (User.IsInRole(StaticDetails.SupplierRole))
+                        {
+                            <li class="nav-item dropdown">
+                                <a class="nav-link dropdown-toggle text-light nav-link-custom" href="#" id="ownerDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                                    Supplier Options
+                                </a>
+                                <ul class="dropdown-menu" aria-labelledby="ownerDropdown">
+                                    <li>
+                                        <a class="dropdown-item nav-link-custom" asp-area="Supplier" asp-controller="SupplierPurchaseOrders" asp-action="Index">Purchase Orders</a>
+                                    </li>
+                                    <li><hr class="dropdown-divider"></li>
+                                    
+                                </ul>
+                            </li>
+                        }
 
 
 
