@@ -1,0 +1,110 @@
+﻿@model InventoryManagementSystem.Models.ViewModels.UserViewModel
+
+@{
+    ViewData["Title"] = "Edit Supplier";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<div class="create-product-page">
+    <div class="page-header">
+        <h1>Edit Supplier</h1>
+        <p class="page-subtitle">Update supplier information</p>
+    </div>
+
+    <div class="form-container">
+        <form asp-action="Edit" method="post" autocomplete="off" class="product-form">
+            <input type="hidden" asp-for="Id" />
+
+            <div asp-validation-summary="ModelOnly" class="validation-summary"></div>
+
+            @if (TempData["Success"] != null)
+            {
+                <div class="alert alert-success alert-dismissible fade show" role="alert">
+                    <i class="fas fa-check-circle me-2"></i>
+                    @TempData["Success"]
+                    <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                </div>
+            }
+
+            <div class="form-grid">
+                <!-- Supplier Basic Information -->
+                <div class="form-section">
+                    <div class="d-flex align-items-center mb-4">
+                        <div class="bg-primary-custom text-white rounded-circle p-3 me-3">
+                            <i class="fas fa-user-tie fa-lg"></i>
+                        </div>
+                        <div>
+                            <h3 class="section-title mb-1">Supplier Profile</h3>
+                            <p class="text-muted mb-0">Update supplier account information</p>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label asp-for="FullName" class="form-label">
+                            <i class="fas fa-user me-2 text-primary-custom"></i>Full Name *
+                        </label>
+                        <input asp-for="FullName" class="form-control"
+                               placeholder="Enter supplier full name" />
+                        <span asp-validation-for="FullName" class="validation-message"></span>
+                    </div>
+
+                    <div class="form-group">
+                        <label asp-for="Email" class="form-label">
+                            <i class="fas fa-envelope me-2 text-primary-custom"></i>Email Address *
+                        </label>
+                        <input asp-for="Email" type="email" class="form-control"
+                               placeholder="supplier@company.com" />
+                        <span asp-validation-for="Email" class="validation-message"></span>
+                    </div>
+                </div>
+
+                <!-- Contact Information -->
+                <div class="form-section">
+                    <div class="d-flex align-items-center mb-4">
+                        <div class="bg-secondary text-white rounded-circle p-3 me-3">
+                            <i class="fas fa-address-book  fa-lg"></i>
+                        </div>
+                        <div>
+                            <h3 class="section-title mb-1">Contact Details</h3>
+                            <p class="text-muted mb-0">Update supplier contact information</p>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label asp-for="PhoneNumber" class="form-label">
+                            <i class="fas fa-phone me-2 text-primary-custom"></i>Phone Number
+                        </label>
+                        <input asp-for="PhoneNumber" class="form-control"
+                               placeholder="+1234567890" />
+                        <span asp-validation-for="PhoneNumber" class="validation-message"></span>
+                    </div>
+
+                    <div class="form-group">
+                        <label asp-for="Address" class="form-label">
+                            <i class="fas fa-map-marker-alt me-2 text-primary-custom"></i>Address
+                        </label>
+                        <input asp-for="Address" class="form-control"
+                               placeholder="Enter complete address" />
+                        <span asp-validation-for="Address" class="validation-message"></span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Form Actions -->
+            <div class="form-actions">
+                <div class="d-flex justify-content-between align-items-center w-100">
+                    <a asp-action="Index" class="btn btn-secondary d-flex align-items-center gap-2">
+                        <i class="fas fa-arrow-left"></i> Back to Suppliers
+                    </a>
+                    <button type="submit" class="btn btn-primary-custom d-flex align-items-center gap-2 px-4">
+                        <i class="fas fa-save"></i> Update Supplier
+                    </button>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

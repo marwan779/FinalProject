@@ -1,0 +1,53 @@
+﻿@model InventoryManagementSystem.Models.ViewModels.UserViewModel
+
+@{
+    ViewData["Title"] = "Delete Supplier";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<div class="create-product-page">
+    <div class="page-header">
+        <h1>Delete Supplier</h1>
+        <p class="page-subtitle">Remove supplier from the system</p>
+    </div>
+
+    <div class="form-container">
+        <div class="form-section">
+            <!-- Supplier Information -->
+            <div class="form-section bg-light rounded-3 p-4 mb-4">
+                <h4 class="section-title mb-4">Supplier Information</h4>
+
+                <div class="form-group text-start">
+                    <label class="form-label text-secondary">Full Name</label>
+                    <div class="form-control bg-white">@Model.FullName</div>
+                </div>
+
+                <div class="form-group text-start">
+                    <label class="form-label text-secondary">Email</label>
+                    <div class="form-control bg-white">@Model.Email</div>
+                </div>
+
+                <div class="form-group text-start">
+                    <label class="form-label text-secondary">Phone Number</label>
+                    <div class="form-control bg-white">@Model.PhoneNumber</div>
+                </div>
+            </div>
+
+            <!-- Delete Form -->
+            <form asp-controller="Owner" asp-action="Delete" method="post">
+                <input type="hidden" asp-for="Id" />
+
+                <div class="form-actions">
+                    <div class="d-flex justify-content-between align-items-center w-100">
+                        <a asp-action="Index" class="btn btn-secondary d-flex align-items-center gap-2">
+                            <i class="fas fa-arrow-left"></i> Back to Suppliers
+                        </a>
+                        <button type="submit" class="btn btn-danger d-flex align-items-center gap-2 px-4">
+                            <i class="fas fa-trash"></i> Delete Supplier
+                        </button>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>

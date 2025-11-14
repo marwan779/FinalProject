@@ -1,10 +1,9 @@
-using InventoryManagementSystem.DataAccess.Data;
+﻿using InventoryManagementSystem.DataAccess.Data;
 using InventoryManagementSystem.DataAccess.Repository;
 using InventoryManagementSystem.DataAccess.Repository.IRepository;
 using InventoryManagementSystem.Models.Entities;
 using InventoryManagementSystem.Services.EmailService;
 using InventoryManagementSystem.Services.ImageService;
-using InventoryManagementSystem.Services.PaymentService;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.UI.Services;
 using Microsoft.EntityFrameworkCore;
@@ -13,80 +12,46 @@ namespace InventoryManagementSystem
 {
     public class Program
     {
-        public static void Main(string[] args)
+        public static async Task Main(string[] args)
         {
             var builder = WebApplication.CreateBuilder(args);
 
-
-
-
+            // 🔹 Database connection
             builder.Services.AddDbContext<ApplicationDbContext>(options =>
-            options.UseSqlServer(
-         builder.Configuration.GetConnectionString("DefaultConnection"),
-         b => b.MigrationsAssembly("InventoryManagementSystem.DataAccess")));
+                options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
 
-
-
+            // 🔹 Identity setup
             builder.Services.AddIdentity<ApplicationUser, IdentityRole>()
                 .AddEntityFrameworkStores<ApplicationDbContext>()
                 .AddDefaultTokenProviders();
 
-
-            builder.Services.AddRazorPages();
-
-
-
-
-            builder.Services.AddSingleton<IEmailSender, DummyEmailSender>();
+            // 🔹 Dependency Injection
             builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
             builder.Services.AddScoped<IImageService, ImageService>();
+            builder.Services.AddScoped<IApplicationUserRepository, ApplicationUserRepository>();
+            builder.Services.AddSingleton<IEmailSender, DummyEmailSender>();
 
-            //builder.Services.AddScoped<IProductRepository, ProductRepository>();
-            //builder.Services.AddScoped<ICategoryRepository, CategoryRepository>();
-            //builder.Services.AddScoped<IShoppingCartRepository, ShoppingCartRepository>();
-
-            builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
-
-
-
-
-
-
-            // Add services to the container.
+            // 🔹 MVC + Razor Pages
             builder.Services.AddControllersWithViews();
-
-
-
-            // Payment Services
-            builder.Services.AddHttpClient<IPaymentService, InstapayPaymentService>();
-            builder.Services.AddScoped<IPaymentService, InstapayPaymentService>();
-
-
-
-
+            builder.Services.AddRazorPages();
 
             var app = builder.Build();
 
-
-
-            // Configure the HTTP request pipeline.
+            // 🔹 Exception handling
             if (!app.Environment.IsDevelopment())
             {
                 app.UseExceptionHandler("/Home/Error");
-                // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
                 app.UseHsts();
             }
 
+            // 🔹 Middlewares
             app.UseHttpsRedirection();
-
             app.UseStaticFiles();
-
             app.UseRouting();
-
             app.UseAuthentication();
-
             app.UseAuthorization();
 
+            // 🔹 Routing
             app.MapControllerRoute(
                name: "areas",
                pattern: "{area:exists}/{controller=Home}/{action=Index}/{id?}");
@@ -97,6 +62,46 @@ namespace InventoryManagementSystem
 
             app.MapRazorPages();
 
+            // 🔹 Create Roles + Default Owner Account
+            using (var scope = app.Services.CreateScope())
+            {
+                var userManager = scope.ServiceProvider.GetRequiredService<UserManager<ApplicationUser>>();
+                var roleManager = scope.ServiceProvider.GetRequiredService<RoleManager<IdentityRole>>();
+
+                // ✅ Only the roles you want
+                string[] roleNames = { "Owner", "Supplier", "Customer" };
+
+                foreach (var roleName in roleNames)
+                {
+                    if (!await roleManager.RoleExistsAsync(roleName))
+                    {
+                        await roleManager.CreateAsync(new IdentityRole(roleName));
+                    }
+                }
+
+                // ✅ Default Owner user
+                string ownerEmail = "owner@store.com";
+                string ownerPassword = "Owner@123";
+
+                var ownerUser = await userManager.FindByEmailAsync(ownerEmail);
+                if (ownerUser == null)
+                {
+                    var newOwner = new ApplicationUser
+                    {
+                        UserName = ownerEmail,
+                        Email = ownerEmail,
+                        EmailConfirmed = true,
+                        FullName = "System Owner",
+                        Address = "System Address"
+                    };
+
+                    var createUserResult = await userManager.CreateAsync(newOwner, ownerPassword);
+                    if (createUserResult.Succeeded)
+                    {
+                        await userManager.AddToRoleAsync(newOwner, "Owner");
+                    }
+                }
+            }
 
             app.Run();
         }

@@ -4,6 +4,7 @@ using InventoryManagementSystem.DataAccess.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace InventoryManagementSystem.DataAccess.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20251113212758_AddTables")]
+    partial class AddTables
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -126,13 +129,13 @@ namespace InventoryManagementSystem.DataAccess.Migrations
                         new
                         {
                             CategoryId = 1,
-                            CreatedAt = new DateTime(2025, 11, 13, 22, 55, 36, 93, DateTimeKind.Utc).AddTicks(8077),
+                            CreatedAt = new DateTime(2025, 11, 13, 21, 27, 56, 181, DateTimeKind.Utc).AddTicks(615),
                             Name = "Laptops"
                         },
                         new
                         {
                             CategoryId = 2,
-                            CreatedAt = new DateTime(2025, 11, 13, 22, 55, 36, 93, DateTimeKind.Utc).AddTicks(8080),
+                            CreatedAt = new DateTime(2025, 11, 13, 21, 27, 56, 181, DateTimeKind.Utc).AddTicks(619),
                             Name = "Mobiles"
                         });
                 });
@@ -326,26 +329,26 @@ namespace InventoryManagementSystem.DataAccess.Migrations
                             ProductId = 1,
                             CategoryId = 1,
                             CostPrice = 12000.00m,
-                            CreatedAt = new DateTime(2025, 11, 13, 22, 55, 36, 93, DateTimeKind.Utc).AddTicks(8230),
+                            CreatedAt = new DateTime(2025, 11, 13, 21, 27, 56, 181, DateTimeKind.Utc).AddTicks(746),
                             Description = "High performance laptop",
                             Name = "Laptop",
                             ProductImagePath = "/images/laptop.jpg",
                             QuantityInStock = 10,
                             UnitPrice = 15000.00m,
-                            UpdatedAt = new DateTime(2025, 11, 13, 22, 55, 36, 93, DateTimeKind.Utc).AddTicks(8231)
+                            UpdatedAt = new DateTime(2025, 11, 13, 21, 27, 56, 181, DateTimeKind.Utc).AddTicks(746)
                         },
                         new
                         {
                             ProductId = 2,
                             CategoryId = 2,
                             CostPrice = 6000.00m,
-                            CreatedAt = new DateTime(2025, 11, 13, 22, 55, 36, 93, DateTimeKind.Utc).AddTicks(8237),
+                            CreatedAt = new DateTime(2025, 11, 13, 21, 27, 56, 181, DateTimeKind.Utc).AddTicks(752),
                             Description = "Latest smartphone",
                             Name = "Smartphone",
                             ProductImagePath = "/images/phone.jpg",
                             QuantityInStock = 20,
                             UnitPrice = 8000.00m,
-                            UpdatedAt = new DateTime(2025, 11, 13, 22, 55, 36, 93, DateTimeKind.Utc).AddTicks(8238)
+                            UpdatedAt = new DateTime(2025, 11, 13, 21, 27, 56, 181, DateTimeKind.Utc).AddTicks(753)
                         });
                 });
 
