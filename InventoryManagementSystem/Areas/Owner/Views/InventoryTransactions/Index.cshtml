@@ -1,0 +1,630 @@
+﻿@using InventoryManagementSystem.Models.ViewModels.InventoryTransaction
+@model List<InventoryTransactionVM>
+
+@{
+    ViewData["Title"] = "Inventory Transactions";
+    Layout = "_layout";
+
+}
+
+<div class="products-page">
+    <!-- Page Header -->
+    <div class="page-header">
+        <h1><i class="fas fa-exchange-alt"></i> Inventory Transactions</h1>
+        <p class="page-subtitle">Track all inventory movements and changes</p>
+    </div>
+
+    <!-- Transactions Summary -->
+    <div class="transactions-summary">
+        <div class="summary-card">
+            <div class="summary-icon total-transactions">
+                <i class="fas fa-list"></i>
+            </div>
+            <div class="summary-content">
+                <h3>@Model.Count</h3>
+                <p>Total Transactions</p>
+            </div>
+        </div>
+        <div class="summary-card">
+            <div class="summary-icon stock-in">
+                <i class="fas fa-arrow-down"></i>
+            </div>
+            <div class="summary-content">
+                <h3>@Model.Count(t => t.QuantityChanged > 0)</h3>
+                <p>Stock In</p>
+            </div>
+        </div>
+        <div class="summary-card">
+            <div class="summary-icon stock-out">
+                <i class="fas fa-arrow-up"></i>
+            </div>
+            <div class="summary-content">
+                <h3>@Model.Count(t => t.QuantityChanged < 0)</h3>
+                <p>Stock Out</p>
+            </div>
+        </div>
+        <div class="summary-card">
+            <div class="summary-icon recent">
+                <i class="fas fa-clock"></i>
+            </div>
+            <div class="summary-content">
+                <h3>@Model.Count(t => t.CreatedAt.Date == DateTime.Today)</h3>
+                <p>Today's Transactions</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Transactions Table -->
+    <div class="table-container">
+        @if (Model.Any())
+        {
+            <div class="table-header">
+                <div class="table-actions">
+                    <div class="search-box">
+                        <input type="text" id="transactionSearch" placeholder="Search transactions..." class="form-control">
+                        <i class="fas fa-search"></i>
+                    </div>
+                    <div class="filter-options">
+                        <select id="typeFilter" class="form-control">
+                            <option value="">All Types</option>
+                            <option value="StockIn">Stock In</option>
+                            <option value="StockOut">Stock Out</option>
+                            <option value="Adjustment">Adjustment</option>
+                            <option value="Purchase">Purchase</option>
+                            <option value="Sale">Sale</option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+
+            <div class="table-responsive">
+                <table class="products-table transactions-table">
+                    <thead>
+                        <tr>
+                            <th>Product</th>
+                            <th>Transaction Type</th>
+                            <th>Quantity Changed</th>
+                            <th>Reference ID</th>
+                            <th>Date & Time</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var transaction in Model.OrderByDescending(t => t.CreatedAt))
+                        {
+                            <tr class="transaction-row">
+                                <td>
+                                    <div class="product-info">
+                                        <div class="product-name">@transaction.ProductName</div>
+                                        <small class="product-id">ID: @transaction.ProductId</small>
+                                    </div>
+                                </td>
+                                <td>
+                                    <span class="transaction-type-badge @transaction.TransactionType.ToLower().Replace(" ", "-")">
+                                        <i class="@GetTransactionTypeIcon(transaction.TransactionType)"></i>
+                                        @transaction.TransactionType
+                                    </span>
+                                </td>
+                                <td>
+                                    <span class="quantity-change @(transaction.QuantityChanged > 0 ? "positive" : "negative")">
+                                        <i class="fas fa-arrow-@(transaction.QuantityChanged > 0 ? "up" : "down")"></i>
+                                        @Math.Abs(transaction.QuantityChanged)
+                                    </span>
+                                </td>
+                                <td>
+                                    @if (transaction.ReferenceId.HasValue)
+                                    {
+                                        <span class="reference-id">#@transaction.ReferenceId</span>
+                                    }
+                                    else
+                                    {
+                                        <span class="no-reference">-</span>
+                                    }
+                                </td>
+                                <td>
+                                    <div class="datetime-info">
+                                        <div class="date">@transaction.CreatedAt.ToString("MMM dd, yyyy")</div>
+                                        <div class="time">@transaction.CreatedAt.ToString("hh:mm tt")</div>
+                                    </div>
+                                </td>
+                               
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+
+            <!-- No Results Message (Hidden by default) -->
+            <div id="noResults" class="no-results" style="display: none;">
+                <div class="no-results-icon">
+                    <i class="fas fa-search"></i>
+                </div>
+                <h3>No transactions found</h3>
+                <p>Try adjusting your search or filter criteria</p>
+            </div>
+        }
+        else
+        {
+            <!-- Empty State -->
+            <div class="no-transactions">
+                <div class="no-transactions-icon">
+                    <i class="fas fa-exchange-alt"></i>
+                </div>
+                <h2>No Transactions Yet</h2>
+                <p>Inventory transactions will appear here once you start managing your stock.</p>
+                <a asp-controller="Products" asp-action="Index" class="btn btn-primary-custom">
+                    <i class="fas fa-boxes"></i> Manage Products
+                </a>
+            </div>
+        }
+    </div>
+</div>
+
+@functions {
+    public string GetTransactionTypeIcon(string transactionType)
+    {
+        return transactionType.ToLower() switch
+        {
+            "stockin" or "purchase" => "fas fa-arrow-down",
+            "stockout" or "sale" => "fas fa-arrow-up",
+            "adjustment" => "fas fa-adjust",
+            "transfer" => "fas fa-truck-moving",
+            _ => "fas fa-exchange-alt"
+        };
+    }
+}
+
+<style>
+    /* ==================== TRANSACTIONS STYLES ==================== */
+    .transactions-summary {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+        gap: 20px;
+        margin-bottom: 30px;
+    }
+
+    .summary-card {
+        background: var(--bg-overlay-dark);
+        padding: 25px;
+        border-radius: 12px;
+        display: flex;
+        align-items: center;
+        gap: 20px;
+        box-shadow: 0 4px 15px var(--shadow-light);
+        transition: transform 0.3s ease;
+    }
+
+        .summary-card:hover {
+            transform: translateY(-5px);
+        }
+
+    .summary-icon {
+        width: 60px;
+        height: 60px;
+        border-radius: 12px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 1.5rem;
+    }
+
+    .total-transactions {
+        background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+        color: var(--white);
+    }
+
+    .stock-in {
+        background: linear-gradient(135deg, var(--success-color), #2E7D32);
+        color: var(--white);
+    }
+
+    .stock-out {
+        background: linear-gradient(135deg, var(--warning-color), #EF6C00);
+        color: var(--white);
+    }
+
+    .recent {
+        background: linear-gradient(135deg, var(--secondary-color), #1565C0);
+        color: var(--white);
+    }
+
+    .summary-content h3 {
+        font-size: 2rem;
+        margin: 0;
+        color: var(--text-primary);
+        font-weight: 700;
+    }
+
+    .summary-content p {
+        margin: 5px 0 0 0;
+        color: var(--text-primary);
+        opacity: 0.8;
+        font-size: 0.9rem;
+    }
+
+    /* Table Header with Search and Filters */
+    .table-header {
+        background: var(--bg-overlay-dark);
+        padding: 20px;
+        border-radius: 12px 12px 0 0;
+        margin-bottom: 0;
+    }
+
+    .table-actions {
+        display: flex;
+        gap: 15px;
+        align-items: center;
+        flex-wrap: wrap;
+    }
+
+    .search-box {
+        position: relative;
+        flex: 1;
+        min-width: 250px;
+    }
+
+        .search-box input {
+            padding-left: 40px;
+            background: var(--white);
+        }
+
+        .search-box .fas.fa-search {
+            position: absolute;
+            left: 15px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: var(--text-secondary);
+        }
+
+    .filter-options {
+        min-width: 150px;
+    }
+
+    /* Transactions Table */
+    .transactions-table th {
+        background: var(--primary-color);
+        color: var(--white);
+        padding: 16px 12px;
+        font-weight: 600;
+        text-transform: uppercase;
+        font-size: 0.9rem;
+        letter-spacing: 0.5px;
+    }
+
+    .transactions-table td {
+        padding: 16px 12px;
+        border-bottom: 1px solid var(--table-border);
+        vertical-align: middle;
+    }
+
+    .transaction-row:hover {
+        background: var(--table-hover);
+        transform: scale(1.01);
+        transition: all 0.2s ease;
+    }
+
+    /* Product Info */
+    .product-info {
+        display: flex;
+        flex-direction: column;
+        gap: 4px;
+    }
+
+    .product-name {
+        color: var(--text-dark);
+        font-weight: 600;
+        font-size: 0.95rem;
+    }
+
+    .product-id {
+        color: var(--text-secondary);
+        font-size: 0.8rem;
+    }
+
+    /* Transaction Type Badges */
+    .transaction-type-badge {
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+        padding: 6px 12px;
+        border-radius: 20px;
+        font-size: 0.8rem;
+        font-weight: 600;
+        text-transform: uppercase;
+        letter-spacing: 0.3px;
+    }
+
+    .stockin, .purchase {
+        background: rgba(76, 175, 80, 0.1);
+        color: var(--success-color);
+        border: 1px solid var(--success-color);
+    }
+
+    .stockout, .sale {
+        background: rgba(255, 152, 0, 0.1);
+        color: var(--warning-color);
+        border: 1px solid var(--warning-color);
+    }
+
+    .adjustment {
+        background: rgba(33, 150, 243, 0.1);
+        color: var(--secondary-color);
+        border: 1px solid var(--secondary-color);
+    }
+
+    .transfer {
+        background: rgba(156, 39, 176, 0.1);
+        color: #9C27B0;
+        border: 1px solid #9C27B0;
+    }
+
+    /* Quantity Changes */
+    .quantity-change {
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+        padding: 6px 12px;
+        border-radius: 20px;
+        font-weight: 600;
+        font-size: 0.9rem;
+    }
+
+    .positive {
+        background: rgba(76, 175, 80, 0.1);
+        color: var(--success-color);
+        border: 1px solid var(--success-color);
+    }
+
+    .negative {
+        background: rgba(244, 67, 54, 0.1);
+        color: var(--danger-color);
+        border: 1px solid var(--danger-color);
+    }
+
+    /* Reference ID */
+    .reference-id {
+        background: var(--bg-light);
+        color: var(--text-primary);
+        padding: 4px 8px;
+        border-radius: 4px;
+        font-family: monospace;
+        font-weight: 600;
+    }
+
+    .no-reference {
+        color: var(--text-secondary);
+        font-style: italic;
+    }
+
+    /* Date & Time */
+    .datetime-info {
+        display: flex;
+        flex-direction: column;
+        gap: 2px;
+    }
+
+    .date {
+        color: var(--text-dark);
+        font-weight: 500;
+        font-size: 0.9rem;
+    }
+
+    .time {
+        color: var(--text-secondary);
+        font-size: 0.8rem;
+    }
+
+    /* Transaction Actions */
+    .transaction-actions {
+        display: flex;
+        gap: 8px;
+        justify-content: center;
+    }
+
+    .btn-view, .btn-product {
+        width: 36px;
+        height: 36px;
+        border: none;
+        border-radius: 6px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        text-decoration: none;
+        transition: all 0.3s ease;
+        cursor: pointer;
+    }
+
+    .btn-view {
+        background: var(--secondary-color);
+        color: var(--white);
+    }
+
+        .btn-view:hover {
+            background: var(--secondary-hover);
+            transform: scale(1.1);
+            color: var(--white);
+        }
+
+    .btn-product {
+        background: var(--primary-color);
+        color: var(--white);
+    }
+
+        .btn-product:hover {
+            background: var(--primary-hover);
+            transform: scale(1.1);
+            color: var(--white);
+        }
+
+    /* No Results State */
+    .no-results {
+        text-align: center;
+        padding: 60px 20px;
+        background: var(--bg-overlay-dark);
+        border-radius: 0 0 12px 12px;
+    }
+
+    .no-results-icon {
+        font-size: 4rem;
+        color: var(--border-gray);
+        margin-bottom: 20px;
+    }
+
+    .no-results h3 {
+        color: var(--text-primary);
+        margin-bottom: 10px;
+        font-weight: 600;
+    }
+
+    .no-results p {
+        color: var(--text-primary);
+        opacity: 0.8;
+    }
+
+    /* Empty State */
+    .no-transactions {
+        text-align: center;
+        padding: 80px 20px;
+        background: var(--bg-overlay-dark);
+        border-radius: 12px;
+        box-shadow: 0 4px 15px var(--shadow-light);
+    }
+
+    .no-transactions-icon {
+        font-size: 5rem;
+        color: var(--border-gray);
+        margin-bottom: 25px;
+    }
+
+    .no-transactions h2 {
+        color: var(--text-primary);
+        margin-bottom: 15px;
+        font-weight: 600;
+    }
+
+    .no-transactions p {
+        color: var(--text-primary);
+        opacity: 0.8;
+        margin-bottom: 30px;
+        font-size: 1.1rem;
+    }
+
+    /* ==================== RESPONSIVE DESIGN ==================== */
+    @@media (max-width: 1024px) {
+        .transactions-summary {
+            grid-template-columns: repeat(2, 1fr);
+        }
+    }
+
+    @@media (max-width: 768px) {
+        .table-actions {
+            flex-direction: column;
+            align-items: stretch;
+        }
+
+        .search-box {
+            min-width: auto;
+        }
+
+        .transactions-table {
+            font-size: 0.9rem;
+        }
+
+            .transactions-table th,
+            .transactions-table td {
+                padding: 12px 8px;
+            }
+
+        .transaction-actions {
+            flex-direction: column;
+            gap: 5px;
+        }
+
+        .btn-view, .btn-product {
+            width: 32px;
+            height: 32px;
+            font-size: 0.8rem;
+        }
+    }
+
+    @@media (max-width: 480px) {
+        .transactions-summary {
+            grid-template-columns: 1fr;
+        }
+
+        .summary-card {
+            padding: 20px;
+        }
+
+        .summary-icon {
+            width: 50px;
+            height: 50px;
+            font-size: 1.3rem;
+        }
+
+        .summary-content h3 {
+            font-size: 1.5rem;
+        }
+
+        .table-header {
+            padding: 15px;
+        }
+
+        .no-transactions {
+            padding: 60px 15px;
+        }
+
+        .no-transactions-icon {
+            font-size: 4rem;
+        }
+    }
+</style>
+
+@section Scripts {
+    <script>
+        $(document).ready(function () {
+            // Search functionality
+            $('#transactionSearch').on('input', function () {
+                filterTransactions();
+            });
+
+            // Type filter functionality
+            $('#typeFilter').on('change', function () {
+                filterTransactions();
+            });
+
+            function filterTransactions() {
+                const searchTerm = $('#transactionSearch').val().toLowerCase();
+                const typeFilter = $('#typeFilter').val().toLowerCase();
+                let visibleRows = 0;
+
+                $('.transaction-row').each(function () {
+                    const productName = $(this).find('.product-name').text().toLowerCase();
+                    const transactionType = $(this).find('.transaction-type-badge').text().toLowerCase();
+                    const productId = $(this).find('.product-id').text().toLowerCase();
+
+                    const matchesSearch = productName.includes(searchTerm) || productId.includes(searchTerm);
+                    const matchesType = !typeFilter || transactionType.includes(typeFilter);
+
+                    if (matchesSearch && matchesType) {
+                        $(this).show();
+                        visibleRows++;
+                    } else {
+                        $(this).hide();
+                    }
+                });
+
+                // Show/hide no results message
+                if (visibleRows === 0) {
+                    $('#noResults').show();
+                    $('.table-responsive').hide();
+                } else {
+                    $('#noResults').hide();
+                    $('.table-responsive').show();
+                }
+            }
+
+            // Initialize with all rows visible
+            filterTransactions();
+        });
+    </script>
+}

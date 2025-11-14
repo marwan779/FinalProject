@@ -107,11 +107,11 @@
 
                 <!-- Form Actions -->
                 <div class="form-actions">
-                    <a asp-action="Index" asp-controller="OwnerPurchaseOrders" asp-area="Owner" class="btn btn-cancel">
+                    <a asp-action="Index" asp-controller="OwnerPurchaseOrders" asp-area="Owner" class="btn btn-back">
                         <i class="fas fa-arrow-left me-2"></i>Back to Orders
                     </a>
                     <div class="action-buttons">
-                        <button type="submit" class="btn btn-update">
+                        <button type="submit" class="btn btn-submit">
                             <i class="fas fa-save me-2"></i>Update Order
                         </button>
 
@@ -214,6 +214,120 @@
         -moz-appearance: none;
         appearance: none;
     }
+
+
+    .order-summary {
+        background: var(--bg-light);
+        border-radius: 8px;
+        padding: 20px;
+        margin-top: 20px;
+        border: 2px solid var(--primary-color);
+    }
+
+    .summary-title {
+        color: var(--primary-color);
+        margin-bottom: 15px;
+        font-size: 1.1rem;
+        font-weight: 600;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+    }
+
+    .summary-details {
+        display: flex;
+        flex-direction: column;
+        gap: 10px;
+    }
+
+    .summary-item {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 8px 0;
+    }
+
+        .summary-item.total {
+            border-top: 2px solid var(--primary-color);
+            margin-top: 10px;
+            padding-top: 15px;
+            font-weight: 700;
+        }
+
+    .summary-label {
+        color: var(--text-primary);
+        font-weight: 500;
+    }
+
+    .summary-value {
+        color: var(--text-dark);
+        font-weight: 600;
+    }
+
+    .summary-item.total .summary-value {
+        color: var(--primary-color);
+        font-size: 1.2rem;
+    }
+
+
+    .form-actions {
+        display: flex;
+        gap: 15px;
+        justify-content: space-between;
+        padding-top: 20px;
+        border-top: 1px solid var(--border-gray);
+    }
+
+    .btn-back {
+        background: var(--light-gray);
+        color: var(--white);
+        border: none;
+        border-radius: 8px;
+        padding: 12px 25px;
+        font-weight: 600;
+        text-decoration: none;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        transition: all 0.3s ease;
+    }
+
+        .btn-back:hover {
+            background: var(--medium-gray);
+            color: var(--white);
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px var(--shadow-medium);
+        }
+
+    .btn-submit {
+        background: var(--primary-color);
+        color: var(--white);
+        border: none;
+        border-radius: 8px;
+        padding: 12px 25px;
+        font-weight: 600;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        transition: all 0.3s ease;
+        cursor: pointer;
+        box-shadow: 0 4px 12px rgba(76, 175, 80, 0.3);
+    }
+
+        .btn-submit:hover {
+            background: var(--primary-hover);
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(76, 175, 80, 0.4);
+        }
+
+        .btn-submit:disabled {
+            background: var(--light-gray);
+            cursor: not-allowed;
+            opacity: 0.6;
+            transform: none;
+            box-shadow: none;
+        }
+
 </style>
 
 @section Scripts {
