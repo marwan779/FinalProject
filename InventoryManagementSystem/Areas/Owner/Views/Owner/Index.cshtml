@@ -11,13 +11,15 @@
         <p class="page-subtitle">Manage system suppliers and their permissions</p>
     </div>
 
-    <div class="page-actions ">
-        <a asp-area="Owner" asp-controller="Owner" asp-action="Create" class="btn btn-submit btn-primary-custom">
-            <i class="fas fa-user-plus"></i> Add New Supplier
-        </a>
-    </div>
+    
 
     <div class="form-container">
+        <div class="page-actions ">
+            <a asp-area="Owner" asp-controller="Owner" asp-action="Create" class="btn btn-submit btn-primary-custom">
+                <i class="fas fa-user-plus"></i> Add New Supplier
+            </a>
+        </div>
+
         @if (Model != null && Model.Any())
         {
             <div class="table-container">

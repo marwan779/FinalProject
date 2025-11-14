@@ -4,6 +4,7 @@ using InventoryManagementSystem.DataAccess.Repository.IRepository;
 using InventoryManagementSystem.Models.Entities;
 using InventoryManagementSystem.Services.EmailService;
 using InventoryManagementSystem.Services.ImageService;
+using InventoryManagementSystem.Services.PaymentService;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.UI.Services;
 using Microsoft.EntityFrameworkCore;
@@ -30,6 +31,9 @@ namespace InventoryManagementSystem
             builder.Services.AddScoped<IImageService, ImageService>();
             builder.Services.AddScoped<IApplicationUserRepository, ApplicationUserRepository>();
             builder.Services.AddSingleton<IEmailSender, DummyEmailSender>();
+            builder.Services.AddHttpClient<IPaymentService, InstapayPaymentService>();
+            builder.Services.AddScoped<IPaymentService, InstapayPaymentService>();
+
 
             // 🔹 MVC + Razor Pages
             builder.Services.AddControllersWithViews();
