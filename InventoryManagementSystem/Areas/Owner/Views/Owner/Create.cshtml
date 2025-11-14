@@ -1,0 +1,138 @@
+﻿@model InventoryManagementSystem.Models.ViewModels.UserViewModel
+
+@{
+    ViewData["Title"] = "Add New Supplier";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<div class="create-product-page">
+    <div class="page-header">
+        <h1>Add New Supplier</h1>
+        <p class="page-subtitle">Complete the supplier profile to add them to your network</p>
+    </div>
+
+    <div class="form-container">
+        <form asp-action="Create" method="post" autocomplete="off" class="product-form">
+            <div asp-validation-summary="ModelOnly" class="validation-summary"></div>
+
+            <div class="form-grid">
+                <!-- Supplier Basic Information -->
+                <div class="form-section">
+                    <div class="d-flex align-items-center mb-4">
+                        <div class="bg-primary-custom text-white rounded-circle p-3 me-3">
+                            <i class="fas fa-user-tie fa-lg"></i>
+                        </div>
+                        <div>
+                            <h3 class="section-title mb-1">Supplier Profile</h3>
+                            <p class="text-muted mb-0">Basic supplier account information</p>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label asp-for="FullName" class="form-label">
+                            <i class="fas fa-user me-2 text-primary-custom"></i>Full Name *
+                        </label>
+                        <input asp-for="FullName" class="form-control"
+                               placeholder="Enter supplier full name" />
+                        <div class="form-text">Enter the complete legal name of the supplier</div>
+                        <span asp-validation-for="FullName" class="validation-message"></span>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="form-label">
+                            <i class="fas fa-lock me-2 text-primary-custom"></i>Password *
+                        </label>
+                        <div class="input-group">
+                            <input type="password" name="Password" class="form-control"
+                                   placeholder="Enter secure password" required id="passwordInput" />
+                            <button type="button" class="btn btn-outline-secondary" id="togglePassword">
+                                <i class="fas fa-eye"></i>
+                            </button>
+                        </div>
+                        <div class="form-text">Minimum 8 characters with letters, numbers, and symbols</div>
+                    </div>
+                </div>
+
+                <!-- Contact Information -->
+                <div class="form-section">
+                    <div class="d-flex align-items-center mb-4">
+                        <div class="bg-secondary text-white rounded-circle p-3 me-3">
+                            <i class="fas fa-address-book fa-lg"></i>
+                        </div>
+                        <div>
+                            <h3 class="section-title mb-1">Contact Details</h3>
+                            <p class="text-muted mb-0">Supplier contact information</p>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label asp-for="Email" class="form-label">
+                            <i class="fas fa-envelope me-2 text-primary-custom"></i>Email Address
+                        </label>
+                        <input asp-for="Email" type="email" class="form-control"
+                               placeholder="supplier@company.com" />
+                        <div class="form-text">We'll never share the email with anyone else</div>
+                        <span asp-validation-for="Email" class="validation-message"></span>
+                    </div>
+
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label asp-for="PhoneNumber" class="form-label">
+                                <i class="fas fa-phone me-2 text-primary-custom"></i>Phone Number
+                            </label>
+                            <input asp-for="PhoneNumber" class="form-control"
+                                   placeholder="+1234567890" />
+                            <span asp-validation-for="PhoneNumber" class="validation-message"></span>
+                        </div>
+
+                        <div class="form-group">
+                            <label asp-for="Address" class="form-label">
+                                <i class="fas fa-map-marker-alt me-2 text-primary-custom"></i>Address
+                            </label>
+                            <input asp-for="Address" class="form-control"
+                                   placeholder="Enter complete address" />
+                            <span asp-validation-for="Address" class="validation-message"></span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Form Actions -->
+            <div class="form-actions">
+                <div class="d-flex justify-content-between align-items-center w-100">
+                    <div class="d-flex gap-2">
+                        <a asp-action="Index" class="btn btn-secondary d-flex align-items-center gap-2">
+                            <i class="fas fa-arrow-left"></i> Back to Suppliers
+                        </a>
+                        <button type="reset" class="btn btn-outline-secondary d-flex align-items-center gap-2">
+                            <i class="fas fa-redo"></i> Reset
+                        </button>
+                    </div>
+                    <button type="submit" class="btn btn-primary-custom btn-lg d-flex align-items-center gap-2 px-4">
+                        <i class="fas fa-user-plus"></i> Create Supplier
+                    </button>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+
+    <script>
+        // Toggle password visibility
+        document.getElementById('togglePassword').addEventListener('click', function() {
+            const passwordInput = document.getElementById('passwordInput');
+            const icon = this.querySelector('i');
+
+            if (passwordInput.type === 'password') {
+                passwordInput.type = 'text';
+                icon.classList.replace('fa-eye', 'fa-eye-slash');
+            } else {
+                passwordInput.type = 'password';
+                icon.classList.replace('fa-eye-slash', 'fa-eye');
+            }
+        });
+    </script>
+}

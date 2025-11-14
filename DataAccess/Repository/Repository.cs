@@ -76,5 +76,26 @@ namespace InventoryManagementSystem.DataAccess.Repository
         {
             _dbSet.RemoveRange(entity);
         }
+        public T GetFirstOrDefault(Expression<Func<T, bool>> filter, string? includeProperties = null, bool tracked = false)
+        {
+            IQueryable<T> query = tracked ? _dbSet : _dbSet.AsNoTracking();
+            query = query.Where(filter);
+
+            if (!string.IsNullOrEmpty(includeProperties))
+            {
+                foreach (var includeProperty in includeProperties.Split(new char[] { ',' }, StringSplitOptions.RemoveEmptyEntries))
+                {
+                    query = query.Include(includeProperty);
+                }
+            }
+
+            return query.FirstOrDefault();
+        }
+
+        public void Save()
+        {
+            _context.SaveChanges();
+        }
+
     }
 }

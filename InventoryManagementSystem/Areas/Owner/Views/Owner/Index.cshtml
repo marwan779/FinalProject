@@ -1,0 +1,89 @@
+﻿@model IEnumerable<InventoryManagementSystem.Models.ViewModels.UserViewModel>
+
+@{
+    ViewData["Title"] = "Users List";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<div class="create-product-page">
+    <div class="page-header">
+        <h1>Suppliers Management</h1>
+        <p class="page-subtitle">Manage system suppliers and their permissions</p>
+    </div>
+
+    <div class="page-actions ">
+        <a asp-area="Owner" asp-controller="Owner" asp-action="Create" class="btn btn-submit btn-primary-custom">
+            <i class="fas fa-user-plus"></i> Add New Supplier
+        </a>
+    </div>
+
+    <div class="form-container">
+        @if (Model != null && Model.Any())
+        {
+            <div class="table-container">
+                <table class="products-table">
+                    <thead>
+                        <tr>
+                            <th>Supplier Name</th>
+                            <th>Email</th>
+                            <th>Phone</th>
+                            <th>Role</th>
+                            <th>Created At</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var user in Model)
+                        {
+                            <tr>
+                                <td class="user-name">
+                                    <div class="d-flex align-items-center">
+                                        <div class="bg-primary-custom text-white rounded-circle p-2 me-3">
+                                            <i class="fas fa-user"></i>
+                                        </div>
+                                        <span>@user.FullName</span>
+                                    </div>
+                                </td>
+                                <td class="user-email">@user.Email</td>
+                                <td class="user-phone">@user.PhoneNumber</td>
+                                <td class="user-role">
+                                    <span class="stock-badge in-stock">@user.Role</span>
+                                </td>
+                                <td class="user-date">@user.CreatedAt.ToString("MMM dd, yyyy")</td>
+                                <td class="user-actions">
+                                    <a asp-area="Owner" asp-controller="Owner" asp-action="Edit" asp-route-id="@user.Id"
+                                       class="btn btn-edit me-2">
+                                        <i class="fas fa-edit"></i> Edit
+                                    </a>
+                                    <a asp-action="Delete" asp-route-id="@user.Id"
+                                       class="btn btn-delete delete-btn">
+                                        <i class="fas fa-trash"></i> Delete
+                                    </a>
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+        }
+        else
+        {
+            <div class="no-products">
+                <div class="no-products-icon">
+                    <i class="fas fa-users"></i>
+                </div>
+                <h2>No Users Found</h2>
+                <p class="text-muted">Start by adding your first user to the system.</p>
+                <a asp-area="Owner" asp-controller="Owner" asp-action="Create" class="btn btn-submit">
+                    <i class="fas fa-user-plus"></i> Add First User
+                </a>
+            </div>
+        }
+    </div>
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+
+
+}
