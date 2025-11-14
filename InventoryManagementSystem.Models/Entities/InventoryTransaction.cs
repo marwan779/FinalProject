@@ -18,6 +18,6 @@ namespace InventoryManagementSystem.Models.Entities
 
         public int? ReferenceId { get; set; } // Optional link to Purchase/Sale order
 
-        public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
+        public DateTime CreatedAt { get; set; } = DateTime.Now;
     }
 }

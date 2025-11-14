@@ -224,9 +224,19 @@ namespace InventoryManagementSystem.Areas.Owner.Controllers
                 purchaseOrder.PurchaseOrderItem.CostPrice = product.CostPrice;
                 purchaseOrder.Status = updatePurchaseOrderVM.Status;
 
-                if(purchaseOrder.Status == StaticDetails.PurchaseOrderDelivered)
+                if (purchaseOrder.Status == StaticDetails.PurchaseOrderDelivered)
                 {
                     product.QuantityInStock = updatePurchaseOrderVM.Quantity;
+
+                    InventoryTransaction inventoryTransaction = new InventoryTransaction()
+                    {
+                        ProductId = product.ProductId,
+                        QuantityChanged = updatePurchaseOrderVM.Quantity,
+                        TransactionType = StaticDetails.PurchaseTransaction,
+                        ReferenceId = updatePurchaseOrderVM.PurchaseOrderId
+                    };
+
+                    _unitOfWork.InventoryTransactionRepository.Add(inventoryTransaction);
                 }
 
                 _unitOfWork.ProductRepository.Update(product);

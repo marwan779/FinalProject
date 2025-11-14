@@ -1,10 +1,12 @@
 ﻿using InventoryManagementSystem.DataAccess.Repository.IRepository;
 using InventoryManagementSystem.Models.Entities;
 using InventoryManagementSystem.Models.ViewModels;
+using InventoryManagementSystem.Models.ViewModels.PurchaseOrder;
+using InventoryManagementSystem.Services.PaymentService;
+using InventoryManagementSystem.Utility;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System.Security.Claims;
-using InventoryManagementSystem.Services.PaymentService;
 
 namespace InventoryManagementSystem.Controllers
 {
@@ -250,6 +252,25 @@ namespace InventoryManagementSystem.Controllers
 
             // ⭐⭐⭐ تحديث الـ Stock للدفع الإلكتروني الناجح ⭐⭐⭐
             _unitOfWork.OrderRepository.UpdateProductStock(orderId);
+
+
+            /*======================== Transaction Part ========================*/
+
+            List<InventoryTransaction> inventoryTransactions = new List<InventoryTransaction>();
+
+            foreach (var item in order.OrderItems)
+            {
+                InventoryTransaction inventoryTransaction = new InventoryTransaction()
+                {
+                    ProductId = item.ProductId,
+                    QuantityChanged = item.Quantity,
+                    TransactionType = StaticDetails.SaleTransaction,
+                    ReferenceId = order.OrderId
+                };
+
+                _unitOfWork.InventoryTransactionRepository.Add(inventoryTransaction);
+            }
+
 
             // تنظيف الـ Cart
             _unitOfWork.ShoppingCartRepository.ClearCart(userId);
