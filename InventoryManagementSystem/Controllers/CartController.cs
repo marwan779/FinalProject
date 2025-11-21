@@ -212,5 +212,12 @@ namespace InventoryManagementSystem.Controllers
         {
             return RedirectToAction("Index", "Checkout");
         }
+
+
+        [AllowAnonymous] // علشان نسمح للجميع بالوصول
+        public IActionResult UnauthorizedAccess()
+        {
+            return View();
+        }
     }
 }

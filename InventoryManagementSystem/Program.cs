@@ -39,6 +39,15 @@ namespace InventoryManagementSystem
             builder.Services.AddControllersWithViews();
             builder.Services.AddRazorPages();
 
+
+            builder.Services.ConfigureApplicationCookie(options =>
+            {
+                options.LoginPath = "/Cart/UnauthorizedAccess";
+                options.AccessDeniedPath = "/Cart/UnauthorizedAccess";
+            });
+
+
+
             var app = builder.Build();
 
             // 🔹 Exception handling
