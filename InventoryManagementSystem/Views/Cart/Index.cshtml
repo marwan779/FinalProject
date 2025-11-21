@@ -46,7 +46,7 @@
                             <div class="quantity-controls">
                                 <button type="button"
                                         class="qty-btn qty-decrease"
-                                        onclick="updateQuantity(@item.ShoppingCartId, @(item.Quantity - 1), @item.MaxQuantity)"
+                                        data-action="decrease"
                                         @(item.Quantity <= 1 ? "disabled" : "")>
                                     <i class="fas fa-minus"></i>
                                 </button>
@@ -60,7 +60,7 @@
 
                                 <button type="button"
                                         class="qty-btn qty-increase"
-                                        onclick="updateQuantity(@item.ShoppingCartId, @(item.Quantity + 1), @item.MaxQuantity)"
+                                        data-action="increase"
                                         @(item.Quantity >= item.MaxQuantity ? "disabled" : "")>
                                     <i class="fas fa-plus"></i>
                                 </button>
@@ -78,7 +78,7 @@
                         <div class="cart-item-actions">
                             <button type="button"
                                     class="btn-remove-item"
-                                    onclick="removeItem(@item.ShoppingCartId)"
+                                    data-action="remove"
                                     title="Remove">
                                 <i class="fas fa-trash"></i>
                             </button>
@@ -154,6 +154,7 @@
 
 @section Scripts {
     <script>
+        // دالة تحديث الكمية
         function updateQuantity(cartId, newQuantity, maxQuantity) {
             if (newQuantity < 1 || newQuantity > maxQuantity) {
                 return;
@@ -168,7 +169,26 @@
                 },
                 success: function (response) {
                     if (response.success) {
-                        location.reload();
+                        // تحديث السعر الإجمالي للعنصر
+                        $(`[data-cart-id="${cartId}"] .item-total-value`).text(response.itemTotal.toFixed(2));
+
+                        // تحديث ملخص الطلب
+                        $('#cart-subtotal').text(response.cartTotal.toFixed(2));
+                        $('#cart-total').text(response.cartTotal.toFixed(2));
+
+                        // تحديث عدد العناصر
+                        $('#cart-count').text(response.cartCount);
+
+                        // تحديث الـ input field
+                        $(`[data-cart-id="${cartId}"] .qty-input`).val(newQuantity);
+
+                        // تحديث حالة الأزرار
+                        updateButtonStates(cartId, newQuantity, maxQuantity);
+
+                        // تحديث الـ navbar
+                        if (typeof updateNavbarCart === 'function') {
+                            updateNavbarCart(response.cartCount);
+                        }
                     } else {
                         alert('Error updating quantity: ' + response.message);
                     }
@@ -179,15 +199,27 @@
             });
         }
 
+        // دالة إزالة العنصر
         function removeItem(cartId) {
             if (confirm('Are you sure you want to remove this item from your cart?')) {
                 $.ajax({
-                    url: '/Cart/RemoveItem',
+                    url: '/Cart/Remove',
                     type: 'POST',
                     data: { cartId: cartId },
                     success: function (response) {
                         if (response.success) {
-                            location.reload();
+                            // إزالة العنصر من الواجهة
+                            $(`[data-cart-id="${cartId}"]`).fadeOut(300, function() {
+                                $(this).remove();
+                                updateCartSummaryAfterRemove(response.cartCount);
+                            });
+
+                            // تحديث الـ navbar
+                            if (typeof updateNavbarCart === 'function') {
+                                updateNavbarCart(response.cartCount);
+                            }
+
+                            alert(response.message);
                         } else {
                             alert('Error removing item: ' + response.message);
                         }
@@ -199,14 +231,38 @@
             }
         }
 
+        // دالة مسح السلة بالكامل
         function clearCart() {
             if (confirm('Are you sure you want to clear your entire cart?')) {
                 $.ajax({
-                    url: '/Cart/ClearCart',
+                    url: '/Cart/Clear',
                     type: 'POST',
                     success: function (response) {
                         if (response.success) {
-                            location.reload();
+                            // استبدال الـ products-page كله
+                            $('.products-page').html(`
+                                <div class="page-header">
+                                    <h1><i class="fas fa-shopping-cart"></i> Shopping Cart</h1>
+                                    <p class="page-subtitle">Review your items before checkout</p>
+                                </div>
+                                <div class="empty-cart">
+                                    <div class="empty-cart-icon">
+                                        <i class="fas fa-shopping-cart"></i>
+                                    </div>
+                                    <h2>Your Cart is Empty</h2>
+                                    <p>Your cart has been cleared successfully.</p>
+                                    <a href="/Home/Index" class="btn btn-primary-custom btn-lg">
+                                        <i class="fas fa-shopping-bag"></i> Start Shopping
+                                    </a>
+                                </div>
+                            `);
+
+                            // تحديث الـ navbar
+                            if (typeof updateNavbarCart === 'function') {
+                                updateNavbarCart(0);
+                            }
+
+                            alert(response.message);
                         } else {
                             alert('Error clearing cart: ' + response.message);
                         }
@@ -218,16 +274,86 @@
             }
         }
 
+        // دالة تحديث حالة الأزرار
+        function updateButtonStates(cartId, quantity, maxQuantity) {
+            const decreaseBtn = $(`[data-cart-id="${cartId}"] .qty-decrease`);
+            const increaseBtn = $(`[data-cart-id="${cartId}"] .qty-increase`);
+
+            // تحديث زر النقصان
+            if (quantity <= 1) {
+                decreaseBtn.prop('disabled', true);
+            } else {
+                decreaseBtn.prop('disabled', false);
+            }
+
+            // تحديث زر الزيادة
+            if (quantity >= maxQuantity) {
+                increaseBtn.prop('disabled', true);
+            } else {
+                increaseBtn.prop('disabled', false);
+            }
+        }
+
+        // دالة تحديث الملخص بعد الإزالة
+        function updateCartSummaryAfterRemove(cartCount) {
+            if (cartCount === 0) {
+                // إذا السلة فاضية - استبدال الـ products-page كله
+                $('.products-page').html(`
+                    <div class="page-header">
+                        <h1><i class="fas fa-shopping-cart"></i> Shopping Cart</h1>
+                        <p class="page-subtitle">Review your items before checkout</p>
+                    </div>
+                    <div class="empty-cart">
+                        <div class="empty-cart-icon">
+                            <i class="fas fa-shopping-cart"></i>
+                        </div>
+                        <h2>Your Cart is Empty</h2>
+                        <p>Looks like you haven't added anything to your cart yet.</p>
+                        <a href="/Home/Index" class="btn btn-primary-custom btn-lg">
+                            <i class="fas fa-shopping-bag"></i> Start Shopping
+                        </a>
+                    </div>
+                `);
+            } else {
+                // تحديث العدد فقط
+                $('#cart-count').text(cartCount);
+            }
+        }
+
+        // دالة الدفع
         function checkout() {
             console.log('Proceeding to checkout');
             window.location.href = '@Url.Action("Checkout", "Cart")';
         }
 
-        // Update navbar cart count when page loads
+        // تهيئة الأزرار عند تحميل الصفحة
         $(document).ready(function () {
+            // تحديث الـ navbar
             if (typeof updateNavbarCart === 'function') {
                 updateNavbarCart(@Model.CartCount);
             }
+
+            // إضافة event listeners لأزرار الكمية
+            $('.qty-btn').on('click', function() {
+                const cartItem = $(this).closest('.cart-item');
+                const cartId = cartItem.data('cart-id');
+                const currentQty = parseInt(cartItem.find('.qty-input').val());
+                const maxQty = parseInt(cartItem.find('.qty-input').attr('max'));
+                const action = $(this).data('action');
+
+                if (action === 'increase') {
+                    updateQuantity(cartId, currentQty + 1, maxQty);
+                } else if (action === 'decrease') {
+                    updateQuantity(cartId, currentQty - 1, maxQty);
+                }
+            });
+
+            // إضافة event listeners لأزرار الإزالة
+            $('.btn-remove-item').on('click', function() {
+                const cartItem = $(this).closest('.cart-item');
+                const cartId = cartItem.data('cart-id');
+                removeItem(cartId);
+            });
         });
     </script>
 }
