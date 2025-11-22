@@ -523,32 +523,46 @@ textarea.form-control {
     }
 
 /* ==================== EMPTY STATES ==================== */
-.no-products {
+.no-products,
+.empty-cart {
     text-align: center;
-    padding: 60px 20px;
+    padding: 80px 20px;
     background: var(--bg-overlay-dark);
     border-radius: 12px;
     box-shadow: 0 4px 15px var(--shadow-light);
+    width: 100%;
+    max-width: 600px;
+    margin: 40px auto;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    min-height: 400px;
 }
 
-.no-products-icon {
-    font-size: 4rem;
-    color: var(--primary-color);
-    margin-bottom: 20px;
+.no-products-icon,
+.empty-cart-icon {
+    font-size: 6rem;
+    color: var(--border-gray);
+    margin-bottom: 25px;
 }
 
-.no-products h2 {
+.no-products h2,
+.empty-cart h2 {
     color: var(--text-light);
     margin-bottom: 15px;
-    font-weight: 300;
+    font-weight: 600;
 }
 
-.no-products p {
+.no-products p,
+.empty-cart p {
     color: var(--text-light);
     opacity: 0.8;
     margin-bottom: 30px;
     font-size: 1.1rem;
 }
+
+
 
 /* ==================== CART BADGE ==================== */
 .cart-link {
