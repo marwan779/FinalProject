@@ -1,0 +1,254 @@
+﻿@model InventoryManagementSystem.Models.ViewModels.DashboardViewModel
+
+@{
+    ViewData["Title"] = "Dashboard";
+}
+
+<div class="dashboard-page">
+    <!-- Header -->
+    <div class="page-header">
+        <h1>📊 Inventory Dashboard</h1>
+        <p class="page-subtitle">Welcome to your inventory management center</p>
+        <div class="text-light opacity-75">
+            <i class="fas fa-calendar"></i> @DateTime.Now.ToString("dddd, MMMM dd, yyyy")
+        </div>
+    </div>
+
+    <!-- KPI Cards -->
+    <div class="row mb-4">
+        <div class="col-xl-3 col-md-6 mb-4">
+            <div class="card border-left-primary shadow h-100 py-2">
+                <div class="card-body">
+                    <div class="row no-gutters align-items-center">
+                        <div class="col mr-2">
+                            <div class="text-xs font-weight-bold text-primary text-uppercase mb-1">
+                                Total Products
+                            </div>
+                            <div class="h5 mb-0 font-weight-bold text-gray-800">@Model.TotalProducts</div>
+                        </div>
+                        <div class="col-auto">
+                            <i class="fas fa-boxes fa-2x text-gray-300"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-xl-3 col-md-6 mb-4">
+            <div class="card border-left-success shadow h-100 py-2">
+                <div class="card-body">
+                    <div class="row no-gutters align-items-center">
+                        <div class="col mr-2">
+                            <div class="text-xs font-weight-bold text-success text-uppercase mb-1">
+                                Total Stock Value
+                            </div>
+                            <div class="h5 mb-0 font-weight-bold text-gray-800">@Model.TotalStockValue.ToString("C")</div>
+                        </div>
+                        <div class="col-auto">
+                            <i class="fas fa-dollar-sign fa-2x text-gray-300"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-xl-3 col-md-6 mb-4">
+            <div class="card border-left-warning shadow h-100 py-2">
+                <div class="card-body">
+                    <div class="row no-gutters align-items-center">
+                        <div class="col mr-2">
+                            <div class="text-xs font-weight-bold text-warning text-uppercase mb-1">
+                                Low Stock Items
+                            </div>
+                            <div class="h5 mb-0 font-weight-bold text-gray-800">@Model.LowStockItems</div>
+                        </div>
+                        <div class="col-auto">
+                            <i class="fas fa-exclamation-triangle fa-2x text-gray-300"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-xl-3 col-md-6 mb-4">
+            <div class="card border-left-info shadow h-100 py-2">
+                <div class="card-body">
+                    <div class="row no-gutters align-items-center">
+                        <div class="col mr-2">
+                            <div class="text-xs font-weight-bold text-info text-uppercase mb-1">
+                                Today's Transactions
+                            </div>
+                            <div class="h5 mb-0 font-weight-bold text-gray-800">@Model.TodayTransactions</div>
+                        </div>
+                        <div class="col-auto">
+                            <i class="fas fa-exchange-alt fa-2x text-gray-300"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- الرسوم البيانية -->
+    <div class="row mb-4">
+        <!-- Pie Chart -->
+        <div class="col-xl-4 col-lg-5">
+            <div class="card shadow mb-4">
+                <div class="card-header py-3">
+                    <h6 class="m-0 font-weight-bold text-primary">Products by Category</h6>
+                </div>
+                <div class="card-body">
+                    <div class="chart-pie pt-4 pb-2">
+                        <canvas id="categoryChart"></canvas>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Bar Chart -->
+        <div class="col-xl-8 col-lg-7">
+            <div class="card shadow mb-4">
+                <div class="card-header py-3">
+                    <h6 class="m-0 font-weight-bold text-primary">Weekly Stock Movement</h6>
+                </div>
+                <div class="card-body">
+                    <div class="chart-bar">
+                        <canvas id="weeklyChart"></canvas>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- القوائم الحديثة -->
+    <div class="row">
+        <!-- Recent Transactions -->
+        <div class="col-lg-6 mb-4">
+            <div class="card shadow">
+                <div class="card-header py-3">
+                    <h6 class="m-0 font-weight-bold text-primary">Recent Transactions</h6>
+                </div>
+                <div class="card-body">
+                    <div class="table-responsive">
+                        <table class="table table-bordered" width="100%" cellspacing="0">
+                            <thead>
+                                <tr>
+                                    <th>Product</th>
+                                    <th>Type</th>
+                                    <th>Qty</th>
+                                    <th>Date</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @foreach (var transaction in Model.RecentTransactions)
+                                {
+                                    <tr>
+                                        <td>@transaction.ProductName</td>
+                                        <td>
+                                            <span class="badge @transaction.BadgeClass">
+                                                @transaction.Icon @transaction.TransactionType
+                                            </span>
+                                        </td>
+                                        <td>@transaction.QuantityChanged</td>
+                                        <td>@transaction.CreatedAt.ToString("MMM dd, HH:mm")</td>
+                                    </tr>
+                                }
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Low Stock Alert -->
+        <div class="col-lg-6 mb-4">
+            <div class="card shadow">
+                <div class="card-header py-3">
+                    <h6 class="m-0 font-weight-bold text-warning">Low Stock Alert</h6>
+                </div>
+                <div class="card-body">
+                    <div class="table-responsive">
+                        <table class="table table-bordered" width="100%" cellspacing="0">
+                            <thead>
+                                <tr>
+                                    <th>Product</th>
+                                    <th>Current Stock</th>
+                                    <th>Status</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @foreach (var product in Model.LowStockProducts)
+                                {
+                                    <tr>
+                                        <td>@product.ProductName</td>
+                                        <td>@product.CurrentStock</td>
+                                        <td>
+                                            <span class="badge badge-warning">Low Stock</span>
+                                        </td>
+                                    </tr>
+                                }
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+        // Pie Chart for Categories
+        var categoryCtx = document.getElementById('categoryChart').getContext('2d');
+        var categoryChart = new Chart(categoryCtx, {
+            type: 'pie',
+            data: {
+                labels: [@Html.Raw(string.Join(", ", Model.CategoriesStock.Select(c => $"'{c.CategoryName}'")))],
+                datasets: [{
+                    data: [@string.Join(", ", Model.CategoriesStock.Select(c => c.ProductCount))],
+                    backgroundColor: [@Html.Raw(string.Join(", ", Model.CategoriesStock.Select(c => $"'{c.Color}'")))],
+                }]
+            },
+            options: {
+                responsive: true,
+                plugins: {
+                    legend: {
+                        position: 'bottom',
+                    }
+                }
+            }
+        });
+
+        // Bar Chart for Weekly Transactions
+        var weeklyCtx = document.getElementById('weeklyChart').getContext('2d');
+        var weeklyChart = new Chart(weeklyCtx, {
+            type: 'bar',
+            data: {
+                labels: [@Html.Raw(string.Join(", ", Model.WeeklyTransactions.Select(w => $"'{w.Day}'")))],
+                datasets: [
+                    {
+                        label: 'Stock In',
+                        data: [@string.Join(", ", Model.WeeklyTransactions.Select(w => w.StockIn))],
+                        backgroundColor: '#4CAF50',
+                    },
+                    {
+                        label: 'Stock Out',
+                        data: [@string.Join(", ", Model.WeeklyTransactions.Select(w => w.StockOut))],
+                        backgroundColor: '#FF9800',
+                    }
+                ]
+            },
+            options: {
+                responsive: true,
+                scales: {
+                    x: {
+                        stacked: false,
+                    },
+                    y: {
+                        beginAtZero: true
+                    }
+                }
+            }
+        });
+    </script>
+}

@@ -13,8 +13,13 @@
           integrity="sha512-iecdLmaskl7CVkqkXNQ/ZH/XLlvWZOJyj7Yy7tcenmpD1ypASozpmT/E0iPtmFIB46ZmdtAc9eNBvH0H/ZpiBw=="
           crossorigin="anonymous" />
 
+
+
     <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
     <link rel="stylesheet" href="~/InventoryManagementSystem.styles.css" asp-append-version="true" />
+    <!-- Chart.js for Dashboard -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
 </head>
 <body>
     <div class="d-flex flex-column min-vh-100">
@@ -40,6 +45,12 @@
                                     <i class="fas fa-shield-alt"></i> Privacy
                                 </a>
                             </li>
+                            <li class="nav-item">
+                                <a class="nav-link text-light" asp-controller="Home" asp-action="Dashboard">
+                                    <i class="fas fa-tachometer-alt"></i> Dashboard
+                                </a>
+                            </li>
+
 
                             @* Owner Options Dropdown *@
                             @if (User.IsInRole(StaticDetails.OwnerRole))
