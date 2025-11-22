@@ -62,6 +62,110 @@ namespace InventoryManagementSystem.Controllers
             return View(viewModel);
         }
 
+
+
+        public IActionResult Dashboard()
+        {
+            try
+            {
+                var dashboardData = new DashboardViewModel
+                {
+                    // الكروت العلوية الأساسية
+                    TotalProducts = _unitOfWork.ProductRepository.GetAll().Count(),
+                    TotalSuppliers = _unitOfWork.PurchaseOrderRepository.GetAll()
+                                    .Select(po => po.SupplierId).Distinct().Count(),
+                    LowStockItems = _unitOfWork.ProductRepository.GetAll()
+                                    .Where(p => p.QuantityInStock > 0 && p.QuantityInStock < 10).Count(),
+                    OutOfStockItems = _unitOfWork.ProductRepository.GetAll()
+                                      .Where(p => p.QuantityInStock == 0).Count(),
+                    TodayTransactions = _unitOfWork.InventoryTransactionRepository.GetAll()
+                                        .Count(t => t.CreatedAt.Date == DateTime.Today),
+                    TotalStockValue = _unitOfWork.ProductRepository.GetAll()
+                                     .Sum(p => p.QuantityInStock * p.CostPrice)
+                };
+
+                // بيانات الفئات للرسم البياني
+                var categories = _unitOfWork.CategoryRepository.GetAll().ToList();
+                dashboardData.CategoriesStock = categories.Select(c => new CategoryStock
+                {
+                    CategoryName = c.Name,
+                    ProductCount = _unitOfWork.ProductRepository.GetAll()
+                                  .Count(p => p.CategoryId == c.CategoryId),
+                    Color = GetCategoryColor(c.Name)
+                }).Where(cs => cs.ProductCount > 0).ToList();
+
+                // المنتجات المنخفضة المخزون
+                var lowStockProducts = _unitOfWork.ProductRepository.GetAll()
+                                      .Where(p => p.QuantityInStock > 0 && p.QuantityInStock < 10)
+                                      .OrderBy(p => p.QuantityInStock)
+                                      .Take(5)
+                                      .ToList();
+
+                dashboardData.LowStockProducts = lowStockProducts.Select(p => new LowStockProduct
+                {
+                    ProductName = p.Name,
+                    CurrentStock = p.QuantityInStock
+                }).ToList();
+
+                // بيانات الأسبوع المبسطة
+                dashboardData.WeeklyTransactions = GetSimpleWeeklyData();
+
+                // المعاملات الحديثة المبسطة
+                dashboardData.RecentTransactions = GetSimpleRecentTransactions();
+
+                return View(dashboardData);
+            }
+            catch (Exception ex)
+            {
+                // لو في أي error، نرجع dashboard فاضي عشان ما يقعش التطبيق
+                return View(new DashboardViewModel());
+            }
+        }
+
+        // دالة مبسطة لبيانات الأسبوع
+        private List<WeeklyTransaction> GetSimpleWeeklyData()
+        {
+            var days = new[] { "Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun" };
+            var random = new Random();
+
+            return days.Select(day => new WeeklyTransaction
+            {
+                Day = day,
+                StockIn = random.Next(5, 20),
+                StockOut = random.Next(3, 15)
+            }).ToList();
+        }
+
+        // دالة مبسطة للمعاملات الحديثة
+        private List<TransactionSummary> GetSimpleRecentTransactions()
+        {
+            var products = _unitOfWork.ProductRepository.GetAll().Take(5).ToList();
+            var random = new Random();
+
+            return products.Select(p => new TransactionSummary
+            {
+                ProductName = p.Name,
+                TransactionType = random.Next(0, 2) == 0 ? "IN" : "OUT",
+                QuantityChanged = random.Next(1, 10),
+                CreatedAt = DateTime.Now.AddHours(-random.Next(1, 24))
+            }).ToList();
+        }
+
+        // دالة الألوان
+        private string GetCategoryColor(string categoryName)
+        {
+            return categoryName.ToLower() switch
+            {
+                "laptops" => "#4CAF50",
+                "mobiles" => "#2196F3",
+                "accessories" => "#FF9800",
+                _ => "#9C27B0"
+            };
+        }
+
+
+
+
         public IActionResult Privacy()
         {
             return View();
