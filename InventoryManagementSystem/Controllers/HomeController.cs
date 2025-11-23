@@ -2,6 +2,7 @@ using InventoryManagementSystem.DataAccess.Repository.IRepository;
 using InventoryManagementSystem.Models;
 using InventoryManagementSystem.Models.Entities;
 using InventoryManagementSystem.Models.ViewModels;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System.Diagnostics;
 
@@ -63,7 +64,7 @@ namespace InventoryManagementSystem.Controllers
         }
 
 
-        
+
         public IActionResult Dashboard()
         {
             try
