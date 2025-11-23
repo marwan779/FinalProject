@@ -523,32 +523,46 @@ textarea.form-control {
     }
 
 /* ==================== EMPTY STATES ==================== */
-.no-products {
+.no-products,
+.empty-cart {
     text-align: center;
-    padding: 60px 20px;
+    padding: 80px 20px;
     background: var(--bg-overlay-dark);
     border-radius: 12px;
     box-shadow: 0 4px 15px var(--shadow-light);
+    width: 100%;
+    max-width: 600px;
+    margin: 40px auto;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    min-height: 400px;
 }
 
-.no-products-icon {
-    font-size: 4rem;
-    color: var(--primary-color);
-    margin-bottom: 20px;
+.no-products-icon,
+.empty-cart-icon {
+    font-size: 6rem;
+    color: var(--border-gray);
+    margin-bottom: 25px;
 }
 
-.no-products h2 {
+.no-products h2,
+.empty-cart h2 {
     color: var(--text-light);
     margin-bottom: 15px;
-    font-weight: 300;
+    font-weight: 600;
 }
 
-.no-products p {
+.no-products p,
+.empty-cart p {
     color: var(--text-light);
     opacity: 0.8;
     margin-bottom: 30px;
     font-size: 1.1rem;
 }
+
+
 
 /* ==================== CART BADGE ==================== */
 .cart-link {
@@ -1044,6 +1058,78 @@ textarea.form-control {
     color: var(--text-light);
     min-height: calc(100vh - 200px);
     background: linear-gradient(135deg, var(--medium-gray) 0%, var(--dark-gray) 100%);
+}
+
+/* ==================== DASHBOARD STYLES ==================== */
+.dashboard-page {
+    padding: 30px 20px;
+    color: var(--text-light);
+    min-height: calc(100vh - 200px);
+    background: linear-gradient(135deg, var(--medium-gray) 0%, var(--dark-gray) 100%);
+}
+
+/* Card Styles for Dashboard */
+.card {
+    border: none;
+    border-radius: 10px;
+    transition: all 0.3s ease;
+}
+
+    .card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 8px 25px rgba(0,0,0,0.15) !important;
+    }
+
+.border-left-primary {
+    border-left: 4px solid #4e73df !important;
+}
+
+.border-left-success {
+    border-left: 4px solid #1cc88a !important;
+}
+
+.border-left-info {
+    border-left: 4px solid #36b9cc !important;
+}
+
+.border-left-warning {
+    border-left: 4px solid #f6c23e !important;
+}
+
+.text-xs {
+    font-size: 0.7rem;
+}
+
+.text-gray-800 {
+    color: #5a5c69 !important;
+}
+
+.text-gray-300 {
+    color: #dddfeb !important;
+}
+
+/* Chart Containers */
+.chart-pie, .chart-bar {
+    position: relative;
+    height: 300px;
+}
+
+/* Badge Styles */
+.badge {
+    font-size: 0.75em;
+    padding: 0.35em 0.65em;
+}
+
+.badge-success {
+    background-color: var(--success-color);
+}
+
+.badge-warning {
+    background-color: var(--warning-color);
+}
+
+.badge-info {
+    background-color: var(--info-color);
 }
 
 /* Keep all your existing styles below this line - they should work fine with the footer fix */

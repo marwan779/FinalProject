@@ -1,0 +1,39 @@
+﻿@{
+    ViewData["Title"] = "Sign In Required";
+    Layout = "_Layout";
+}
+
+<div class="products-page">
+    <!-- Page Header -->
+    <div class="page-header">
+        <h1><i class="fas fa-shopping-cart"></i> Shopping Cart</h1>
+        <p class="page-subtitle">Sign in to manage your shopping cart</p>
+    </div>
+
+    <!-- Unauthorized Access Message -->
+    <div class="empty-cart">
+        <div class="empty-cart-icon">
+            <i class="fas fa-user-lock"></i>
+        </div>
+        <h2>Sign In Required</h2>
+        <p>Please sign in to view your shopping cart and start adding items.</p>
+
+        <div class="auth-actions" style="display: flex; gap: 15px; margin-top: 20px;">
+            <a href="/Identity/Account/Login" class="btn btn-primary-custom btn-lg">
+                <i class="fas fa-sign-in-alt"></i> Sign In
+            </a>
+            <a href="/Identity/Account/Register" class="btn btn-secondary-custom btn-lg">
+                <i class="fas fa-user-plus"></i> Create Account
+            </a>
+        </div>
+
+        <div style="margin-top: 30px; padding-top: 20px; border-top: 1px solid var(--border-gray);">
+            <p style="color: var(--text-light); opacity: 0.8; margin-bottom: 15px;">
+                Continue shopping as guest:
+            </p>
+            <a href="/Home/Index" class="btn-continue">
+                <i class="fas fa-arrow-left"></i> Continue Shopping
+            </a>
+        </div>
+    </div>
+</div>

@@ -4,6 +4,7 @@
 @{
     ViewData["Title"] = "Products Management";
     Layout = "_Layout";
+
 }
 
 <div class="products-page">
@@ -50,11 +51,11 @@
                                     <div class="no-image">No Image</div>
                                 }
                             </td>
-                            <td >@product.Name</td>
-                            <td class="product-description">@product.Description</td>
+                            <td>@product.Name</td>
+                            <td class="product-description">@(string.IsNullOrEmpty(product.Description) ? "No description" : (product.Description.Length > 50 ? product.Description.Substring(0, 50) + "..." : product.Description))</td>
                             <td class="product-category">@product.CategoryName</td>
-                            <td >$@product.UnitPrice.ToString("F2")</td>
-                            <td class="product-cost">$@product.CostPrice.ToString("F2")</td>
+                            <td>EGP @product.UnitPrice.ToString("N2")</td>
+                            <td class="product-cost">EGP @product.CostPrice.ToString("N2")</td>
                             <td class="product-stock">
                                 <span class="stock-badge @(product.QuantityInStock > 10 ? "in-stock" : product.QuantityInStock > 0 ? "low-stock" : "out-of-stock")">
                                     @product.QuantityInStock
@@ -71,7 +72,6 @@
                                    class="btn btn-delete delete-btn">
                                     <i class="fas fa-trash"></i> Delete
                                 </a>
-
                                 <a asp-area="Owner" asp-controller="OwnerPurchaseOrders" asp-action="CreatePurchaseOrder" asp-route-productId="@product.ProductId" class="btn btn-purchase">
                                     <i class="fas fa-shopping-cart"></i> Purchase
                                 </a>
@@ -105,45 +105,14 @@
             </div>
             <h2>No Products Found</h2>
             <p>Get started by adding your first product to the inventory.</p>
-            <a asp-action="Create" asp-controller="Product" asp-area="Owner" class="btn btn-primary-custom btn-lg">
+            <a asp-action="CreateProduct" asp-controller="Products" asp-area="Owner" class="btn btn-primary-custom btn-lg">
                 <i class="fas fa-plus"></i> Add Your First Product
             </a>
         </div>
     }
 </div>
 
-
-    <script>
-        document.addEventListener('DOMContentLoaded', function () {
-            const deleteButtons = document.querySelectorAll('.delete-btn');
-
-            deleteButtons.forEach(button => {
-                button.addEventListener('click', function (e) {
-                    e.preventDefault();
-                    const url = this.getAttribute('data-url');
-
-                    Swal.fire({
-                        title: 'Are you sure?',
-                        text: "This action cannot be undone!",
-                        icon: 'warning',
-                        showCancelButton: true,
-                        confirmButtonColor: '#3085d6',
-                        cancelButtonColor: '#d33',
-                        confirmButtonText: 'Yes, delete it!',
-                        cancelButtonText: 'Cancel'
-                    }).then((result) => {
-                        if (result.isConfirmed) {
-                            window.location.href = url;
-                        }
-                    });
-                });
-            });
-        });
-    </script>
-
-
 <style>
-
     /* Purchase Button Styles */
     .btn-purchase {
         background: var(--success-color);
@@ -168,4 +137,65 @@
             box-shadow: 0 2px 8px var(--shadow-light);
         }
 
+    /* Product Description Column */
+    .product-description {
+        max-width: 200px;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+    }
+
+    .summary-card p {
+        color: black;
+        font-size: 1rem;
+        margin: 0;
+    }
 </style>
+
+@section Scripts {
+    <!-- Include SweetAlert2 -->
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            const deleteButtons = document.querySelectorAll('.delete-btn');
+
+            deleteButtons.forEach(button => {
+                button.addEventListener('click', function (e) {
+                    e.preventDefault();
+                    const url = this.getAttribute('data-url');
+                    const productName = this.closest('tr').querySelector('td:nth-child(2)').textContent;
+
+                    Swal.fire({
+                        title: 'Are you sure?',
+                        html: `You are about to delete <strong>"${productName}"</strong>. This action cannot be undone!`,
+                        icon: 'warning',
+                        showCancelButton: true,
+                        confirmButtonColor: '#d33',
+                        cancelButtonColor: '#3085d6',
+                        confirmButtonText: 'Yes, delete it!',
+                        cancelButtonText: 'Cancel',
+                        reverseButtons: true,
+                        background: 'var(--bg-overlay-dark)',
+                        
+                    }).then((result) => {
+                        if (result.isConfirmed) {
+                            // Show loading state
+                            Swal.fire({
+                                title: 'Deleting...',
+                                text: 'Please wait while we delete the product',
+                                allowOutsideClick: false,
+                                didOpen: () => {
+                                    Swal.showLoading();
+                                }
+                            });
+
+                            // Redirect to delete URL
+                            window.location.href = url;
+                        }
+                    });
+                });
+            });
+        });
+    </script>
+}
