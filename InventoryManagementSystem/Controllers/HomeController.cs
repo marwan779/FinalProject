@@ -65,6 +65,8 @@ namespace InventoryManagementSystem.Controllers
 
 
 
+      
+        [Authorize(Roles = "Owner")]
         public IActionResult Dashboard()
         {
             try
