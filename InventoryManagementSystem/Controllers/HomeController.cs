@@ -63,7 +63,7 @@ namespace InventoryManagementSystem.Controllers
         }
 
 
-
+        
         public IActionResult Dashboard()
         {
             try
