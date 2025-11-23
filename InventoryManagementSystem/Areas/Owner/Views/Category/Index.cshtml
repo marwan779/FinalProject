@@ -1,0 +1,36 @@
+@model IEnumerable<InventoryManagementSystem.Models.Entities.Category>
+
+@{
+    ViewData["Title"] = "Categories";
+}
+
+<h2 class="mt-3">Categories</h2>
+
+<p>
+    <a class="btn btn-primary" asp-action="Create">+ Create New Category</a>
+</p>
+
+<table class="table table-bordered table-striped">
+    <thead>
+        <tr>
+            <th>Name</th>
+            <th>Description</th>
+            <th>Created At</th>
+            <th style="width:150px;">Actions</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model)
+        {
+            <tr>
+                <td>@item.Name</td>
+                <td>@item.Description</td>
+                <td>@item.CreatedAt.ToString("yyyy-MM-dd")</td>
+                <td>
+                    <a class="btn btn-sm btn-warning" asp-action="Edit" asp-route-id="@item.CategoryId">Edit</a>
+                    <a class="btn btn-sm btn-danger" asp-action="Delete" asp-route-id="@item.CategoryId">Delete</a>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
