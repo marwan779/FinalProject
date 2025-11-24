@@ -1,36 +1,469 @@
-@model IEnumerable<InventoryManagementSystem.Models.Entities.Category>
+@model List<InventoryManagementSystem.Models.Entities.Category>
 
 @{
-    ViewData["Title"] = "Categories";
+    ViewData["Title"] = "Categories Management";
 }
 
-<h2 class="mt-3">Categories</h2>
+<div class="products-page">
+    <!-- Page Header -->
+    <div class="page-header">
+        <h1><i class="fas fa-folder"></i> Categories Management</h1>
+        <p class="page-subtitle">Organize your products with categories</p>
+    </div>
 
-<p>
-    <a class="btn btn-primary" asp-action="Create">+ Create New Category</a>
-</p>
+   
 
-<table class="table table-bordered table-striped">
-    <thead>
-        <tr>
-            <th>Name</th>
-            <th>Description</th>
-            <th>Created At</th>
-            <th style="width:150px;">Actions</th>
-        </tr>
-    </thead>
-    <tbody>
-        @foreach (var item in Model)
-        {
-            <tr>
-                <td>@item.Name</td>
-                <td>@item.Description</td>
-                <td>@item.CreatedAt.ToString("yyyy-MM-dd")</td>
-                <td>
-                    <a class="btn btn-sm btn-warning" asp-action="Edit" asp-route-id="@item.CategoryId">Edit</a>
-                    <a class="btn btn-sm btn-danger" asp-action="Delete" asp-route-id="@item.CategoryId">Delete</a>
-                </td>
-            </tr>
+    <!-- Page Actions -->
+    <div class="page-actions">
+        <a asp-action="Create" asp-controller="Category" asp-area="Owner" class="btn btn-primary-custom">
+            <i class="fas fa-plus"></i> Add New Category
+        </a>
+    </div>
+
+    <!-- Categories Table -->
+    @if (Model.Any())
+    {
+        <div class="table-container">
+            <div class="table-header">
+                <div class="table-actions">
+                    
+                </div>
+            </div>
+
+            <div class="table-responsive">
+                <table class="products-table categories-table">
+                    <thead>
+                        <tr>
+                            <th>Category Name</th>
+                            <th>Description</th>
+                            <th>Created Date</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var category in Model.OrderByDescending(c => c.CreatedAt))
+                        {
+                            <tr class="category-row">
+                                <td>
+                                    <div class="category-info">
+                                        <div class="category-name">@category.Name</div>
+                                        <small class="category-id">ID: @category.CategoryId</small>
+                                    </div>
+                                </td>
+                                <td>
+                                    <div class="category-description">
+                                        @if (!string.IsNullOrEmpty(category.Description))
+                                        {
+                                            @(category.Description.Length > 100 ? category.Description.Substring(0, 100) + "..." : category.Description)
+                                        }
+                                        else
+                                        {
+                                            <span class="no-description">No description</span>
+                                        }
+                                    </div>
+                                </td>
+                                <td>
+                                    <div class="date-info">
+                                        <div class="date">@category.CreatedAt.ToString("MMM dd, yyyy")</div>
+                                        <div class="time">@category.CreatedAt.ToString("hh:mm tt")</div>
+                                    </div>
+                                </td>
+                               
+                                <td>
+                                    <div class="category-actions">
+                                        <a asp-action="Edit" asp-controller="Category" asp-area="Owner"
+                                           asp-route-id="@category.CategoryId" class="btn btn-edit" title="Edit Category">
+                                            <i class="fas fa-edit"></i>
+                                        </a>
+                                        <a asp-area="Owner"
+                                           asp-controller="Category"
+                                           asp-action="Delete"
+                                           asp-route-CategoryId="@category.CategoryId"
+                                           class="btn-delete"
+                                           title="Delete Category">
+                                            <i class="fas fa-trash"></i>
+                                        </a>
+                                      
+                                    </div>
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+
+            <!-- No Results Message -->
+            <div id="noResults" class="no-results" style="display: none;">
+                <div class="no-results-icon">
+                    <i class="fas fa-search"></i>
+                </div>
+                <h3>No categories found</h3>
+                <p>Try adjusting your search criteria</p>
+            </div>
+        </div>
+    }
+    else
+    {
+        <!-- Empty State -->
+        <div class="no-categories">
+            <div class="no-categories-icon">
+                <i class="fas fa-folder-open"></i>
+            </div>
+            <h2>No Categories Yet</h2>
+            <p>Start organizing your products by creating categories.</p>
+            <a asp-action="Create" asp-controller="Categories" asp-area="Owner" class="btn btn-primary-custom">
+                <i class="fas fa-plus"></i> Create First Category
+            </a>
+        </div>
+    }
+</div>
+
+<style>
+    /* ==================== CATEGORIES STYLES ==================== */
+   
+    .total-categories {
+        background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+        color: var(--white);
+    }
+
+    .recent-categories {
+        background: linear-gradient(135deg, var(--success-color), #2E7D32);
+        color: var(--white);
+    }
+
+    .active-categories {
+        background: linear-gradient(135deg, var(--warning-color), #EF6C00);
+        color: var(--white);
+    }
+
+    
+    /* Table Header */
+    .table-header {
+        background: var(--bg-overlay-dark);
+        padding: 20px;
+        border-radius: 12px 12px 0 0;
+        margin-bottom: 0;
+    }
+
+    .table-actions {
+        display: flex;
+        gap: 15px;
+        align-items: center;
+    }
+
+
+    /* Categories Table */
+    .categories-table th {
+        background: var(--primary-color);
+        color: var(--white);
+        padding: 16px 12px;
+        font-weight: 600;
+        text-transform: uppercase;
+        font-size: 0.9rem;
+        letter-spacing: 0.5px;
+    }
+
+    .categories-table td {
+        padding: 16px 12px;
+        border-bottom: 1px solid var(--table-border);
+        vertical-align: middle;
+    }
+
+    .category-row:hover {
+        background: var(--table-hover);
+        transform: scale(1.01);
+        transition: all 0.2s ease;
+    }
+
+    /* Category Info */
+    .category-info {
+        display: flex;
+        flex-direction: column;
+        gap: 4px;
+    }
+
+    .category-name {
+        color: var(--text-dark);
+        font-weight: 600;
+        font-size: 1rem;
+    }
+
+    .category-id {
+        color: var(--text-secondary);
+        font-size: 0.8rem;
+    }
+
+    /* Category Description */
+    .category-description {
+        color: var(--text-secondary);
+        line-height: 1.4;
+        max-width: 300px;
+    }
+
+    .no-description {
+        color: var(--text-secondary);
+        font-style: italic;
+        opacity: 0.7;
+    }
+
+    /* Date Info */
+    .date-info {
+        display: flex;
+        flex-direction: column;
+        gap: 2px;
+    }
+
+    .date {
+        color: var(--text-dark);
+        font-weight: 500;
+        font-size: 0.9rem;
+    }
+
+    .time {
+        color: var(--text-secondary);
+        font-size: 0.8rem;
+    }
+
+    /* Products Count */
+    .products-count {
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+        padding: 6px 12px;
+        background: rgba(33, 150, 243, 0.1);
+        color: var(--secondary-color);
+        border-radius: 20px;
+        font-weight: 600;
+        font-size: 0.9rem;
+        border: 1px solid var(--secondary-color);
+    }
+
+    /* Category Actions */
+    .category-actions {
+        display: flex;
+        gap: 8px;
+        justify-content: left;
+    }
+
+    .btn-edit, .btn-delete, .btn-view {
+        width: 36px;
+        height: 36px;
+        border: none;
+        border-radius: 6px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        text-decoration: none;
+        transition: all 0.3s ease;
+        cursor: pointer;
+    }
+
+    .btn-edit {
+        background: var(--secondary-color);
+        color: var(--white);
+    }
+
+        .btn-edit:hover {
+            background: var(--secondary-hover);
+            transform: scale(1.1);
+            color: var(--white);
         }
-    </tbody>
-</table>
+
+    .btn-delete {
+        background: var(--danger-color);
+        color: var(--white);
+    }
+
+        .btn-delete:hover {
+            background: var(--danger-hover);
+            transform: scale(1.1);
+            color: var(--white);
+        }
+
+    .btn-view {
+        background: var(--primary-color);
+        color: var(--white);
+    }
+
+        .btn-view:hover {
+            background: var(--primary-hover);
+            transform: scale(1.1);
+            color: var(--white);
+        }
+
+    /* No Results State */
+    .no-results {
+        text-align: center;
+        padding: 60px 20px;
+        background: var(--bg-overlay-dark);
+        border-radius: 0 0 12px 12px;
+    }
+
+    .no-results-icon {
+        font-size: 4rem;
+        color: var(--border-gray);
+        margin-bottom: 20px;
+    }
+
+    .no-results h3 {
+        color: var(--text-light);
+        margin-bottom: 10px;
+        font-weight: 600;
+    }
+
+    .no-results p {
+        color: var(--text-light);
+        opacity: 0.8;
+    }
+
+    /* Empty State */
+    .no-categories {
+        text-align: center;
+        padding: 80px 20px;
+        background: var(--bg-overlay-dark);
+        border-radius: 12px;
+        box-shadow: 0 4px 15px var(--shadow-light);
+    }
+
+    .no-categories-icon {
+        font-size: 5rem;
+        color: var(--border-gray);
+        margin-bottom: 25px;
+    }
+
+    .no-categories h2 {
+        color: var(--text-light);
+        margin-bottom: 15px;
+        font-weight: 600;
+    }
+
+    .no-categories p {
+        color: var(--text-light);
+        opacity: 0.8;
+        margin-bottom: 30px;
+        font-size: 1.1rem;
+    }
+
+    /* ==================== RESPONSIVE DESIGN ==================== */
+
+    @@media (max-width: 768px) {
+        .table-actions {
+            flex-direction: column;
+            align-items: stretch;
+        }
+
+      
+
+        .categories-table {
+            font-size: 0.9rem;
+        }
+
+            .categories-table th,
+            .categories-table td {
+                padding: 12px 8px;
+            }
+
+        .category-actions {
+            flex-direction: column;
+            gap: 5px;
+        }
+
+        .btn-edit, .btn-delete, .btn-view {
+            width: 32px;
+            height: 32px;
+            font-size: 0.8rem;
+        }
+
+        .category-description {
+            max-width: 200px;
+        }
+    }
+
+    @@media (max-width: 480px) {
+       
+        .table-header {
+            padding: 15px;
+        }
+
+        .no-categories {
+            padding: 60px 15px;
+        }
+
+        .no-categories-icon {
+            font-size: 4rem;
+        }
+
+        .category-description {
+            max-width: 150px;
+        }
+    }
+</style>
+
+
+@section Scripts {
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script>
+        $(document).ready(function () {
+            // Search functionality
+            $('#categorySearch').on('input', function () {
+                filterCategories();
+            });
+
+            function filterCategories() {
+                const searchTerm = $('#categorySearch').val().toLowerCase();
+                let visibleRows = 0;
+
+                $('.category-row').each(function () {
+                    const categoryName = $(this).find('.category-name').text().toLowerCase();
+                    const categoryDescription = $(this).find('.category-description').text().toLowerCase();
+                    const categoryId = $(this).find('.category-id').text().toLowerCase();
+
+                    const matchesSearch = categoryName.includes(searchTerm) ||
+                                         categoryDescription.includes(searchTerm) ||
+                                         categoryId.includes(searchTerm);
+
+                    if (matchesSearch) {
+                        $(this).show();
+                        visibleRows++;
+                    } else {
+                        $(this).hide();
+                    }
+                });
+
+                // Show/hide no results message
+                if (visibleRows === 0) {
+                    $('#noResults').show();
+                    $('.table-responsive').hide();
+                } else {
+                    $('#noResults').hide();
+                    $('.table-responsive').show();
+                }
+            }
+
+             document.querySelectorAll('.btn-delete').forEach(button => {
+            button.addEventListener('click', function (e) {
+                e.preventDefault();
+
+                const url = this.getAttribute('href');
+
+                Swal.fire({
+                    title: 'Are you sure?',
+                    text: "This category will be permanently deleted along with all products assigned to it!",
+                    icon: 'warning',
+                    showCancelButton: true,
+                    confirmButtonColor: '#d33',
+                    cancelButtonColor: '#6c757d',
+                    confirmButtonText: 'Yes, delete it!',
+                    cancelButtonText: 'Cancel',
+                    reverseButtons: true
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        window.location.href = url;
+                    }
+                });
+            });
+        });
+         
+        });
+    </script>
+}

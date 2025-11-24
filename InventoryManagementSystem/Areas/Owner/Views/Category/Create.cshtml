@@ -4,21 +4,526 @@
     ViewData["Title"] = "Create Category";
 }
 
-<h2 class="mt-3">Create Category</h2>
-
-<form asp-action="Create" method="post">
-    <div class="mb-3">
-        <label asp-for="Name" class="form-label"></label>
-        <input asp-for="Name" class="form-control" />
-        <span asp-validation-for="Name" class="text-danger"></span>
+<div class="products-page">
+    <div class="page-header">
+        <h1><i class="fas fa-plus-circle"></i> Create Category</h1>
+        <p class="page-subtitle">Add a new category to organize your products</p>
     </div>
 
-    <div class="mb-3">
-        <label asp-for="Description" class="form-label"></label>
-        <textarea asp-for="Description" class="form-control"></textarea>
-        <span asp-validation-for="Description" class="text-danger"></span>
-    </div>
+    <div class="form-container">
+        <form asp-action="Create" method="post" class="category-form">
+            @Html.AntiForgeryToken()
 
-    <button class="btn btn-success" type="submit">Create</button>
-    <a asp-action="Index" class="btn btn-secondary">Cancel</a>
-</form>
+            <div asp-validation-summary="ModelOnly" class="validation-summary"></div>
+
+            <div class="form-grid">
+                <!-- Category Information Section -->
+                <div class="form-section">
+                    <h3 class="section-title"><i class="fas fa-info-circle"></i> Category Information</h3>
+
+                    <div class="form-group">
+                        <label asp-for="Name" class="form-label">
+                            <i class="fas fa-tag"></i> Category Name *
+                        </label>
+                        <input asp-for="Name" class="form-control" placeholder="Enter category name" />
+                        <span asp-validation-for="Name" class="validation-message"></span>
+                        <div class="form-hint">
+                            <i class="fas fa-lightbulb"></i> Choose a clear, descriptive name for your category
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label asp-for="Description" class="form-label">
+                            <i class="fas fa-align-left"></i> Description
+                        </label>
+                        <textarea asp-for="Description" class="form-control" rows="4" placeholder="Enter category description (optional)"></textarea>
+                        <span asp-validation-for="Description" class="validation-message"></span>
+                        <div class="form-hint">
+                            <i class="fas fa-lightbulb"></i> Add a description to help identify this category's purpose
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Category Preview Section -->
+                <div class="form-section">
+                    <h3 class="section-title"><i class="fas fa-eye"></i> Category Preview</h3>
+
+                    <div class="preview-container">
+                        <div class="preview-header">
+                            <i class="fas fa-folder"></i>
+                            <span>Category Preview</span>
+                        </div>
+                        <div class="preview-content">
+                            <div class="preview-item">
+                                <label>Name:</label>
+                                <span id="previewName" class="preview-value">New Category</span>
+                            </div>
+                            <div class="preview-item">
+                                <label>Description:</label>
+                                <span id="previewDescription" class="preview-value">No description provided</span>
+                            </div>
+                            <div class="preview-item">
+                                <label>Status:</label>
+                                <span class="preview-badge active">Active</span>
+                            </div>
+                            <div class="preview-item">
+                                <label>Products:</label>
+                                <span class="preview-value">0 products</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Form Actions -->
+            <div class="form-actions">
+                <a asp-action="Index" class="btn btn-back">
+                    <i class="fas fa-arrow-left"></i> Back to Categories
+                </a>
+                <button type="submit" class="btn btn-submit">
+                    <i class="fas fa-check-circle"></i> Create Category
+                </button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<style>
+    /* ==================== CREATE CATEGORY STYLES ==================== */
+    .category-form {
+        display: flex;
+        flex-direction: column;
+        gap: 25px;
+    }
+
+    .form-grid {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 30px;
+    }
+
+    .form-section {
+        background: var(--white);
+        padding: 25px;
+        border-radius: 10px;
+        box-shadow: 0 2px 8px var(--shadow-medium);
+    }
+
+    .section-title {
+        color: var(--primary-color);
+        margin-bottom: 20px;
+        font-size: 1.3rem;
+        font-weight: 600;
+        border-bottom: 2px solid var(--primary-color);
+        padding-bottom: 10px;
+        display: flex;
+        align-items: center;
+        gap: 10px;
+    }
+
+    .form-group {
+        margin-bottom: 25px;
+    }
+
+    .form-label {
+        display: block;
+        margin-bottom: 8px;
+        font-weight: 600;
+        color: var(--text-primary);
+        display: flex;
+        align-items: center;
+        gap: 8px;
+    }
+
+    .form-control {
+        width: 100%;
+        padding: 12px 15px;
+        border: 2px solid var(--border-gray);
+        border-radius: 6px;
+        font-size: 1rem;
+        transition: all 0.3s ease;
+        background: var(--white);
+        color: var(--text-primary);
+    }
+
+        .form-control:focus {
+            outline: none;
+            border-color: var(--primary-color);
+            box-shadow: 0 0 0 3px rgba(76, 175, 80, 0.1);
+        }
+
+    textarea.form-control {
+        resize: vertical;
+        min-height: 100px;
+    }
+
+    /* Form Hint */
+    .form-hint {
+        color: var(--text-secondary);
+        font-size: 0.85rem;
+        margin-top: 8px;
+        display: flex;
+        align-items: center;
+        gap: 6px;
+    }
+
+    /* Preview Container */
+    .preview-container {
+        background: var(--bg-light);
+        border-radius: 8px;
+        border: 2px solid var(--primary-color);
+        overflow: hidden;
+        margin-bottom: 25px;
+    }
+
+    .preview-header {
+        background: var(--primary-color);
+        color: var(--white);
+        padding: 15px 20px;
+        font-weight: 600;
+        display: flex;
+        align-items: center;
+        gap: 10px;
+    }
+
+    .preview-content {
+        padding: 20px;
+    }
+
+    .preview-item {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 10px 0;
+        border-bottom: 1px solid var(--border-gray);
+    }
+
+        .preview-item:last-child {
+            border-bottom: none;
+        }
+
+        .preview-item label {
+            color: var(--text-primary);
+            font-weight: 600;
+            min-width: 100px;
+        }
+
+    .preview-value {
+        color: var(--text-dark);
+        font-weight: 500;
+        text-align: right;
+        flex: 1;
+    }
+
+    .preview-badge {
+        padding: 4px 12px;
+        border-radius: 20px;
+        font-size: 0.8rem;
+        font-weight: 600;
+        text-transform: uppercase;
+    }
+
+    .active {
+        background: var(--success-color);
+        color: var(--white);
+    }
+
+
+    /* Validation Styles */
+    .validation-summary {
+        background: rgba(244, 67, 54, 0.1);
+        border: 1px solid var(--danger-color);
+        border-radius: 6px;
+        padding: 15px;
+        margin-bottom: 20px;
+        color: var(--danger-color);
+        font-size: 0.9rem;
+    }
+
+        .validation-summary ul {
+            margin: 0;
+            padding-left: 20px;
+        }
+
+    .validation-message {
+        color: var(--danger-color);
+        font-size: 0.85rem;
+        font-weight: 500;
+        margin-top: 5px;
+        display: block;
+    }
+
+    .form-control.input-validation-error {
+        border-color: var(--danger-color);
+    }
+
+        .form-control.input-validation-error:focus {
+            box-shadow: 0 0 0 3px rgba(244, 67, 54, 0.1);
+        }
+
+    /* Form Actions */
+    .form-actions {
+        display: flex;
+        gap: 15px;
+        justify-content: space-between;
+        padding-top: 20px;
+        border-top: 1px solid var(--border-gray);
+    }
+
+    .btn-back {
+        background: var(--light-gray);
+        color: var(--white);
+        border: none;
+        border-radius: 8px;
+        padding: 12px 25px;
+        font-weight: 600;
+        text-decoration: none;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        transition: all 0.3s ease;
+        flex: 1;
+        justify-content: center;
+    }
+
+        .btn-back:hover {
+            background: var(--medium-gray);
+            color: var(--white);
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px var(--shadow-medium);
+        }
+
+    .btn-submit {
+        background: var(--primary-color);
+        color: var(--white);
+        border: none;
+        border-radius: 8px;
+        padding: 12px 25px;
+        font-weight: 600;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        transition: all 0.3s ease;
+        cursor: pointer;
+        flex: 2;
+        justify-content: center;
+        box-shadow: 0 4px 12px rgba(76, 175, 80, 0.3);
+    }
+
+        .btn-submit:hover {
+            background: var(--primary-hover);
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(76, 175, 80, 0.4);
+        }
+
+        .btn-submit:disabled {
+            background: var(--light-gray);
+            cursor: not-allowed;
+            opacity: 0.6;
+            transform: none;
+            box-shadow: none;
+        }
+
+    /* ==================== RESPONSIVE DESIGN ==================== */
+    @@media (max-width: 1024px) {
+        .form-grid {
+            grid-template-columns: 1fr;
+            gap: 25px;
+        }
+    }
+
+    @@media (max-width: 768px) {
+        .form-section {
+            padding: 20px;
+        }
+
+        .form-actions {
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        .btn-back, .btn-submit {
+            width: 100%;
+            flex: 1;
+        }
+
+        .preview-item {
+            flex-direction: column;
+            align-items: flex-start;
+            gap: 5px;
+        }
+
+            .preview-item label {
+                min-width: auto;
+            }
+
+        .preview-value {
+            text-align: left;
+        }
+    }
+
+    @@media (max-width: 480px) {
+        .form-container {
+            padding: 20px;
+        }
+
+        .form-section {
+            padding: 15px;
+        }
+
+        .section-title {
+            font-size: 1.1rem;
+        }
+
+        .form-control {
+            padding: 10px 12px;
+        }
+
+        .preview-content {
+            padding: 15px;
+        }
+
+        .creation-tips {
+            padding: 15px;
+        }
+    }
+
+    /* Animation for form sections */
+    .form-section {
+        animation: slideInUp 0.5s ease;
+    }
+
+        .form-section:nth-child(2) {
+            animation-delay: 0.1s;
+        }
+
+    @@keyframes slideInUp {
+        from {
+            opacity: 0;
+            transform: translateY(20px);
+        }
+
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+</style>
+
+@section Scripts {
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script>
+        // Real-time preview functionality
+        const nameInput = document.getElementById('Name');
+        const descriptionInput = document.getElementById('Description');
+        const previewName = document.getElementById('previewName');
+        const previewDescription = document.getElementById('previewDescription');
+
+        function updatePreview() {
+            // Update name preview
+            if (nameInput.value.trim()) {
+                previewName.textContent = nameInput.value;
+                previewName.style.color = 'var(--text-dark)';
+                previewName.style.fontWeight = '600';
+            } else {
+                previewName.textContent = 'New Category';
+                previewName.style.color = 'var(--text-secondary)';
+                previewName.style.fontWeight = 'normal';
+            }
+
+            // Update description preview
+            if (descriptionInput.value.trim()) {
+                previewDescription.textContent = descriptionInput.value.length > 50
+                    ? descriptionInput.value.substring(0, 50) + '...'
+                    : descriptionInput.value;
+                previewDescription.style.color = 'var(--text-dark)';
+            } else {
+                previewDescription.textContent = 'No description provided';
+                previewDescription.style.color = 'var(--text-secondary)';
+            }
+        }
+
+        // Add event listeners for real-time preview updates
+        nameInput.addEventListener('input', updatePreview);
+        descriptionInput.addEventListener('input', updatePreview);
+
+        // Initialize preview on page load
+        document.addEventListener('DOMContentLoaded', updatePreview);
+
+        // Form validation enhancement
+        const form = document.querySelector('.category-form');
+        const submitBtn = form.querySelector('.btn-submit');
+
+        form.addEventListener('submit', function (e) {
+            const name = nameInput.value.trim();
+
+            if (!name) {
+                e.preventDefault();
+                Swal.fire({
+                    icon: 'warning',
+                    title: 'Validation Error',
+                    text: 'Please enter a category name.',
+                    confirmButtonColor: '#4CAF50'
+                });
+                nameInput.focus();
+                return false;
+            }
+
+            if (name.length > 100) {
+                e.preventDefault();
+                Swal.fire({
+                    icon: 'warning',
+                    title: 'Validation Error',
+                    text: 'Category name must be 100 characters or less.',
+                    confirmButtonColor: '#4CAF50'
+                });
+                nameInput.focus();
+                return false;
+            }
+
+            if (descriptionInput.value.length > 500) {
+                e.preventDefault();
+                Swal.fire({
+                    icon: 'warning',
+                    title: 'Validation Error',
+                    text: 'Description must be 500 characters or less.',
+                    confirmButtonColor: '#4CAF50'
+                });
+                descriptionInput.focus();
+                return false;
+            }
+
+            // Show loading state
+            submitBtn.disabled = true;
+            submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Creating Category...';
+        });
+
+        // Input validation styling
+        function validateInput(input, isValid) {
+            if (isValid) {
+                input.classList.remove('input-validation-error');
+                input.classList.add('input-validation-valid');
+            } else {
+                input.classList.remove('input-validation-valid');
+                input.classList.add('input-validation-error');
+            }
+        }
+
+        nameInput.addEventListener('blur', function() {
+            validateInput(this, this.value.trim().length > 0 && this.value.trim().length <= 100);
+        });
+
+        descriptionInput.addEventListener('blur', function() {
+            validateInput(this, this.value.length <= 500);
+        });
+
+        // Add input validation styles
+        const style = document.createElement('style');
+        style.textContent = `
+            .input-validation-valid {
+                border-color: var(--success-color) !important;
+            }
+        `;
+        document.head.appendChild(style);
+    </script>
+}

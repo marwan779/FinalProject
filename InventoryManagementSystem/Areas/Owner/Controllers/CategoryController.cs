@@ -103,34 +103,11 @@ namespace InventoryManagementSystem.Areas.Owner.Controllers
             }
         }
 
-        // GET: Owner/Category/Delete/5
-        public IActionResult Delete(int id)
+        public IActionResult Delete(int CategoryId)
         {
             try
             {
-                var category = _unitOfWork.CategoryRepository.Get(c => c.CategoryId == id);
-                if (category == null)
-                {
-                    TempData["error"] = "Category not found.";
-                    return RedirectToAction("Index");
-                }
-                return View(category);
-            }
-            catch (Exception)
-            {
-                TempData["error"] = "Failed to load category.";
-                return RedirectToAction("Index");
-            }
-        }
-
-        // POST: Owner/Category/Delete
-        [HttpPost, ActionName("Delete")]
-        [ValidateAntiForgeryToken]
-        public IActionResult DeleteConfirmed(int id)
-        {
-            try
-            {
-                var category = _unitOfWork.CategoryRepository.Get(c => c.CategoryId == id);
+                var category = _unitOfWork.CategoryRepository.Get(c => c.CategoryId == CategoryId);
                 if (category == null)
                 {
                     TempData["error"] = "Category not found.";
