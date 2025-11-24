@@ -48,9 +48,7 @@
                             </td>
                             <td class="order-date">@order.OrderDate.ToString("MMM dd, yyyy")</td>
                             <td class="order-actions">
-                                <a  class="btn btn-view" title="View Details">
-                                    <i class="fas fa-eye"></i>
-                                </a>
+                               
                                 @if (order.Status == StaticDetails.PurchaseOrderPending || order.Status == StaticDetails.PurchaseOrderShipped)
                                 {
                                    @*  <a href="#" class="btn btn-update" title="Update Status">
@@ -66,7 +64,13 @@
                                         <i class="fas fa-times"></i>
                                     </a>
                                 }
-
+                                else
+                                {
+                                    <a class="pb-3", style="text-decoration: none;">
+                                        No
+                                        Actions
+                                    </a>
+                                }
 
                             </td>
                         </tr>
