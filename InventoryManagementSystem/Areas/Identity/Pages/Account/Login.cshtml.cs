@@ -1,4 +1,5 @@
-﻿// Licensed to the .NET Foundation under one or more agreements.
+﻿
+// Licensed to the .NET Foundation under one or more agreements.
 // The .NET Foundation licenses this file to you under the MIT license.
 #nullable disable
 
@@ -111,13 +112,17 @@ namespace InventoryManagementSystem.Areas.Identity.Pages.Account
 
             if (ModelState.IsValid)
             {
+                // First, check if user exists by email
                 var user = await _signInManager.UserManager.FindByEmailAsync(Input.Email);
+
                 if (user == null)
                 {
-                    ModelState.AddModelError(string.Empty, "Invalid login attempt.");
+                    // User not found - show custom error message
+                    ModelState.AddModelError(string.Empty, "This email is not registered. Please create an account first.");
                     return Page();
                 }
 
+                // Try to sign in with the username (which should be the same as email in your system)
                 var result = await _signInManager.PasswordSignInAsync(
                     user.UserName, Input.Password, Input.RememberMe, lockoutOnFailure: false);
 
@@ -136,10 +141,11 @@ namespace InventoryManagementSystem.Areas.Identity.Pages.Account
                     return RedirectToPage("./Lockout");
                 }
 
-                ModelState.AddModelError(string.Empty, "Invalid login attempt.");
+                // If we get here, the password was wrong but the user exists
+                ModelState.AddModelError(string.Empty, "Invalid password. Please try again.");
             }
-            return Page();
 
+            return Page();
         }
     }
 }

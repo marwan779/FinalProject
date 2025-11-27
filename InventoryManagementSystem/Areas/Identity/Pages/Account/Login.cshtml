@@ -5,76 +5,173 @@
     ViewData["Title"] = "Log in";
 }
 
-<h1>@ViewData["Title"]</h1>
-<div class="row">
-    <div class="col-md-4">
-        <section>
-            <form id="account" method="post">
-                <h2>Use a local account to log in.</h2>
-                <hr />
-                <div asp-validation-summary="ModelOnly" class="text-danger" role="alert"></div>
-                <div class="form-floating mb-3">
-                    <input asp-for="Input.Email" class="form-control" autocomplete="username" aria-required="true" placeholder="name@example.com" />
-                    <label asp-for="Input.Email" class="form-label">Email</label>
-                    <span asp-validation-for="Input.Email" class="text-danger"></span>
-                </div>
-                <div class="form-floating mb-3">
-                    <input asp-for="Input.Password" class="form-control" autocomplete="current-password" aria-required="true" placeholder="password" />
-                    <label asp-for="Input.Password" class="form-label">Password</label>
-                    <span asp-validation-for="Input.Password" class="text-danger"></span>
-                </div>
-                <div class="checkbox mb-3">
-                    <label asp-for="Input.RememberMe" class="form-label">
-                        <input class="form-check-input" asp-for="Input.RememberMe" />
-                        @Html.DisplayNameFor(m => m.Input.RememberMe)
-                    </label>
-                </div>
-                <div>
-                    <button id="login-submit" type="submit" class="w-100 btn btn-lg btn-primary">Log in</button>
-                </div>
-                <div>
-                    <p>
-                        <a id="forgot-password" asp-page="./ForgotPassword">Forgot your password?</a>
-                    </p>
-                    <p>
-                        <a asp-page="./Register" asp-route-returnUrl="@Model.ReturnUrl">Register as a new user</a>
-                    </p>
-                    <p>
-                        <a id="resend-confirmation" asp-page="./ResendEmailConfirmation">Resend email confirmation</a>
-                    </p>
-                </div>
-            </form>
-        </section>
+<div class="create-product-page">
+    <div class="page-header">
+        <h1>Welcome Back</h1>
+        <p class="page-subtitle">Sign in to your account to continue</p>
     </div>
-    <div class="col-md-6 col-md-offset-2">
-        <section>
-            <h3>Use another service to log in.</h3>
-            <hr />
-            @{
-                if ((Model.ExternalLogins?.Count ?? 0) == 0)
-                {
+
+    <div class="form-container">
+        <div class="form-grid">
+            <!-- Login Form -->
+            <div class="form-section">
+                <div class="d-flex align-items-center mb-4">
+                    <div class="bg-primary-custom text-white rounded-circle p-3 me-3">
+                        <i class="fas fa-sign-in-alt fa-lg"></i>
+                    </div>
                     <div>
-                        <p>
-                            There are no external authentication services configured. See this <a href="https://go.microsoft.com/fwlink/?LinkID=532715">article
-                            about setting up this ASP.NET application to support logging in via external services</a>.
-                        </p>
+                        <h3 class="section-title mb-1">Account Login</h3>
+                        <p class="text-muted mb-0">Use your credentials to access the system</p>
+                    </div>
+                </div>
+
+                <form id="account" method="post">
+                    <div asp-validation-summary="ModelOnly" class="validation-summary" role="alert"></div>
+
+                    <!-- Custom Alert for Unregistered Users -->
+                    <!-- Custom Alert for Unregistered Users -->
+                    @if (!ViewData.ModelState.IsValid)
+                    {
+                        var errorMessage = ViewData.ModelState[string.Empty]?.Errors.FirstOrDefault()?.ErrorMessage;
+                        if (!string.IsNullOrEmpty(errorMessage) && errorMessage.Contains("not registered"))
+                        {
+                            <div class="rounded-3 mb-4 p-4" role="alert" id="unregistered-alert"
+                                 style="background: rgba(76, 175, 80, 0.05); border: 1px solid var(--primary-color);">
+                                <div class="d-flex align-items-start">
+                                    <i class="fas fa-user-plus mt-1 me-3" style="color: var(--primary-color);"></i>
+                                    <div class="flex-grow-1">
+                                        <h5 style="color: var(--text-primary); margin-bottom: 8px;">Create Your Account</h5>
+                                        <p style="color: var(--text-secondary); margin-bottom: 16px;">
+                                            This email address isn't associated with an existing account.
+                                            Start by creating a new account to access the system.
+                                        </p>
+                                        <div class="d-flex gap-2">
+                                            <a asp-page="./Register" asp-route-returnUrl="@Model.ReturnUrl"
+                                               class="btn btn-sm px-3"
+                                               style="background: var(--primary-color); color: var(--white); border: none;">
+                                                <i class="fas fa-user-plus me-1"></i> Get Started
+                                            </a>
+                                            <button type="button" class="btn btn-sm px-3"
+                                                    onclick="this.closest('#unregistered-alert').style.display='none'"
+                                                    style="background: transparent; color: var(--text-secondary); border: 1px solid var(--border-gray);">
+                                                <i class="fas fa-times me-1"></i> Maybe Later
+                                            </button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        }
+                    }
+
+                    <div class="form-group">
+                        <label asp-for="Input.Email" class="form-label">
+                            <i class="fas fa-envelope me-2 text-primary-custom"></i>Email Address
+                        </label>
+                        <input asp-for="Input.Email" class="form-control"
+                               autocomplete="username" aria-required="true"
+                               placeholder="Enter your email address" />
+                        <span asp-validation-for="Input.Email" class="validation-message"></span>
+                    </div>
+
+                    <div class="form-group">
+                        <label asp-for="Input.Password" class="form-label">
+                            <i class="fas fa-lock me-2 text-primary-custom"></i>Password
+                        </label>
+                        <input asp-for="Input.Password" class="form-control"
+                               autocomplete="current-password" aria-required="true"
+                               placeholder="Enter your password" />
+                        <span asp-validation-for="Input.Password" class="validation-message"></span>
+                    </div>
+
+                    <div class="form-group">
+                        <div class="form-check">
+                            <input class="form-check-input" asp-for="Input.RememberMe" />
+                            <label class="form-check-label text-muted" asp-for="Input.RememberMe">
+                                <i class="fas fa-remember me-1"></i> Remember me
+                            </label>
+                        </div>
+                    </div>
+
+                    <div class="form-actions text-center">
+                        <button id="login-submit" type="submit" class="stock-badge in-stock border-0 px-4 py-2">
+                            <i class="fas fa-sign-in-alt me-2"></i> Sign In
+                        </button>
+                    </div>
+
+                    <div class="text-center mt-4">
+                        <div class="d-flex justify-content-center gap-3">
+                            <a id="forgot-password" asp-page="./ForgotPassword" class="text-primary-custom text-decoration-none">
+                                <i class="fas fa-key me-1"></i> Forgot Password?
+                            </a>
+                            <span class="text-muted">|</span>
+                            <a asp-page="./Register" asp-route-returnUrl="@Model.ReturnUrl" class="text-primary-custom text-decoration-none">
+                                <i class="fas fa-user-plus me-1"></i> Create Account
+                            </a>
+                        </div>
+                    </div>
+                </form>
+            </div>
+
+            <!-- Additional Info Section -->
+            <div class="form-section">
+                <div class="d-flex align-items-center mb-4">
+                    <div class="bg-secondary-custom text-white rounded-circle p-3 me-3">
+                        <i class="fas fa-info-circle fa-lg"></i>
+                    </div>
+                    <div>
+                        <h3 class="section-title mb-1">System Access</h3>
+                        <p class="text-muted mb-0">Important information about your account</p>
+                    </div>
+                </div>
+
+                <div class="alert alert-info border-0">
+                    <h5 class="alert-heading">
+                        <i class="fas fa-shield-alt me-2"></i>Secure Access
+                    </h5>
+                    <p class="mb-2">Your login credentials ensure secure access to the inventory management system.</p>
+                    <hr>
+                    <p class="mb-0">If you encounter any issues, contact your system administrator.</p>
+                </div>
+
+                <div class="mt-4">
+                    <h5 class="text-muted mb-3">Available Roles:</h5>
+                    <div class="d-flex flex-wrap gap-2">
+                        <span class="stock-badge in-stock">Owner</span>
+                        <span class="stock-badge in-stock">Supplier</span>
+                        <span class="stock-badge in-stock">Customer</span>
+                    </div>
+                </div>
+
+                @if ((Model.ExternalLogins?.Count ?? 0) > 0)
+                {
+                    <div class="mt-4">
+                        <hr>
+                        <h5 class="text-muted mb-3">External Login</h5>
+                        <form id="external-account" asp-page="./ExternalLogin" asp-route-returnUrl="@Model.ReturnUrl" method="post">
+                            <div class="d-grid gap-2">
+                                @foreach (var provider in Model.ExternalLogins!)
+                                {
+                                    <button type="submit" class="btn btn-outline-primary" name="provider" value="@provider.Name"
+                                            title="Log in using your @provider.DisplayName account">
+                                        <i class="fab fa-@provider.Name.ToLower() me-2"></i>Sign in with @provider.DisplayName
+                                    </button>
+                                }
+                            </div>
+                        </form>
                     </div>
                 }
                 else
                 {
-                    <form id="external-account" asp-page="./ExternalLogin" asp-route-returnUrl="@Model.ReturnUrl" method="post" class="form-horizontal">
-                        <div>
-                            <p>
-                                @foreach (var provider in Model.ExternalLogins!)
-                                {
-                                    <button type="submit" class="btn btn-primary" name="provider" value="@provider.Name" title="Log in using your @provider.DisplayName account">@provider.DisplayName</button>
-                                }
-                            </p>
-                        </div>
-                    </form>
+                    <div class="mt-4 text-center">
+                        <hr>
+                        <p class="text-muted">
+                            <i class="fas fa-cog me-2"></i>
+                            External authentication services can be configured by the system administrator.
+                        </p>
+                    </div>
                 }
-            }
-        </section>
+            </div>
+        </div>
     </div>
 </div>
 
