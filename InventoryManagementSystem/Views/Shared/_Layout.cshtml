@@ -43,11 +43,7 @@
                                     <i class="fas fa-home"></i> Home
                                 </a>
                             </li>
-                            <li class="nav-item">
-                                <a class="nav-link text-light nav-link-custom" asp-area="" asp-controller="Home" asp-action="Privacy">
-                                    <i class="fas fa-shield-alt"></i> Privacy
-                                </a>
-                            </li>
+                           
                             @if (User.Identity.IsAuthenticated)
                             {
                                 var user = await UserManager.GetUserAsync(User);
@@ -114,7 +110,7 @@
                         <partial name="_LoginPartial" />
 
                         <!-- Cart Icon - Show only for authenticated users -->
-                        @if (User.Identity.IsAuthenticated)
+                        @if (User.Identity.IsAuthenticated && User.IsInRole(StaticDetails.CustomerRole))
                         {
                             <ul class="navbar-nav">
                                 <li class="nav-item">

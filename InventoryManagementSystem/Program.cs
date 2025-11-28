@@ -19,7 +19,7 @@ namespace InventoryManagementSystem
 
             // 🔹 Database connection
             builder.Services.AddDbContext<ApplicationDbContext>(options =>
-                options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
+                options.UseSqlServer(builder.Configuration.GetConnectionString("PublicConnection")));
 
             // 🔹 Identity setup
             builder.Services.AddIdentity<ApplicationUser, IdentityRole>()

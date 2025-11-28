@@ -100,10 +100,6 @@
 
                     <div class="text-center mt-4">
                         <div class="d-flex justify-content-center gap-3">
-                            <a id="forgot-password" asp-page="./ForgotPassword" class="text-primary-custom text-decoration-none">
-                                <i class="fas fa-key me-1"></i> Forgot Password?
-                            </a>
-                            <span class="text-muted">|</span>
                             <a asp-page="./Register" asp-route-returnUrl="@Model.ReturnUrl" class="text-primary-custom text-decoration-none">
                                 <i class="fas fa-user-plus me-1"></i> Create Account
                             </a>
@@ -112,65 +108,6 @@
                 </form>
             </div>
 
-            <!-- Additional Info Section -->
-            <div class="form-section">
-                <div class="d-flex align-items-center mb-4">
-                    <div class="bg-secondary-custom text-white rounded-circle p-3 me-3">
-                        <i class="fas fa-info-circle fa-lg"></i>
-                    </div>
-                    <div>
-                        <h3 class="section-title mb-1">System Access</h3>
-                        <p class="text-muted mb-0">Important information about your account</p>
-                    </div>
-                </div>
-
-                <div class="alert alert-info border-0">
-                    <h5 class="alert-heading">
-                        <i class="fas fa-shield-alt me-2"></i>Secure Access
-                    </h5>
-                    <p class="mb-2">Your login credentials ensure secure access to the inventory management system.</p>
-                    <hr>
-                    <p class="mb-0">If you encounter any issues, contact your system administrator.</p>
-                </div>
-
-                <div class="mt-4">
-                    <h5 class="text-muted mb-3">Available Roles:</h5>
-                    <div class="d-flex flex-wrap gap-2">
-                        <span class="stock-badge in-stock">Owner</span>
-                        <span class="stock-badge in-stock">Supplier</span>
-                        <span class="stock-badge in-stock">Customer</span>
-                    </div>
-                </div>
-
-                @if ((Model.ExternalLogins?.Count ?? 0) > 0)
-                {
-                    <div class="mt-4">
-                        <hr>
-                        <h5 class="text-muted mb-3">External Login</h5>
-                        <form id="external-account" asp-page="./ExternalLogin" asp-route-returnUrl="@Model.ReturnUrl" method="post">
-                            <div class="d-grid gap-2">
-                                @foreach (var provider in Model.ExternalLogins!)
-                                {
-                                    <button type="submit" class="btn btn-outline-primary" name="provider" value="@provider.Name"
-                                            title="Log in using your @provider.DisplayName account">
-                                        <i class="fab fa-@provider.Name.ToLower() me-2"></i>Sign in with @provider.DisplayName
-                                    </button>
-                                }
-                            </div>
-                        </form>
-                    </div>
-                }
-                else
-                {
-                    <div class="mt-4 text-center">
-                        <hr>
-                        <p class="text-muted">
-                            <i class="fas fa-cog me-2"></i>
-                            External authentication services can be configured by the system administrator.
-                        </p>
-                    </div>
-                }
-            </div>
         </div>
     </div>
 </div>

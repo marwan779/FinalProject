@@ -70,24 +70,24 @@
 
         <div class="products-summary">
             <div class="summary-card">
-                <h3>@Model.Count</h3>
-                <p>Total Orders</p>
+                <h3 >@Model.Count</h3>
+                <p style ="color: black;" >Total Orders</p>
             </div>
             <div class="summary-card">
                 <h3>@Model.Count(o => o.Status == StaticDetails.PurchaseOrderPending)</h3>
-                <p>Pending</p>
+                <p style="color: black;">Pending</p>
             </div>
             <div class="summary-card">
                 <h3>@Model.Count(o => o.Status == StaticDetails.PurchaseOrderShipped)</h3>
-                <p>Shipped</p>
+                <p style="color: black;">Shipped</p>
             </div>
             <div class="summary-card">
                 <h3>@Model.Count(o => o.Status == StaticDetails.PurchaseOrderDelivered)</h3>
-                <p>Delivered</p>
+                <p style="color: black;">Delivered</p>
             </div>
             <div class="summary-card">
                 <h3>$@Model.Sum(o => o.TotalAmount).ToString("F2")</h3>
-                <p>Total Value</p>
+                <p style="color: black;">Total Value</p>
             </div>
         </div>
     }
