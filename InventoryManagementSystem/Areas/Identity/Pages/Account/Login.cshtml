@@ -29,37 +29,69 @@
                     <div asp-validation-summary="ModelOnly" class="validation-summary" role="alert"></div>
 
                     <!-- Custom Alert for Unregistered Users -->
-                    <!-- Custom Alert for Unregistered Users -->
                     @if (!ViewData.ModelState.IsValid)
                     {
                         var errorMessage = ViewData.ModelState[string.Empty]?.Errors.FirstOrDefault()?.ErrorMessage;
-                        if (!string.IsNullOrEmpty(errorMessage) && errorMessage.Contains("not registered"))
+                        if (!string.IsNullOrEmpty(errorMessage))
                         {
-                            <div class="rounded-3 mb-4 p-4" role="alert" id="unregistered-alert"
-                                 style="background: rgba(76, 175, 80, 0.05); border: 1px solid var(--primary-color);">
-                                <div class="d-flex align-items-start">
-                                    <i class="fas fa-user-plus mt-1 me-3" style="color: var(--primary-color);"></i>
-                                    <div class="flex-grow-1">
-                                        <h5 style="color: var(--text-primary); margin-bottom: 8px;">Create Your Account</h5>
-                                        <p style="color: var(--text-secondary); margin-bottom: 16px;">
-                                            This email address isn't associated with an existing account.
-                                            Start by creating a new account to access the system.
-                                        </p>
-                                        <div class="d-flex gap-2">
-                                            <a asp-page="./Register" asp-route-returnUrl="@Model.ReturnUrl"
-                                               class="btn btn-sm px-3"
-                                               style="background: var(--primary-color); color: var(--white); border: none;">
-                                                <i class="fas fa-user-plus me-1"></i> Get Started
-                                            </a>
-                                            <button type="button" class="btn btn-sm px-3"
-                                                    onclick="this.closest('#unregistered-alert').style.display='none'"
-                                                    style="background: transparent; color: var(--text-secondary); border: 1px solid var(--border-gray);">
-                                                <i class="fas fa-times me-1"></i> Maybe Later
-                                            </button>
+                            <!-- رسالة للمستخدم غير المسجل -->
+                            @if (errorMessage.Contains("not registered"))
+                            {
+                                <div class="rounded-3 mb-4 p-4" role="alert" id="unregistered-alert"
+                                     style="background: rgba(76, 175, 80, 0.05); border: 1px solid var(--primary-color);">
+                                    <div class="d-flex align-items-start">
+                                        <i class="fas fa-user-plus mt-1 me-3" style="color: var(--primary-color);"></i>
+                                        <div class="flex-grow-1">
+                                            <h5 style="color: var(--text-primary); margin-bottom: 8px;">Create Your Account</h5>
+                                            <p style="color: var(--text-secondary); margin-bottom: 16px;">
+                                                This email address isn't associated with an existing account.
+                                                Start by creating a new account to access the system.
+                                            </p>
+                                            <div class="d-flex gap-2">
+                                                <a asp-page="./Register" asp-route-returnUrl="@Model.ReturnUrl"
+                                                   class="btn btn-sm px-3"
+                                                   style="background: var(--primary-color); color: var(--white); border: none;">
+                                                    <i class="fas fa-user-plus me-1"></i> Get Started
+                                                </a>
+                                                <button type="button" class="btn btn-sm px-3"
+                                                        onclick="this.closest('#unregistered-alert').style.display='none'"
+                                                        style="background: transparent; color: var(--text-secondary); border: 1px solid var(--border-gray);">
+                                                    <i class="fas fa-times me-1"></i> Maybe Later
+                                                </button>
+                                            </div>
                                         </div>
                                     </div>
                                 </div>
-                            </div>
+                            }
+                           
+                            else if (errorMessage.Contains("deleted") || errorMessage.Contains("removed") || errorMessage.Contains("no longer exists"))
+                            {
+                                <div class="rounded-3 mb-4 p-4" role="alert" id="deleted-user-alert"
+                                     style="background: rgba(244, 67, 54, 0.05); border: 1px solid #f44336;">
+                                    <div class="d-flex align-items-start">
+                                        <i class="fas fa-user-slash mt-1 me-3" style="color: #f44336;"></i>
+                                        <div class="flex-grow-1">
+                                            <h5 style="color: var(--text-primary); margin-bottom: 8px;">Account No Longer Active</h5>
+                                            <p style="color: var(--text-secondary); margin-bottom: 16px;">
+                                                This account has been deactivated or removed from the system.
+                                                Please contact the system administrator if you believe this is an error.
+                                            </p>
+                                            <div class="d-flex gap-2">
+                                                <a asp-page="./Register" asp-route-returnUrl="@Model.ReturnUrl"
+                                                   class="btn btn-sm px-3"
+                                                   style="background: var(--primary-color); color: var(--white); border: none;">
+                                                    <i class="fas fa-user-plus me-1"></i> Create New Account
+                                                </a>
+                                                <button type="button" class="btn btn-sm px-3"
+                                                        onclick="this.closest('#deleted-user-alert').style.display='none'"
+                                                        style="background: transparent; color: var(--text-secondary); border: 1px solid var(--border-gray);">
+                                                    <i class="fas fa-times me-1"></i> Dismiss
+                                                </button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            }
                         }
                     }
 
@@ -107,7 +139,6 @@
                     </div>
                 </form>
             </div>
-
         </div>
     </div>
 </div>
