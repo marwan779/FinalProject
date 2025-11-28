@@ -261,17 +261,17 @@
             <div class="no-products-icon">
                 <i class="fas fa-box-open"></i>
             </div>
-            <h2>No Products Found</h2>
+            <h2 style="color: var(--primary-color);">No Products Found</h2>
             @if (!string.IsNullOrEmpty(Model.SearchTerm) || Model.CategoryId.HasValue)
             {
-                <p>No products match your search criteria. Try adjusting your filters.</p>
+                <p style="color: var(--primary-color);" >No products match your search criteria. Try adjusting your filters.</p>
                 <a asp-controller="Home" asp-action="Index" class="btn btn-primary-custom">
                     <i class="fas fa-redo"></i> View All Products
                 </a>
             }
             else
             {
-                <p>There are currently no products to display. Please check back later!</p>
+                <p style="color: var(--primary-color);" >There are currently no products to display. Please check back later!</p>
             }
         </div>
     }
