@@ -5,23 +5,62 @@
     ViewData["ActivePage"] = ManageNavPages.Index;
 }
 
-<h3>@ViewData["Title"]</h3>
-<partial name="_StatusMessage" for="StatusMessage" />
-<div class="row">
-    <div class="col-md-6">
-        <form id="profile-form" method="post">
-            <div asp-validation-summary="ModelOnly" class="text-danger" role="alert"></div>
-            <div class="form-floating mb-3">
-                <input asp-for="Username" class="form-control" placeholder="Please choose your username." disabled />
-                <label asp-for="Username" class="form-label"></label>
+<div class="create-product-page">
+    <div class="page-header">
+        <h1>Profile Settings</h1>
+        <p class="page-subtitle">Manage your account information</p>
+    </div>
+
+    <div class="form-container">
+        <div class="form-section">
+            <div class="d-flex align-items-center mb-4">
+                <div class="bg-primary-custom text-white rounded-circle p-3 me-3">
+                    <i class="fas fa-user-circle fa-lg"></i>
+                </div>
+                <div>
+                    <h3 class="section-title mb-1">Personal Information</h3>
+                    <p class="text-muted mb-0">Update your profile details</p>
+                </div>
             </div>
-            <div class="form-floating mb-3">
-                <input asp-for="Input.PhoneNumber" class="form-control" placeholder="Please enter your phone number."/>
-                <label asp-for="Input.PhoneNumber" class="form-label"></label>
-                <span asp-validation-for="Input.PhoneNumber" class="text-danger"></span>
+
+            <partial name="_StatusMessage" for="StatusMessage" />
+
+            <form id="profile-form" method="post">
+                <div asp-validation-summary="ModelOnly" class="validation-summary" role="alert"></div>
+
+                <div class="form-group">
+                    <label class="form-label">
+                        <i class="fas fa-user me-2 text-primary-custom"></i>Username
+                    </label>
+                    <input class="form-control" value="@Model.Username" disabled />
+                </div>
+
+                <div class="form-group">
+                    <label asp-for="Input.PhoneNumber" class="form-label">
+                        <i class="fas fa-phone me-2 text-primary-custom"></i>Phone Number
+                    </label>
+                    <input asp-for="Input.PhoneNumber" class="form-control" placeholder="Enter your phone number" />
+                    <span asp-validation-for="Input.PhoneNumber" class="validation-message"></span>
+                </div>
+
+                <div class="form-actions text-center">
+                    <button type="submit" class="stock-badge in-stock border-0 px-4 py-2">
+                        <i class="fas fa-save me-2"></i> Update Profile
+                    </button>
+                </div>
+            </form>
+
+            <div class="text-center mt-4">
+                <div class="d-flex justify-content-center gap-3">
+                    <a href="/Identity/Account/Manage/ChangePassword" class="text-primary-custom text-decoration-none">
+                        <i class="fas fa-key me-1"></i> Change Password
+                    </a>
+                    <a href="/Identity/Account/Manage/Email" class="text-primary-custom text-decoration-none">
+                        <i class="fas fa-envelope me-1"></i> Email Settings
+                    </a>
+                </div>
             </div>
-            <button id="update-profile-button" type="submit" class="w-100 btn btn-lg btn-primary">Save</button>
-        </form>
+        </div>
     </div>
 </div>
 
