@@ -39,27 +39,14 @@
                     <label asp-for="Input.PhoneNumber" class="form-label">
                         <i class="fas fa-phone me-2 text-primary-custom"></i>Phone Number
                     </label>
-                    <input asp-for="Input.PhoneNumber" class="form-control" placeholder="Enter your phone number" />
+                    <input asp-for="Input.PhoneNumber" class="form-control" placeholder="Enter your phone number" disabled />
                     <span asp-validation-for="Input.PhoneNumber" class="validation-message"></span>
                 </div>
 
-                <div class="form-actions text-center">
-                    <button type="submit" class="stock-badge in-stock border-0 px-4 py-2">
-                        <i class="fas fa-save me-2"></i> Update Profile
-                    </button>
-                </div>
+               
             </form>
 
-            <div class="text-center mt-4">
-                <div class="d-flex justify-content-center gap-3">
-                    <a href="/Identity/Account/Manage/ChangePassword" class="text-primary-custom text-decoration-none">
-                        <i class="fas fa-key me-1"></i> Change Password
-                    </a>
-                    <a href="/Identity/Account/Manage/Email" class="text-primary-custom text-decoration-none">
-                        <i class="fas fa-envelope me-1"></i> Email Settings
-                    </a>
-                </div>
-            </div>
+          
         </div>
     </div>
 </div>
